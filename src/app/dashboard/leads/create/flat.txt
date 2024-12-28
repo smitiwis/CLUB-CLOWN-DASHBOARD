@@ -1,0 +1,51 @@
+create table asesores (
+  id bigint primary key generated always as identity,
+  nombre text not null,
+  telefono text,
+  email text
+);
+
+create table clientes (
+  id bigint primary key generated always as identity,
+  nombre text not null,
+  telefono text,
+  email text,
+  direccion text
+);
+
+create table talleres (
+  id bigint primary key generated always as identity,
+  nombre text not null,
+  horario text not null,
+  precio numeric not null default 250
+);
+
+create table ventas (
+  id bigint primary key generated always as identity,
+  asesor_id bigint references asesores (id),
+  cliente_id bigint references clientes (id),
+  taller_id bigint references talleres (id),
+  fecha_venta timestamp with time zone not null default now()
+);
+
+create table pagos (
+  id bigint primary key generated always as identity,
+  venta_id bigint references ventas (id),
+  monto numeric not null,
+  fecha_pago timestamp with time zone not null default now()
+);
+
+create table asistencias (
+  id bigint primary key generated always as identity,
+  cliente_id bigint references clientes (id),
+  taller_id bigint references talleres (id),
+  fecha_asistencia date not null
+);
+
+create table llamadas (
+  id bigint primary key generated always as identity,
+  asesor_id bigint references asesores (id),
+  cliente_id bigint references clientes (id),
+  fecha_llamada timestamp with time zone not null default now(),
+  estado text not null
+);
