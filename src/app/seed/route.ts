@@ -12,18 +12,20 @@ const seedUsuarios = async () => {
   const usuarios = [
     {
       nombre: "Carlos Martínez",
+      apellido: "Peralta",
       telefono: "551234567",
       dni: "12345678",
-      fecha_ingreso: new Date("2024-01-15"),
+      fecha_ingreso: "2024-01-15",
       estado: "activo", // Puede ser "activo" o "inactivo"
       correo: "sistem@gmail.com",
       password: "123456", // Esto debería ser encriptado en producción
     },
     {
       nombre: "Laura Gómez",
+      apellido: "Gómez",
       telefono: "559876543",
       dni: "87654321",
-      fecha_ingreso: new Date("2024-02-01"),
+      fecha_ingreso: "2024-02-01",
       estado: "activo", // Puede ser "activo" o "inactivo"
       correo: "ejemplo@gmail.com",
       password: "123456", // Esto debería ser encriptado en producción

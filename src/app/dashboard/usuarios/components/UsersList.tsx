@@ -74,7 +74,7 @@ const UsersList: FC<Props> = ({ userList }) => {
         );
 
       case "fecha_ingreso":
-        return format(cellValue as Date, "medium");
+        return format(cellValue, "medium");
 
       case "actions":
         return (

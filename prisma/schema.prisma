@@ -16,10 +16,11 @@ datasource db {
 
 model usuarios {
   id_usuario     String   @id @default(uuid())
-  nombre         String   @db.VarChar(20)
+  nombre         String   @db.VarChar(25)
+  apellido       String   @db.VarChar(40)
   telefono       String   @unique @db.VarChar(9)
   dni            String   @unique @db.VarChar(8)
-  fecha_ingreso  DateTime
+  fecha_ingreso  String   @db.VarChar(10)
   estado         String   @default("activo") @db.VarChar(20)
   correo         String   @unique @db.VarChar(60)
   password       String   @db.VarChar(100)

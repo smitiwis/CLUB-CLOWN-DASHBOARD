@@ -22,7 +22,7 @@ model Usuario {
   nombre       String
   telefono     String
   dni          String
-  fecha_ingreso DateTime
+  fecha_ingreso String
   estado       String
   correo       String   @unique
   password     String

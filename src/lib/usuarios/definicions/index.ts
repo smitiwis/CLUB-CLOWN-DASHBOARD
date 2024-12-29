@@ -1,8 +1,9 @@
 export interface IUsuario {
   nombre: string;
+  apellido: string;
   telefono: string;
   dni: string;
-  fecha_ingreso: Date;
+  fecha_ingreso: string;
   estado: string;
   correo: string;
 }
@@ -21,24 +22,14 @@ export interface IUsuarioTable {
   nombre: string;
   telefono: string;
   dni: string;
-  fecha_ingreso: Date;
+  fecha_ingreso: string;
   estado: string;
   correo: string;
 }
 
 // ERRORES
 export type IStateUsuario = {
-  errors?: {
-    id_usuario: string[];
-    nombre: string[];
-    telefono: string[];
-    dni: string[];
-    fecha_ingreso: string[];
-    estado: string[];
-    correo: string[];
-    password: string[];
-    status?: string[];
-    fecha_creacion: string[];
-  };
   message?: string | null;
+  field?: string | null;
+  status?: number | null;
 } | null;
