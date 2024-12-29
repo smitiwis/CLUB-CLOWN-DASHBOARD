@@ -10,12 +10,12 @@ import {
   TableCell,
   Tooltip,
 } from "@nextui-org/react";
-import { ILead } from "@/lib/leads/definitions/definitions";
+import { ILead } from "@/lib/leads/definitions";
 import { format } from "@formkit/tempo";
-import { COLORES } from "@/app/constants";
 import PhoneIcon from "@/components/icons/IconPhone";
 import IconPhone from "@/components/icons/IconTrash";
 import IconEye from "@/components/icons/IconEye";
+import { COLORES } from "@/constants";
 
 type Props = {
   leadsList: ILead[];

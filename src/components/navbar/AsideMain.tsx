@@ -9,6 +9,11 @@ const AsideMain = () => {
 
   const menuItems = [
     {
+      id: "user",
+      label: "Ascensores",
+      href: "/dashboard/usuarios",
+    },
+    {
       id: "leads",
       label: "Gestion de leads",
       href: "/dashboard/leads",

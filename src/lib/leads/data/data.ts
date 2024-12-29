@@ -1,5 +1,5 @@
 import { sql } from "@vercel/postgres";
-import { ILead } from "../definitions/definitions";
+import { ILead } from "../definitions";
 
 export async function fetchInvoiceById(id: string) {
   try {

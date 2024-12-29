@@ -2,7 +2,7 @@ import { fetchLeads } from "@/lib/leads/data/data";
 import LeadsList from "./components/LeadsList";
 import ButtonCreate from "./components/ButtonCreate";
 
-const page = async () => {
+const Page = async () => {
   const leadsList = await fetchLeads();
 
   return (
@@ -16,4 +16,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default Page;

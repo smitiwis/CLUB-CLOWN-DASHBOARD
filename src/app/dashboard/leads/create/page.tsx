@@ -10,25 +10,18 @@ import React, {
 } from "react";
 import {
   Input,
-  Spacer,
   Button,
   Select,
   SelectItem,
   DatePicker,
   DateValue,
   SelectedItems,
-  form,
 } from "@nextui-org/react";
 
 import { createLead } from "@/lib/leads/actions/action";
-import { ILeadForm, IStateLead } from "@/lib/leads/definitions/definitions";
-import {
-  COLORES,
-  GRUPOS,
-  HORARIOS,
-  IColors,
-  LEAD_STATUS,
-} from "@/app/constants";
+import { ILeadForm, IStateLead } from "@/lib/leads/definitions";
+
+import { LEAD_STATUS, COLORES, GRUPOS, HORARIOS, IColors } from "@/constants";
 
 const Page = () => {
   const [loading, startTransaction] = useTransition();
@@ -79,32 +72,32 @@ const Page = () => {
     <div className="mt-4">
       <h2 className="text-lg mb-4">Registrar Lead</h2>
       <form onSubmit={onSubmit}>
-        <div className="grid grid-cols-2  gap-3">
+        <div className="grid grid-cols-2 gap-3 mb-5">
           <div>
             {/* Celular del Contacto */}
             <Input
+              className="mb-4"
               label="Celular del Contacto"
               name="celular_contacto"
               value={formData.celular_contacto}
               onChange={handleChange}
             />
-            <Spacer y={3} />
 
             <Input
+              className="mb-4"
               label="Nombre del Contacto"
               name="nombre_contacto"
               value={formData.nombre_contacto}
               onChange={handleChange}
             />
-            <Spacer y={3} />
             {/* Edad del Contacto */}
             <Input
+              className="mb-4"
               label="Edad del Contacto"
               name="edad_contacto"
               value={formData.edad_contacto}
               onChange={handleChange}
             />
-            <Spacer y={3} />
 
             {/* Categoría */}
             <Select
@@ -116,11 +109,11 @@ const Page = () => {
                 <SelectItem key={grupo.key}>{grupo.label}</SelectItem>
               ))}
             </Select>
-            <Spacer y={3} />
           </div>
           <div>
             {/* Grupo Horario */}
             <Select
+              className="mb-4"
               label="Horario del taller"
               name="grupo_horario"
               onChange={handleSlectChange}
@@ -129,19 +122,19 @@ const Page = () => {
                 <SelectItem key={horario.key}>{horario.label}</SelectItem>
               ))}
             </Select>
-            <Spacer y={3} />
 
             {/* Fecha de Inicio del Taller */}
             <DatePicker
+              className="mb-4"
               name="fecha_inicio_taller"
               label="Fecha de Inicio del Taller"
               onChange={handleChangeDate}
               fullWidth
             />
-            <Spacer y={3} />
-            
+
             {/* COLORES */}
             <Select
+              className="mb-4"
               label="Colores"
               name="color"
               defaultSelectedKeys={[formData.color || COLORES[0].key]}
@@ -175,8 +168,6 @@ const Page = () => {
                 </SelectItem>
               )}
             </Select>
-
-            <Spacer y={3} />
 
             {/* Estado del lead */}
             <Select

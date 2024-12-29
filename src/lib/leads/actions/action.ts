@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { ILeadForm, IStateLead } from "../definitions/definitions";
+import { ILeadForm, IStateLead } from "../definitions";
 import { sql } from "@vercel/postgres";
 
 export async function createLead(prevState: IStateLead, formData: ILeadForm) {
@@ -39,7 +39,7 @@ export async function createLead(prevState: IStateLead, formData: ILeadForm) {
     };
   }
 
-  // Revalidate the cache for the invoices page and redirect the user.
+  // Revalidate the cache for the invoices Page and redirect the user.
   revalidatePath("/dashboard/leads");
   redirect("/dashboard/leads");
 }
