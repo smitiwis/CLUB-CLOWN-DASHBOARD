@@ -28,6 +28,7 @@ const UsersList: FC<Props> = ({ userList }) => {
       key: String(i + 1),
     };
   });
+  
   const columns = [
     {
       key: "nombre",
@@ -55,6 +56,7 @@ const UsersList: FC<Props> = ({ userList }) => {
     },
     { key: "actions", label: "ACTIONS" },
   ];
+
   const renderCell = useCallback((item: IUsuarioTable, columnKey: Key) => {
     const cellValue = item[columnKey as keyof IUsuarioTable];
 

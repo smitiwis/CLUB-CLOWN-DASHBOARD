@@ -1,6 +1,6 @@
 import React from 'react'
 import ButtonCreateUser from './components/ButtonCreate'
-import { fetchUsuarios } from '@/lib/usuarios/data';
+import { fetchUsuarios } from '@/lib/usuarios/services';
 import UsersList from './components/UsersList';
 
 const Page = async() => {

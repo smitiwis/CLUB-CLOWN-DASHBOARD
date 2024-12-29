@@ -1,4 +1,4 @@
-import { fetchLeads } from "@/lib/leads/data/data";
+import { fetchLeads } from "@/lib/leads/services/data";
 import LeadsList from "./components/LeadsList";
 import ButtonCreate from "./components/ButtonCreate";
 
