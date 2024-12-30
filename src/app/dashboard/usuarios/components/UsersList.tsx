@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { FC, Key, useCallback } from "react";
@@ -12,27 +13,31 @@ import {
   TableRow,
   TableCell,
   Tooltip,
+  Chip,
+  Button,
 } from "@nextui-org/react";
 import IconEye from "@/components/icons/IconEye";
 import IconTrash from "@/components/icons/IconTrash";
 import IconEdit from "@/components/icons/IconEdit";
+import { useRouter } from "next/navigation";
 
 type Props = {
   userList: IUsuarioRes[];
 };
 
 const UsersList: FC<Props> = ({ userList }) => {
-  const rows = userList.map((user, i) => {
-    return {
-      ...user,
-      key: String(i + 1),
-    };
-  });
-  
+  const router = useRouter();
+
+  const rows = userList.map((user, i) => ({ ...user, key: String(i + 1) }));
+
   const columns = [
     {
       key: "nombre",
       label: "NOMBRE",
+    },
+    {
+      key: "apellido",
+      label: "APELLIDO",
     },
     {
       key: "dni",
@@ -63,30 +68,49 @@ const UsersList: FC<Props> = ({ userList }) => {
     switch (columnKey) {
       case "estado":
         return (
-          <div
+          <Chip
             className="flex items-center"
-            style={{
-              color: item.estado === "activo" ? "green" : "red",
-            }}
+            variant="flat"
+            color={item.estado ? "success" : "danger"}
           >
-            {item.estado}
-          </div>
+            {item.estado ? "Activo" : "Inactivo"}
+          </Chip>
         );
 
       case "fecha_ingreso":
-        return format(cellValue, "medium");
+        return format(String(cellValue), "medium");
 
       case "actions":
         return (
-          <div className="flex justify-center">
-            <Tooltip content="Ver">
-              <IconEye />
+          <div className="relative flex items-center">
+            <Tooltip content="Detalles" color="success">
+              <Button
+                onPress={() => console.log("detalles")}
+                isIconOnly
+                color="success"
+                variant="light"
+              >
+                <IconEye />
+              </Button>
             </Tooltip>
             <Tooltip content="Editar">
-              <IconEdit />
+              <Button
+                onPress={() => handleEdit(item)}
+                isIconOnly
+                variant="light"
+              >
+                <IconEdit />
+              </Button>
             </Tooltip>
-            <Tooltip content="Eliminar">
-              <IconTrash />
+            <Tooltip color="danger" content="Eliminar">
+              <Button
+                onPress={() => console.log("Eliminar")}
+                isIconOnly
+                color="danger"
+                variant="light"
+              >
+                <IconTrash />
+              </Button>
             </Tooltip>
           </div>
         );
@@ -95,8 +119,13 @@ const UsersList: FC<Props> = ({ userList }) => {
         return String(cellValue) || "-";
     }
   }, []);
+
+  const handleEdit = (item: IUsuarioTable) => {
+    router.push(`/dashboard/usuarios/editar/${item.id_usuario}`);
+  };
+
   return (
-    <Table aria-label="Example static collection table" selectionMode="single">
+    <Table aria-label="Example table with custom cells" selectionMode="single">
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>

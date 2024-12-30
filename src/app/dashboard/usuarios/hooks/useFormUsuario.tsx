@@ -2,14 +2,15 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schemaUsuario } from "@/lib/usuarios/schemas";
-import { createUsuario } from "@/lib/usuarios/actions";
-import { IStateUsuario, IUsuarioForm } from "@/lib/usuarios/definicions";
+import { createUsuario, editUsuario } from "@/lib/usuarios/actions";
+import { IStateUsuario, IUsuarioForm, IUsuarioRes, IUsuarioReq } from "@/lib/usuarios/definicions";
 import { useActionState, useEffect, useTransition } from "react";
 
-const useFormCreateUser = () => {
+
+const useFormUsuario = (usuario?: IUsuarioRes) => {
   const [loading, startTransaction] = useTransition();
-  const [state, formAction] = useActionState<IStateUsuario, IUsuarioForm>(
-    createUsuario,
+  const [state, formAction] = useActionState<IStateUsuario, IUsuarioReq>(
+    !!usuario ? editUsuario : createUsuario,
     null
   );
 
@@ -17,36 +18,32 @@ const useFormCreateUser = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
     reset,
   } = useForm({
     resolver: yupResolver<IUsuarioForm>(schemaUsuario),
   });
 
   const onSubmit = (formData: IUsuarioForm) => {
-    startTransaction(() => formAction(formData));
+    const data = { ...formData, id_usuario: usuario?.id_usuario || "" };
+    startTransaction(() => formAction(data));
   };
 
   useEffect(() => {
-    reset({
-      nombre: "data",
-      apellido: "data",
-      telefono: "964912022",
-      dni: "12345678",
-      fecha_ingreso: "2021-10-10",
-      estado: "activo",
-      correo: "data@gmail.com",
-      password: "datadata",
-    });
+    if (!!usuario) {
+      reset({ ...usuario, password: "default" });
+    }
   }, []);
 
   return {
     register,
     handleSubmit,
     errors,
+    setError,
     onSubmit,
     loading, // LO QUE DEMORA EN CREAR EL USUARIO
-    state,   // ESTADO DE LA TRANSACCION O CREACION DEL USUARIO
+    state, // ESTADO DE LA TRANSACCION O CREACION DEL USUARIO
   };
 };
 
-export default useFormCreateUser;
+export default useFormUsuario;

@@ -30,7 +30,7 @@ const AsideMain = () => {
   ];
 
   return (
-    <aside className="w-64 bg-gray-900 text-gray-100 shadow-lg">
+    <aside className="w-64 bg-gray-900 border-r-1 border-gray-700">
       <div className="p-6 h-full">
         <nav>
           <ul className="space-y-4">

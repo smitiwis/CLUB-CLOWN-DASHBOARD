@@ -16,7 +16,7 @@ const seedUsuarios = async () => {
       telefono: "551234567",
       dni: "12345678",
       fecha_ingreso: "2024-01-15",
-      estado: "activo", // Puede ser "activo" o "inactivo"
+      estado: 1, // Puede ser "activo" o "inactivo"
       correo: "sistem@gmail.com",
       password: "123456", // Esto debería ser encriptado en producción
     },
@@ -26,7 +26,7 @@ const seedUsuarios = async () => {
       telefono: "559876543",
       dni: "87654321",
       fecha_ingreso: "2024-02-01",
-      estado: "activo", // Puede ser "activo" o "inactivo"
+      estado: 0, // Puede ser "activo" o "inactivo"
       correo: "ejemplo@gmail.com",
       password: "123456", // Esto debería ser encriptado en producción
     },

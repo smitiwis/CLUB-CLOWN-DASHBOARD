@@ -1,7 +1,7 @@
 import { REGEX } from "@/constants/regex";
 import * as yup from "yup";
 
-const { EMAIL, PHONE_REGEX, DNI_REGEX, PASSWORD_MIN_LENGTH } = REGEX;
+const { EMAIL, DNI_REGEX, PASSWORD_MIN_LENGTH } = REGEX;
 
 
 export const schemaUsuario = yup.object().shape({
@@ -17,10 +17,11 @@ export const schemaUsuario = yup.object().shape({
     .min(3, "El apellido debe tener al menos 3 caracteres.")
     .max(20, "El apellido no puede tener más de 20 caracteres."),
 
-  telefono: yup
+    telefono: yup
     .string()
     .required("Teléfono es requerido.")
-    .matches(PHONE_REGEX, "El teléfono debe tener exactamente 9 dígitos."),
+    .matches(/^9/, "El teléfono debe comenzar con 9.")
+    .matches(/^\d{9}$/, "El teléfono debe tener exactamente 9 dígitos."),
 
   dni: yup
     .string()
@@ -35,9 +36,9 @@ export const schemaUsuario = yup.object().shape({
     .required("Fecha de ingreso es requerida."),
 
   estado: yup
-    .string()
+    .number()
     .required("Estado es requerido.")
-    .oneOf(["activo", "inactivo"], "El estado debe ser 'activo' o 'inactivo'."),
+    .oneOf([1, 0], "El estado debe ser 'Activo' o 'Inactivo'."),
 
   correo: yup
     .string()

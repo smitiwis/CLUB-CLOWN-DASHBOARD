@@ -4,7 +4,7 @@ export interface IUsuario {
   telefono: string;
   dni: string;
   fecha_ingreso: string;
-  estado: string;
+  estado: number;
   correo: string;
 }
 
@@ -16,20 +16,17 @@ export interface IUsuarioRes extends IUsuario {
   id_usuario: string;
 }
 
-export interface IUsuarioTable {
-  key: string;
+export interface IUsuarioReq extends IUsuario {
   id_usuario: string;
-  nombre: string;
-  telefono: string;
-  dni: string;
-  fecha_ingreso: string;
-  estado: string;
-  correo: string;
+}
+
+export interface IUsuarioTable extends IUsuarioRes {
+  key: string;
 }
 
 // ERRORES
 export type IStateUsuario = {
-  message?: string | null;
-  field?: string | null;
-  status?: number | null;
+  message?: string;
+  field?: "nombre" | "apellido" | "telefono" | "dni" | "fecha_ingreso" | "estado" | "correo" | "password";
+  status?: number;
 } | null;

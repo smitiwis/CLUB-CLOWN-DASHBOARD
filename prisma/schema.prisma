@@ -21,7 +21,7 @@ model usuarios {
   telefono       String   @unique @db.VarChar(9)
   dni            String   @unique @db.VarChar(8)
   fecha_ingreso  String   @db.VarChar(10)
-  estado         String   @default("activo") @db.VarChar(20)
+  estado         Int
   correo         String   @unique @db.VarChar(60)
   password       String   @db.VarChar(100)
   fecha_creacion DateTime @default(now())

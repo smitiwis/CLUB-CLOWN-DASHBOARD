@@ -6,7 +6,7 @@ CREATE TABLE "usuarios" (
     "telefono" VARCHAR(9) NOT NULL,
     "dni" VARCHAR(8) NOT NULL,
     "fecha_ingreso" VARCHAR(10) NOT NULL,
-    "estado" VARCHAR(20) NOT NULL DEFAULT 'activo',
+    "estado" INTEGER NOT NULL,
     "correo" VARCHAR(60) NOT NULL,
     "password" VARCHAR(100) NOT NULL,
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
