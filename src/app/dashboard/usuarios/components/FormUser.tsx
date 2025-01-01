@@ -2,18 +2,38 @@
 
 import { Alert, Button, Input, Select, SelectItem } from "@nextui-org/react";
 import React, { FC, useEffect, useState } from "react";
-import useFormUsuario from "../hooks/useFormUsuario";
 import IconEye from "@/components/icons/IconEye";
 import EyeOffIcon from "@/components/icons/IconEyeOff";
-import { IStateUsuario, IUsuarioRes } from "@/lib/usuarios/definicions";
+import { IStateUsuario, IUsuarioForm } from "@/lib/usuarios/definicions";
+import {
+  FieldErrors,
+  UseFormHandleSubmit,
+  UseFormRegister,
+  UseFormSetError,
+} from "react-hook-form";
 
 type Props = {
-  usuario?: IUsuarioRes;
+  register: UseFormRegister<IUsuarioForm>;
+  handleSubmit: UseFormHandleSubmit<IUsuarioForm>;
+  errors: FieldErrors<IUsuarioForm>;
+  setError: UseFormSetError<IUsuarioForm>;
+  onSubmit: (data: IUsuarioForm) => void;
+  loading: boolean;
+  state: IStateUsuario;
+  isToEdit?: boolean;
 };
 
-const FormUsuario: FC<Props> = ({ usuario }) => {
-  const { register, handleSubmit, errors, onSubmit, loading, state, setError } =
-    useFormUsuario(usuario);
+const FormUsuario: FC<Props> = (props) => {
+  const {
+    register,
+    handleSubmit,
+    errors,
+    setError,
+    onSubmit,
+    loading,
+    state,
+    isToEdit = false,
+  } = props;
 
   const [isVisible, setIsVisible] = useState(false);
   const [statusForm, setStatusForm] = useState<IStateUsuario>(state);
@@ -112,6 +132,7 @@ const FormUsuario: FC<Props> = ({ usuario }) => {
 
             <Input
               {...register("correo")}
+              autoComplete="off"
               className="mb-4"
               label="Correo"
               size="lg"
@@ -120,7 +141,7 @@ const FormUsuario: FC<Props> = ({ usuario }) => {
               errorMessage={errors.correo?.message}
             />
 
-            {!usuario && (
+            {!isToEdit && (
               <Input
                 {...register("password")}
                 aria-label="toggle password visibility"
@@ -152,7 +173,7 @@ const FormUsuario: FC<Props> = ({ usuario }) => {
           type="submit"
           size="lg"
         >
-          {!!usuario ? "ACTUALIZAR" : "REGISTRAR"} USUARIO
+          {isToEdit ? "ACTUALIZAR" : "REGISTRAR"} USUARIO
         </Button>
       </form>
     </>

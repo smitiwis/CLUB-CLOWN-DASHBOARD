@@ -1,4 +1,4 @@
-import FormUsuario from "../components/FormUsuario";
+import FormCreateUser from "../components/FormCreateUser";
 
 const Page = () => {
   return (
@@ -6,7 +6,7 @@ const Page = () => {
       <h1 className="text-2xl font-semibold text-gray-400 mb-4">
         Crear Usuario
       </h1>
-      <FormUsuario />
+      <FormCreateUser />
     </>
   );
 };

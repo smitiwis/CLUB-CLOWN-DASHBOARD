@@ -1,7 +1,12 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { IStateUsuario, IUsuarioReq } from "../definicions";
+import {
+  IStateDeleteUser,
+  IStateUsuario,
+  IUsuarioForm,
+  IUsuarioReq,
+} from "../definicions";
 import { schemaUsuario } from "../schemas";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -9,7 +14,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function createUsuario(
   prevState: IStateUsuario,
-  formData: IUsuarioReq
+  formData: IUsuarioForm
 ) {
   try {
     const validatedUsuario = await schemaUsuario.validate(formData, {
@@ -175,4 +180,31 @@ export async function editUsuario(
 
   revalidatePath("/dashboard/usuarios");
   redirect("/dashboard/usuarios");
+}
+
+export async function deleteUsuarioById(
+  prevState: IStateDeleteUser,
+  payload: string
+) {
+  console.timeLog("deleteUsuario", payload);
+  try {
+    if (!payload) {
+      throw { message: "No se ha encontrado el usuario.", status: 404 };
+    }
+
+    await prisma.usuarios.delete({
+      where: { id_usuario: payload },
+    });
+
+    revalidatePath("/dashboard/usuarios");
+    return { message: "Usuario eliminado correctamente.", status: 200 };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { message: error.message };
+    } else if (typeof error === "object") {
+      return error;
+    } else {
+      return { message: "Error desconocido" };
+    }
+  }
 }

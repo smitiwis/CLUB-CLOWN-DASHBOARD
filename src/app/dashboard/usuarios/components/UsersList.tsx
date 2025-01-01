@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { FC, Key, useCallback } from "react";
+import React, { FC, Key, useCallback, useEffect, useState } from "react";
 
 import { IUsuarioRes, IUsuarioTable } from "@/lib/usuarios/definicions";
 import { format } from "@formkit/tempo";
@@ -14,12 +14,19 @@ import {
   TableCell,
   Tooltip,
   Chip,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
   Button,
+  useDisclosure,
 } from "@nextui-org/react";
 import IconEye from "@/components/icons/IconEye";
 import IconTrash from "@/components/icons/IconTrash";
 import IconEdit from "@/components/icons/IconEdit";
 import { useRouter } from "next/navigation";
+import useDeleteUser from "../hooks/useDeleteUser";
 
 type Props = {
   userList: IUsuarioRes[];
@@ -27,6 +34,9 @@ type Props = {
 
 const UsersList: FC<Props> = ({ userList }) => {
   const router = useRouter();
+  const { goToDelete, state, loading } = useDeleteUser();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [userToDelete, setUserToDelete] = useState<IUsuarioTable | null>(null);
 
   const rows = userList.map((user, i) => ({ ...user, key: String(i + 1) }));
 
@@ -104,7 +114,10 @@ const UsersList: FC<Props> = ({ userList }) => {
             </Tooltip>
             <Tooltip color="danger" content="Eliminar">
               <Button
-                onPress={() => console.log("Eliminar")}
+                onPress={() => {
+                  onOpen();
+                  setUserToDelete(item);
+                }}
                 isIconOnly
                 color="danger"
                 variant="light"
@@ -124,22 +137,69 @@ const UsersList: FC<Props> = ({ userList }) => {
     router.push(`/dashboard/usuarios/editar/${item.id_usuario}`);
   };
 
-  return (
-    <Table aria-label="Example table with custom cells" selectionMode="single">
-      <TableHeader columns={columns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
-      </TableHeader>
+  useEffect(() => {
+    if (state?.status === 200) {
+      onOpenChange();
+    }
+  }, [state]);
 
-      <TableBody items={rows}>
-        {(item) => (
-          <TableRow key={item.key}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+  return (
+    <>
+  
+      <Table
+        aria-label="Example table with custom cells"
+        selectionMode="single"
+      >
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key}>{column.label}</TableColumn>
+          )}
+        </TableHeader>
+
+        <TableBody items={rows}>
+          {(item) => (
+            <TableRow key={item.key}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => {
+            const handleDelete = () => {
+              if (userToDelete === null) return;
+              goToDelete(userToDelete.id_usuario);
+            };
+            return (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  ELIMINAR ASCESOR
+                </ModalHeader>
+                <ModalBody>
+                  ¿Estas seguro que quieres eliminar un usuario?
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Cancelar
+                  </Button>
+                  <Button
+                    color="primary"
+                    onPress={handleDelete}
+                    isLoading={loading}
+                  >
+                    {loading ? "Eliminando" : "Aceptar"}
+                  </Button>
+                </ModalFooter>
+              </>
+            );
+          }}
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 

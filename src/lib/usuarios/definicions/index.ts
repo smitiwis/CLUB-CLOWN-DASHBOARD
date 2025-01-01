@@ -30,3 +30,8 @@ export type IStateUsuario = {
   field?: "nombre" | "apellido" | "telefono" | "dni" | "fecha_ingreso" | "estado" | "correo" | "password";
   status?: number;
 } | null;
+
+export type IStateDeleteUser = {
+  message?: string;
+  status?: number;
+} | null;
