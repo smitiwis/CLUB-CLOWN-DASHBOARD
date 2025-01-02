@@ -1,9 +1,9 @@
-import { fetchLeads } from "@/lib/leads/services";
-import LeadsList from "./components/LeadsList";
+import { fetchClients } from "@/lib/clients/services";
 import ButtonCreate from "./components/ButtonCreate";
+import ClientsList from "./components/ClientsList";
 
 const Page = async () => {
-  const leadsList = await fetchLeads();
+  const clientsList = await fetchClients();
 
   return (
     <>  
@@ -11,7 +11,7 @@ const Page = async () => {
         <h1>Lista de Leads</h1>
         <ButtonCreate />
       </div>
-      <LeadsList leadsList={leadsList} />
+      <ClientsList clientsList={clientsList} />
     </>
   );
 };

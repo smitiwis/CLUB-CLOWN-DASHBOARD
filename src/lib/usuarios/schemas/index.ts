@@ -3,7 +3,6 @@ import * as yup from "yup";
 
 const { EMAIL, DNI_REGEX, PASSWORD_MIN_LENGTH } = REGEX;
 
-
 export const schemaUsuario = yup.object().shape({
   nombre: yup
     .string()
@@ -17,7 +16,7 @@ export const schemaUsuario = yup.object().shape({
     .min(3, "El apellido debe tener al menos 3 caracteres.")
     .max(20, "El apellido no puede tener más de 20 caracteres."),
 
-    telefono: yup
+  telefono: yup
     .string()
     .required("Teléfono es requerido.")
     .matches(/^9/, "El teléfono debe comenzar con 9.")
@@ -31,14 +30,13 @@ export const schemaUsuario = yup.object().shape({
       "El DNI debe contener exactamente 8 dígitos numéricos."
     ),
 
-  fecha_ingreso: yup
-    .string()
-    .required("Fecha de ingreso es requerida."),
+  fecha_ingreso: yup.string().required("Fecha de ingreso es requerida."),
 
   estado: yup
-    .number()
+    .string()
     .required("Estado es requerido.")
-    .oneOf([1, 0], "El estado debe ser 'Activo' o 'Inactivo'."),
+    .default("1")
+    .oneOf(["1", "0"], "El estado debe ser 'Activo' o 'Inactivo'."),
 
   correo: yup
     .string()

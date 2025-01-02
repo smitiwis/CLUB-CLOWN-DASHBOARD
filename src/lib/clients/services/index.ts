@@ -23,7 +23,7 @@ export async function fetchInvoiceById(id: string) {
   }
 }
 
-export async function fetchLeads() {
+export async function fetchClients() {
   try {
     const clientes:IBClientRes[] = await prisma.cliente.findMany({
       select: {

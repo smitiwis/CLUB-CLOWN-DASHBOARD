@@ -10,18 +10,18 @@ import {
   TableCell,
   Tooltip,
 } from "@nextui-org/react";
-import { IBClientRes, IFClientTable } from "@/lib/leads/definitions";
+import { IBClientRes, IFClientTable } from "@/lib/clients/definitions";
 import PhoneIcon from "@/components/icons/IconPhone";
 import IconPhone from "@/components/icons/IconTrash";
 import IconEye from "@/components/icons/IconEye";
 import { COLORES, GROUPS_CLIENT } from "@/constants";
 
 type Props = {
-  leadsList: IBClientRes[];
+  clientsList: IBClientRes[];
 };
 
-const LeadsList: FC<Props> = ({ leadsList }) => {
-  const rows: IFClientTable[] = leadsList.map((lead, i) => ({
+const ClientsList: FC<Props> = ({ clientsList }) => {
+  const rows: IFClientTable[] = clientsList.map((lead, i) => ({
     ...lead,
     key: String(i + 1),
   }));
@@ -124,4 +124,4 @@ const LeadsList: FC<Props> = ({ leadsList }) => {
   );
 };
 
-export default LeadsList;
+export default ClientsList;

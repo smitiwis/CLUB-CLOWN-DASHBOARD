@@ -13,7 +13,7 @@ import {
 import React, { useEffect, useState } from "react";
 import useFormCreateClient from "../hooks/useFormCreateClient";
 import { COLORES, GROUPS_CLIENT, IColors } from "@/constants";
-import { IStateLead } from "@/lib/leads/definitions";
+import { IStateLead } from "@/lib/clients/definitions";
 
 const FormCreateLead = () => {
   const [showApod, setShowApod] = useState(false);

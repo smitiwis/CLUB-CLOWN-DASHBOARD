@@ -4,7 +4,7 @@ export interface IUsuario {
   telefono: string;
   dni: string;
   fecha_ingreso: string;
-  estado: number;
+  estado: string;
   correo: string;
 }
 

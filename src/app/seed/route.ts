@@ -16,7 +16,7 @@ const seedUsuarios = async () => {
       telefono: "551234567",
       dni: "12345678",
       fecha_ingreso: "2024-01-15",
-      estado: 1, // Puede ser "activo" o "inactivo"
+      estado: "1", // Puede ser "activo" o "inactivo"
       correo: "sistem@gmail.com",
       password: "123456", // Esto debería ser encriptado en producción
     },
@@ -26,7 +26,7 @@ const seedUsuarios = async () => {
       telefono: "559876543",
       dni: "87654321",
       fecha_ingreso: "2024-02-01",
-      estado: 0, // Puede ser "activo" o "inactivo"
+      estado: "0", // Puede ser "activo" o "inactivo"
       correo: "ejemplo@gmail.com",
       password: "123456", // Esto debería ser encriptado en producción
     },
@@ -57,20 +57,28 @@ const seedUsuarios = async () => {
   console.log("Seed completado.");
 };
 
-const seedLeads = async () => {
+const seedClientes = async () => {
   console.log("Conectando a la base de datos...");
 
   // Datos iniciales
   const clientes = [
     {
       telefono: "964912022",
-      nombre: "Carlos Martínez",
-      apellido: "Peralta Diaz",
+      nombre_apo: "",
+      nombre: "",
+      apellido: "",
+      edad: "0",
+      grupo: "",
+      estado: "",
     },
     {
       telefono: "964918055",
+      nombre_apo: "Juan Gómez",
       nombre: "Laura Gómez",
       apellido: "Gómez Fernandez",
+      edad: "30",
+      grupo: "",
+      estado: ""
     },
   ];
 
@@ -94,7 +102,7 @@ export async function GET() {
   try {
     // Llamar a la función que inserta los usuarios
     await seedUsuarios();
-    await seedLeads();
+    await seedClientes();
 
     // Responder con un mensaje de éxito
     return NextResponse.json({
