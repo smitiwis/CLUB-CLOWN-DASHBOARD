@@ -10,79 +10,67 @@ import {
   TableCell,
   Tooltip,
 } from "@nextui-org/react";
-import { ILead } from "@/lib/leads/definitions";
-import { format } from "@formkit/tempo";
+import { IBClientRes, IFClientTable } from "@/lib/leads/definitions";
 import PhoneIcon from "@/components/icons/IconPhone";
 import IconPhone from "@/components/icons/IconTrash";
 import IconEye from "@/components/icons/IconEye";
 import { COLORES } from "@/constants";
 
 type Props = {
-  leadsList: ILead[];
+  leadsList: IBClientRes[];
 };
 
 const LeadsList: FC<Props> = ({ leadsList }) => {
-  const rows = leadsList.map((lead, i) => {
-    return {
-      ...lead,
-      fecha_inicio_taller: lead.fecha_inicio_taller
-        ? format(lead.fecha_inicio_taller, "medium")
-        : "-",
-      key: String(i + 1),
-    };
-  });
+  const rows: IFClientTable[] = leadsList.map((lead, i) => ({
+    ...lead,
+    key: String(i + 1),
+  }));
+
   const columns = [
     {
-      key: "color",
-      label: "",
+      key: "estado",
+      label: "COLOR",
     },
     {
-      key: "celular_contacto",
+      key: "telefono",
       label: "CELULAR",
     },
     {
-      key: "nombre_contacto",
+      key: "nombre",
       label: "NOMBRE",
     },
     {
-      key: "status",
-      label: "STATUS",
+      key: "apellido",
+      label: "APELLIDO",
     },
     {
-      key: "categoria_contacto",
-      label: "CATEGORIA",
-    },
-    {
-      key: "edad_contacto",
+      key: "edad",
       label: "EDAD",
     },
     {
-      key: "grupo_horario",
-      label: "HORARIO",
+      key: "grupo",
+      label: "GRUPO",
     },
-    {
-      key: "fecha_inicio_taller",
-      label: "INICIO TALLER",
-    },
+ 
     { key: "actions", label: "ACTIONS" },
   ];
 
-  const renderCell = useCallback((item: ILead, columnKey: Key) => {
-    const cellValue = item[columnKey as keyof ILead];
+  const renderCell = useCallback((item: IFClientTable, columnKey: Key) => {
+    const cellValue = item[columnKey as keyof IFClientTable];
 
     switch (columnKey) {
-      case "color":
-        const color = COLORES.find((color) => color.key === cellValue);
+      case "estado":
+        const color = COLORES.find((color) => parseInt(color.key) === cellValue);
         return (
           <div
             className="w-[.5rem] h-[.5rem] rounded-full"
-            style={{ background: color?.code || "#696969" }}
+            style={{ background: color?.code || "white" }}
           />
         );
       case "status":
         return (
-            <div className="flex flex-col">
-              <span className="text-small">{cellValue}</span>
+          <div className="flex flex-col">
+            <span className="text-small">{cellValue}</span>
           </div>
         );
       case "actions":

@@ -1,9 +1,10 @@
 import { sql } from "@vercel/postgres";
-import { ILead } from "../definitions";
+import { prisma } from "@/lib/prisma";
+import { IBClientRes, IClientRes } from "../definitions";
 
 export async function fetchInvoiceById(id: string) {
   try {
-    const data = await sql<ILead>`
+    const data = await sql<IClientRes>`
       SELECT * FROM leads
       WHERE leads.id = ${id};
     `;
@@ -24,14 +25,8 @@ export async function fetchInvoiceById(id: string) {
 
 export async function fetchLeads() {
   try {
-    const data = await sql<ILead>`
-      SELECT * FROM leads 
-      ORDER BY nombre_contacto ASC
-    `;
-
-    const leads = data.rows;
-    console.log(leads);
-    return leads;
+    const clientes: IBClientRes[] = await prisma.cliente.findMany({});
+    return clientes;
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Error al obtener leads .");

@@ -1,9 +1,10 @@
-import { fetchLeads } from "@/lib/leads/services/data";
+import { fetchLeads } from "@/lib/leads/services";
 import LeadsList from "./components/LeadsList";
 import ButtonCreate from "./components/ButtonCreate";
 
 const Page = async () => {
   const leadsList = await fetchLeads();
+  console.log("leadsList", leadsList);
 
   return (
     <>  

@@ -23,11 +23,22 @@ export type IColors = {
 };
 
 export const COLORES: IColors[] = [
-  { label: "Gris", key: "gris", code: "#696969" },
-  { label: "Rojo", key: "rojo", code: "#ff0000" },
-  { label: "Verde", key: "verde", code: "#00ff00" },
-  { label: "Azul", key: "azul", code: "#0000ff" },
-  { label: "Amarillo", key: "amarillo", code: "#ffff00" },
-  { label: "Negro", key: "negro", code: "#000000" },
-  { label: "Blanco", key: "blanco", code: "#ffffff" },
+  { label: "Negro", key: "1", code: "black" },
+  { label: "Rojo", key: "2", code: "red" },
+  { label: "Blanco", key: "3", code: "white" },
+  { label: "Verde", key: "4", code: "green" },
+  { label: "Azul", key: "5", code: "blue" },
+];
+
+export const STATUS_USER = [
+  { key: "1", label: "Activo" },
+  { key: "0", label: "Inactivo" },
+];
+
+export const STATUS_CLIENT = [{ key: 1, label: "Negro" }];
+
+export const GROUPS_CLIENT = [
+  { key: "1", label: "Niños" },
+  { key: "2", label: "Adolescentes" },
+  { key: "3", label: "Adultos" },
 ];

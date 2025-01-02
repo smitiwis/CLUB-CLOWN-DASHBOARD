@@ -1,0 +1,7 @@
+ESTADOS:
+
+Negro	  1
+Rojo	  2
+Blanco	3
+Verde 	4
+Azul	  5

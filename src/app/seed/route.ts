@@ -34,7 +34,7 @@ const seedUsuarios = async () => {
 
   // Inserción de usuarios
   for (const usuario of usuarios) {
-    const existingUser = await prisma.usuarios.findUnique({
+    const existingUser = await prisma.usuario.findUnique({
       where: { correo: usuario.correo },
     });
     console.log("existingUser", existingUser);
@@ -43,7 +43,7 @@ const seedUsuarios = async () => {
       const hashedPassword = await bcrypt.hash(usuario.password, 10);
       console.log("usuarios", usuarios);
 
-      await prisma.usuarios.create({
+      await prisma.usuario.create({
         data: {
           ...usuario,
           password: hashedPassword, // Guardar la contraseña encriptada
@@ -57,17 +57,51 @@ const seedUsuarios = async () => {
   console.log("Seed completado.");
 };
 
+const seedLeads = async () => {
+  console.log("Conectando a la base de datos...");
+
+  // Datos iniciales
+  const clientes = [
+    {
+      telefono: "964912022",
+      nombre: "Carlos Martínez",
+      apellido: "Peralta Diaz",
+    },
+    {
+      telefono: "964918055",
+      nombre: "Laura Gómez",
+      apellido: "Gómez Fernandez",
+    },
+  ];
+
+  // Inserción de usuarios
+  for (const cliente of clientes) {
+    const existingUser = await prisma.usuario.findUnique({
+      where: { telefono: cliente.telefono },
+    });
+    console.log("existingUser", existingUser);
+    if (!existingUser) {
+      await prisma.cliente.create({ data: cliente });
+    } else {
+      console.log(`Cliente con telefono ${cliente.telefono} ya existe.`);
+    }
+  }
+
+  console.log("Seed completado.");
+};
+
 export async function GET() {
   try {
     // Llamar a la función que inserta los usuarios
     await seedUsuarios();
+    await seedLeads();
 
     // Responder con un mensaje de éxito
     return NextResponse.json({
-      message: "Usuarios iniciales insertados exitosamente.",
+      message: "Datos iniciales insertados exitosamente.",
     });
   } catch (error: unknown) {
-    console.log(error)
+    console.log(error);
     // Usar 'unknown' en lugar de 'any'
     // Verificar si el error tiene la propiedad 'message'
     if (error instanceof Error) {

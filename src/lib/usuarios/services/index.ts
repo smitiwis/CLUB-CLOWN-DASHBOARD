@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 export async function fetchUsuarios() {
   try {
     // Obtener todos los usuarios de la tabla 'usuarios'
-    const usuarios = await prisma.usuarios.findMany({
+    const usuarios = await prisma.usuario.findMany({
       select: {
         id_usuario: true,
         nombre: true,
@@ -27,7 +27,7 @@ export async function fetchUsuarios() {
 
 export async function fetchUserById(id_usuario: string) {
   try {
-    const user = await prisma.usuarios.findUnique({
+    const user = await prisma.usuario.findUnique({
       where: {
         id_usuario,
       },

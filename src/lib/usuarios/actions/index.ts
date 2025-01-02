@@ -33,7 +33,7 @@ export async function createUsuario(
     } = validatedUsuario;
 
     // VALIDAR POR CORREO
-    const existingUser = await prisma.usuarios.findUnique({
+    const existingUser = await prisma.usuario.findUnique({
       where: { correo: validatedUsuario.correo },
     });
 
@@ -46,7 +46,7 @@ export async function createUsuario(
     }
 
     // VALIDAR POR TELEFONO
-    const existingUserPhone = await prisma.usuarios.findUnique({
+    const existingUserPhone = await prisma.usuario.findUnique({
       where: { telefono: validatedUsuario.telefono },
     });
 
@@ -59,7 +59,7 @@ export async function createUsuario(
     }
 
     // VALIDAR POR DNI
-    const existingUserDni = await prisma.usuarios.findUnique({
+    const existingUserDni = await prisma.usuario.findUnique({
       where: { dni: validatedUsuario.dni },
     });
 
@@ -75,7 +75,7 @@ export async function createUsuario(
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // CREAR USUARIO
-    await prisma.usuarios.create({
+    await prisma.usuario.create({
       data: {
         nombre,
         apellido,
@@ -114,7 +114,7 @@ export async function editUsuario(
       validatedUsuario;
 
     // VALIDAR POR CORREO
-    const existingUser = await prisma.usuarios.findFirst({
+    const existingUser = await prisma.usuario.findFirst({
       where: { correo: validatedUsuario.correo },
     });
 
@@ -127,7 +127,7 @@ export async function editUsuario(
     }
 
     // VALIDAR POR TELEFONO
-    const existingUserPhone = await prisma.usuarios.findFirst({
+    const existingUserPhone = await prisma.usuario.findFirst({
       where: { telefono: validatedUsuario.telefono },
     });
 
@@ -143,7 +143,7 @@ export async function editUsuario(
     }
 
     // VALIDAR POR DNI
-    const existingUserDni = await prisma.usuarios.findFirst({
+    const existingUserDni = await prisma.usuario.findFirst({
       where: { dni: validatedUsuario.dni },
     });
 
@@ -156,7 +156,7 @@ export async function editUsuario(
     }
 
     // ACTUALIZAR USUARIO
-    await prisma.usuarios.update({
+    await prisma.usuario.update({
       where: { id_usuario: formData.id_usuario },
       data: {
         nombre,
@@ -192,7 +192,7 @@ export async function deleteUsuarioById(
       throw { message: "No se ha encontrado el usuario.", status: 404 };
     }
 
-    await prisma.usuarios.delete({
+    await prisma.usuario.delete({
       where: { id_usuario: payload },
     });
 
