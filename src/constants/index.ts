@@ -38,7 +38,7 @@ export const STATUS_USER = [
 export const STATUS_CLIENT = [{ key: 1, label: "Negro" }];
 
 export const GROUPS_CLIENT = [
-  { key: "1", label: "Niños" },
-  { key: "2", label: "Adolescentes" },
-  { key: "3", label: "Adultos" },
+  { key: "1", label: "Niño" },
+  { key: "2", label: "Adolescente" },
+  { key: "3", label: "Adulto" },
 ];

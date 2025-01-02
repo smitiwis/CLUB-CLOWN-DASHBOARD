@@ -21,18 +21,24 @@ export interface IFClientTable extends IClientRes {
 export interface IBClientRes {
   id_cliente: string;
   telefono: string;
-  nombre_apo: string | null;
-  nombre: string | null;
-  apellido: string | null;
-  edad: number | null;
-  grupo: number | null;
-  estado: number;
-  fecha_creacion: Date;
+  nombre_apo: string;
+  nombre: string;
+  apellido: string;
+  edad: string;
+  grupo: string;
+  estado: string;
 }
 
 // ERRORES
 export type IStateLead = {
   message?: string;
-  field?: "telefono" | "nombre_apo" | "nombre" | "apellido" | "edad" | "grupo" | "estado";
+  field?:
+    | "telefono"
+    | "nombre_apo"
+    | "nombre"
+    | "apellido"
+    | "edad"
+    | "grupo"
+    | "estado";
   status?: number;
 } | null;

@@ -25,7 +25,18 @@ export async function fetchInvoiceById(id: string) {
 
 export async function fetchLeads() {
   try {
-    const clientes: IBClientRes[] = await prisma.cliente.findMany({});
+    const clientes:IBClientRes[] = await prisma.cliente.findMany({
+      select: {
+        id_cliente: true,
+        telefono: true,
+        nombre_apo: true,
+        nombre: true,
+        apellido: true,
+        edad: true,
+        grupo: true,
+        estado: true,
+      }
+    });
     return clientes;
   } catch (err) {
     console.error("Database Error:", err);

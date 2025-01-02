@@ -4,7 +4,6 @@ import ButtonCreate from "./components/ButtonCreate";
 
 const Page = async () => {
   const leadsList = await fetchLeads();
-  console.log("leadsList", leadsList);
 
   return (
     <>  

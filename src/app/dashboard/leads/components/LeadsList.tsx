@@ -14,7 +14,7 @@ import { IBClientRes, IFClientTable } from "@/lib/leads/definitions";
 import PhoneIcon from "@/components/icons/IconPhone";
 import IconPhone from "@/components/icons/IconTrash";
 import IconEye from "@/components/icons/IconEye";
-import { COLORES } from "@/constants";
+import { COLORES, GROUPS_CLIENT } from "@/constants";
 
 type Props = {
   leadsList: IBClientRes[];
@@ -51,7 +51,7 @@ const LeadsList: FC<Props> = ({ leadsList }) => {
       key: "grupo",
       label: "GRUPO",
     },
- 
+
     { key: "actions", label: "ACTIONS" },
   ];
 
@@ -60,7 +60,7 @@ const LeadsList: FC<Props> = ({ leadsList }) => {
 
     switch (columnKey) {
       case "estado":
-        const color = COLORES.find((color) => parseInt(color.key) === cellValue);
+        const color = COLORES.find((color) => color.key === cellValue);
         return (
           <div
             className="w-[.5rem] h-[.5rem] rounded-full"
@@ -71,6 +71,13 @@ const LeadsList: FC<Props> = ({ leadsList }) => {
         return (
           <div className="flex flex-col">
             <span className="text-small">{cellValue}</span>
+          </div>
+        );
+      case "grupo":
+        const grupo = GROUPS_CLIENT.find((group) => group.key === cellValue);
+        return (
+          <div className="flex flex-col">
+            <span className="text-small">{grupo?.label}</span>
           </div>
         );
       case "actions":
