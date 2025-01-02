@@ -77,13 +77,14 @@ const UsersList: FC<Props> = ({ userList }) => {
 
     switch (columnKey) {
       case "estado":
+        const isActive = parseInt(item.estado);
         return (
           <Chip
             className="flex items-center"
             variant="flat"
-            color={item.estado ? "success" : "danger"}
+            color={isActive ? "success" : "danger"}
           >
-            {item.estado ? "Activo" : "Inactivo"}
+            {isActive ? "Activo" : "Inactivo"}
           </Chip>
         );
 
@@ -145,7 +146,6 @@ const UsersList: FC<Props> = ({ userList }) => {
 
   return (
     <>
-  
       <Table
         aria-label="Example table with custom cells"
         selectionMode="single"
