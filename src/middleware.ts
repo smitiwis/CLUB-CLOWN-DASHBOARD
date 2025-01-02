@@ -1,11 +1,6 @@
-import { withAuth } from 'next-auth/middleware';
+export { default } from "next-auth/middleware";
 
 export const config = {
-  matcher: '/api/int/:function*',
-}
+  matcher: ["/dashboard/:path*"],
+};
 
-export default withAuth({
-  callbacks: {
-    authorized: ({ token }) => !!token?.id
-  },
-});

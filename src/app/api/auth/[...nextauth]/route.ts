@@ -5,7 +5,7 @@ import NextAuth from "next-auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
-const authOptions = {
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -21,14 +21,13 @@ const authOptions = {
         try {
           const user = await prisma.usuario.findUnique({ where: { correo } });
           if (!user) {
-            throw new Error("Correo- o contraseña es incorrecta");
+            throw new Error("Correo o contraseña es incorrecta");
           }
 
           const isCorrectPass = await bcrypt.compare(password, user.password);
           if (!isCorrectPass) {
-            throw new Error("Correo o contraseña- es incorrecta");
+            throw new Error("Correo o contraseña es incorrecta");
           }
-          console.log("=== CREDENCIALES CORRECTAS ===", user);
           return {
             id: user.id_usuario,
             name: user.nombre,
@@ -41,6 +40,9 @@ const authOptions = {
     }),
   ],
 
+  pages: {
+    signIn: "/login",
+  }
 
 };
 

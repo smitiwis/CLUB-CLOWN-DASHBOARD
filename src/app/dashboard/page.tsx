@@ -1,6 +1,15 @@
 import React from "react";
 
-const Dashboard = () => {
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
+
+const Dashboard = async () => {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    redirect("/login");
+  }
+
   return (
     <div className="flex-1 p-6">
       <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
