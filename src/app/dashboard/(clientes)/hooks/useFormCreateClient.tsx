@@ -3,13 +3,13 @@ import { useEffect, useTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schemaClient } from "@/lib/clients/schemas";
-import { IFClient, IStateLead } from "@/lib/clients/definitions";
-import { createLead } from "@/lib/clients/actions/action";
+import { IFClient, IStateCliente } from "@/lib/clients/definitions";
+import { createClient } from "@/lib/clients/actions/action";
 
 const useFormCreateClient = () => {
   const [loading, startTransaction] = useTransition();
-  const [state, formAction] = useActionState<IStateLead, IFClient>(
-    createLead,
+  const [state, formAction] = useActionState<IStateCliente, IFClient>(
+    createClient,
     null
   );
 
@@ -48,6 +48,7 @@ const useFormCreateClient = () => {
     errors,
     setError,
     onSubmit,
+    setValue,
     watch,
     loading,
     state,

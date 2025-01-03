@@ -9,7 +9,7 @@ const ButtonCreate = () => {
 
 
   const redirectToCreate = () => {
-    router.push("/dashboard/leads/create");
+    router.push("/dashboard/lead/create");
   }
   return (
     <Button color="primary" onPress={redirectToCreate}>

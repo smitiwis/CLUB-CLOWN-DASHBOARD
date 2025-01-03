@@ -2,11 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { IFClient, IStateLead } from "../definitions";
+import { IFClient, IStateCliente } from "../definitions";
 import { prisma } from "@/lib/prisma";
 import { getUserId } from "@/lib/helpers";
 
-export async function createLead(prevState: IStateLead, formData: IFClient) {
+export async function createClient(prevState: IStateCliente, formData: IFClient) {
   try {
     // Validate form using Zod
 

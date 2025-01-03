@@ -1,9 +1,13 @@
 import { fetchClients } from "@/lib/clients/services";
-import ButtonCreate from "./components/ButtonCreate";
-import ClientsList from "./components/ClientsList";
+import ButtonCreate from "../components/ButtonCreate";
+import ClientsList from "../components/ClientsList";
 
 const Page = async () => {
   const clientsList = await fetchClients();
+
+  if (clientsList instanceof Error) {
+    return <div>Error: {clientsList.message}</div>;
+  }
 
   return (
     <>  

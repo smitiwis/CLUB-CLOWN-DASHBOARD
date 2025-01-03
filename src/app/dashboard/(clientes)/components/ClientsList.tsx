@@ -9,18 +9,21 @@ import {
   TableRow,
   TableCell,
   Tooltip,
+  Button,
 } from "@nextui-org/react";
 import { IBClientRes, IFClientTable } from "@/lib/clients/definitions";
 import PhoneIcon from "@/components/icons/IconPhone";
 import IconPhone from "@/components/icons/IconTrash";
 import IconEye from "@/components/icons/IconEye";
 import { COLORES, GROUPS_CLIENT } from "@/constants";
+import { useRouter } from "next/navigation";
 
 type Props = {
   clientsList: IBClientRes[];
 };
 
 const ClientsList: FC<Props> = ({ clientsList }) => {
+  const router = useRouter();
   const rows: IFClientTable[] = clientsList.map((lead, i) => ({
     ...lead,
     key: String(i + 1),
@@ -82,12 +85,19 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
         );
       case "actions":
         return (
-          <div className="relative flex items-center gap-2">
+          <div className="relative flex items-center gap-x-2">
             <Tooltip content="Llamar">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              <Button
+                onPress={() => router.push(`/dashboard/lead/${item.id_cliente}`)}
+                isIconOnly
+                color="success"
+                variant="light"
+                size="sm"
+              >
                 <PhoneIcon />
-              </span>
+              </Button>
             </Tooltip>
+
             <Tooltip content="Editar">
               <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                 <IconEye />

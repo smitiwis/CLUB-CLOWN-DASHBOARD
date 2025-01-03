@@ -30,7 +30,7 @@ export interface IBClientRes {
 }
 
 // ERRORES
-export type IStateLead = {
+export type IStateCliente = {
   message?: string;
   field?:
     | "telefono"
