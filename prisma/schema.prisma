@@ -25,19 +25,39 @@ model usuario {
   correo         String   @unique @db.VarChar(60)
   password       String   @db.VarChar(100)
   fecha_creacion DateTime @default(now())
+
+  cliente         cliente[]
+  cliente_llamada cliente_llamada[]
 }
 
 model cliente {
-  id_cliente      String   @id @default(uuid())
-  telefono        String   @unique @db.VarChar(9)
-  nombre_apo      String   @db.VarChar(25)
-  nombre          String   @db.VarChar(50)
-  apellido        String   @db.VarChar(50)
-  edad            String   @db.VarChar(2)
-  grupo           String   @db.VarChar(1)
-  numero_llamadas String   @default("0") @db.VarChar(1)
-  estado          String   @default("3") @db.VarChar(1)
-  fecha_creacion  DateTime @default(now())
+  id_cliente     String   @id @default(uuid())
+  telefono       String   @unique @db.VarChar(9)
+  nombre_apo     String   @db.VarChar(25)
+  nombre         String   @db.VarChar(50)
+  apellido       String   @db.VarChar(50)
+  edad           String   @db.VarChar(2)
+  grupo          String   @db.VarChar(1)
+  estado         String   @default("3") @db.VarChar(1)
+  fecha_creacion DateTime @default(now())
+  id_usuario     String
+
+  usuario         usuario           @relation(fields: [id_usuario], references: [id_usuario])
+  cliente_llamada cliente_llamada[]
 
   @@index([telefono])
+}
+
+model cliente_llamada {
+  id_cliente_llamada String   @id @default(uuid())
+  id_cliente         String
+  id_usuario         String
+  estado             String   @default("3") @db.VarChar(1)
+  descripcion        String   @db.Text
+  fecha_creacion     DateTime @default(now())
+
+  cliente cliente @relation(fields: [id_cliente], references: [id_cliente])
+  usuario usuario @relation(fields: [id_usuario], references: [id_usuario])
+
+  @@index([id_cliente, id_usuario])
 }

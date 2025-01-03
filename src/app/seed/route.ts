@@ -11,25 +11,25 @@ const seedUsuarios = async () => {
   // Datos iniciales
   const usuarios = [
     {
-      nombre: "Carlos Martínez",
-      apellido: "Peralta",
-      telefono: "551234567",
-      dni: "12345678",
+      nombre: "Luis Angel",
+      apellido: "Peralta Diaz",
+      telefono: "912342510",
+      dni: "47156085",
       fecha_ingreso: "2024-01-15",
       estado: "1", // Puede ser "activo" o "inactivo"
-      correo: "sistem@gmail.com",
-      password: "123456", // Esto debería ser encriptado en producción
+      correo: "sistemas.luismi@gmail.com",
+      password: "Rosefer-bb123", // Esto debería ser encriptado en producción
     },
     {
-      nombre: "Laura Gómez",
-      apellido: "Gómez",
-      telefono: "559876543",
-      dni: "87654321",
-      fecha_ingreso: "2024-02-01",
-      estado: "0", // Puede ser "activo" o "inactivo"
-      correo: "ejemplo@gmail.com",
+      nombre: "Kevin",
+      apellido: "Arauco",
+      telefono: "964912022",
+      dni: "47638595",
+      fecha_ingreso: "2024-12-15",
+      estado: "1", // Puede ser "activo" o "inactivo"
+      correo: "kevin@gmail.com",
       password: "123456", // Esto debería ser encriptado en producción
-    },
+    }
   ];
 
   // Inserción de usuarios
@@ -37,7 +37,7 @@ const seedUsuarios = async () => {
     const existingUser = await prisma.usuario.findUnique({
       where: { correo: usuario.correo },
     });
-    console.log("existingUser", existingUser);
+    
     if (!existingUser) {
       // Encriptar la contraseña antes de guardarla
       const hashedPassword = await bcrypt.hash(usuario.password, 10);
@@ -57,52 +57,52 @@ const seedUsuarios = async () => {
   console.log("Seed completado.");
 };
 
-const seedClientes = async () => {
-  console.log("Conectando a la base de datos...");
+// const seedClientes = async () => {
+//   console.log("Conectando a la base de datos...");
 
-  // Datos iniciales
-  const clientes = [
-    {
-      telefono: "964912022",
-      nombre_apo: "",
-      nombre: "",
-      apellido: "",
-      edad: "0",
-      grupo: "",
-      estado: "",
-    },
-    {
-      telefono: "964918055",
-      nombre_apo: "Juan Gómez",
-      nombre: "Laura Gómez",
-      apellido: "Gómez Fernandez",
-      edad: "30",
-      grupo: "",
-      estado: ""
-    },
-  ];
+//   // Datos iniciales
+//   const clientes = [
+//     {
+//       telefono: "964912022",
+//       nombre_apo: "",
+//       nombre: "",
+//       apellido: "",
+//       edad: "0",
+//       grupo: "",
+//       estado: "",
+//     },
+//     {
+//       telefono: "964918055",
+//       nombre_apo: "Juan Gómez",
+//       nombre: "Laura Gómez",
+//       apellido: "Gómez Fernandez",
+//       edad: "30",
+//       grupo: "",
+//       estado: ""
+//     },
+//   ];
 
-  // Inserción de usuarios
-  for (const cliente of clientes) {
-    const existingUser = await prisma.usuario.findUnique({
-      where: { telefono: cliente.telefono },
-    });
-    console.log("existingUser", existingUser);
-    if (!existingUser) {
-      await prisma.cliente.create({ data: cliente });
-    } else {
-      console.log(`Cliente con telefono ${cliente.telefono} ya existe.`);
-    }
-  }
+//   // Inserción de usuarios
+//   for (const cliente of clientes) {
+//     const existingUser = await prisma.usuario.findUnique({
+//       where: { telefono: cliente.telefono },
+//     });
+//     console.log("existingUser", existingUser);
+//     if (!existingUser) {
+//       await prisma.cliente.create({ data: cliente });
+//     } else {
+//       console.log(`Cliente con telefono ${cliente.telefono} ya existe.`);
+//     }
+//   }
 
-  console.log("Seed completado.");
-};
+//   console.log("Seed completado.");
+// };
 
 export async function GET() {
   try {
     // Llamar a la función que inserta los usuarios
     await seedUsuarios();
-    await seedClientes();
+    // await seedClientes();
 
     // Responder con un mensaje de éxito
     return NextResponse.json({

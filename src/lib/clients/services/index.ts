@@ -1,6 +1,7 @@
 import { sql } from "@vercel/postgres";
 import { prisma } from "@/lib/prisma";
 import { IBClientRes, IClientRes } from "../definitions";
+import { getUserId } from "@/lib/helpers";
 
 export async function fetchInvoiceById(id: string) {
   try {
@@ -25,7 +26,13 @@ export async function fetchInvoiceById(id: string) {
 
 export async function fetchClients() {
   try {
-    const clientes:IBClientRes[] = await prisma.cliente.findMany({
+    const userId = await getUserId();
+    if (!userId) return new Error("Usuario desconocido");
+
+    const clientes: IBClientRes[] = await prisma.cliente.findMany({
+      where: {
+        id_usuario: userId,
+      },
       select: {
         id_cliente: true,
         telefono: true,
@@ -35,8 +42,9 @@ export async function fetchClients() {
         edad: true,
         grupo: true,
         estado: true,
-      }
+      },
     });
+
     return clientes;
   } catch (err) {
     console.error("Database Error:", err);

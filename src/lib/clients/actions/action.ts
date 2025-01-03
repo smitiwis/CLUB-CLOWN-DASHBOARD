@@ -4,27 +4,37 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { IFClient, IStateLead } from "../definitions";
 import { prisma } from "@/lib/prisma";
+import { getUserId } from "@/lib/helpers";
 
 export async function createLead(prevState: IStateLead, formData: IFClient) {
-  // Validate form using Zod
   try {
+    // Validate form using Zod
+
+    // VALIDAR SI EXISTE EL USERID
+    const userId = await getUserId();
+    console.log("USER ====== : ", userId);
+    if (!userId) return null;
+
     // VALIDAR SI EL TELEFONO YA EXISTE
-    // VALIDAR POR TELEFONO
     const existingUserPhone = await prisma.cliente.findUnique({
       where: { telefono: formData.telefono },
     });
 
     if (existingUserPhone) {
+      const usuario = await prisma.usuario.findUnique({
+        where: { id_usuario: existingUserPhone.id_usuario },
+      });
       throw {
-        message: "El teléfono ya está registrado.",
+        message: `El teléfono ya está registrado por el ascesor ${usuario?.nombre}`,
         status: 400,
         field: "telefono",
       };
     }
-    
+
     // CREAR CLIENTE
     await prisma.cliente.create({
       data: {
+        id_usuario: userId,
         telefono: formData.telefono,
         nombre_apo: formData.nombre_apo,
         nombre: formData.nombre,

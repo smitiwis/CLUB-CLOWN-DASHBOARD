@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CredentialsProvider from "next-auth/providers/credentials";
 
-import NextAuth from "next-auth";
+import NextAuth, { DefaultSession, Session } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
@@ -28,7 +28,6 @@ export const authOptions = {
           if (!isCorrectPass) {
             throw new Error("Correo o contraseña es incorrecta");
           }
-          console.log("USUARIO: ", user);
 
           return {
             id: user.id_usuario,
@@ -51,9 +50,9 @@ export const authOptions = {
       if (user) token.id = user.id;
       return token;
     },
-    async session({ session, token }: any) {
+    async session({ session, token }: any): Promise<DefaultSession | Session> {
       if (token) session.user.id = token.id;
-      return session;
+      return session
     },
   },
 };

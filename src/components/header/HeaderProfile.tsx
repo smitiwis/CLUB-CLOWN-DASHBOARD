@@ -12,16 +12,13 @@ import React, { FC } from "react";
 
 interface IUser {
   user: {
-    id: string;
-    name: string;
-    email: string;
-    image: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
   };
 }
 
 const HeaderProfile: FC<IUser> = ({ user }) => {
-    console.log("SESSIONxxxxxxxx____: ", user);
-  
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
@@ -29,7 +26,7 @@ const HeaderProfile: FC<IUser> = ({ user }) => {
           as="button"
           avatarProps={{ isBordered: true }}
           className="transition-transform"
-          description="@tonyreichert"
+          description="Admin"
           name={user.name}
         />
       </DropdownTrigger>
