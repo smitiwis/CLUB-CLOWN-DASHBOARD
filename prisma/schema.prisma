@@ -28,15 +28,16 @@ model usuario {
 }
 
 model cliente {
-  id_cliente     String   @id @default(uuid())
-  telefono       String   @unique @db.VarChar(9)
-  nombre_apo     String   @db.VarChar(25)
-  nombre         String   @db.VarChar(50)
-  apellido       String   @db.VarChar(50)
-  edad           String   @db.VarChar(2)
-  grupo          String   @db.VarChar(1)
-  estado         String   @default("3") @db.VarChar(1)
-  fecha_creacion DateTime @default(now())
+  id_cliente      String   @id @default(uuid())
+  telefono        String   @unique @db.VarChar(9)
+  nombre_apo      String   @db.VarChar(25)
+  nombre          String   @db.VarChar(50)
+  apellido        String   @db.VarChar(50)
+  edad            String   @db.VarChar(2)
+  grupo           String   @db.VarChar(1)
+  numero_llamadas String   @default("0") @db.VarChar(1)
+  estado          String   @default("3") @db.VarChar(1)
+  fecha_creacion  DateTime @default(now())
 
   @@index([telefono])
 }

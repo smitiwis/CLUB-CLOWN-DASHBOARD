@@ -12,6 +12,7 @@ import React, { FC } from "react";
 
 interface IUser {
   user: {
+    id: string;
     name: string;
     email: string;
     image: string;
@@ -19,6 +20,8 @@ interface IUser {
 }
 
 const HeaderProfile: FC<IUser> = ({ user }) => {
+    console.log("SESSIONxxxxxxxx____: ", user);
+  
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>

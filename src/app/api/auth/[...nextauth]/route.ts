@@ -28,6 +28,8 @@ export const authOptions = {
           if (!isCorrectPass) {
             throw new Error("Correo o contraseña es incorrecta");
           }
+          console.log("USUARIO: ", user);
+
           return {
             id: user.id_usuario,
             name: user.nombre,
@@ -42,8 +44,18 @@ export const authOptions = {
 
   pages: {
     signIn: "/login",
-  }
+  },
 
+  callbacks: {
+    async jwt({ token, user }: any) {
+      if (user) token.id = user.id;
+      return token;
+    },
+    async session({ session, token }: any) {
+      if (token) session.user.id = token.id;
+      return session;
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);

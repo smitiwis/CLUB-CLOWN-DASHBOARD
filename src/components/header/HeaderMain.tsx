@@ -1,4 +1,3 @@
-
 import React from "react";
 
 import { getServerSession } from "next-auth/next";
@@ -14,12 +13,12 @@ const HeaderMain = async () => {
     name: session.user?.name || "",
     email: session.user?.email || "",
     image: session.user?.image || "",
-  }
-
+    id: session.user?.id || "",
+  };
 
   return (
     <div className="bg-gray-900 h-full py-3 px-6 flex justify-end items-center border-b-1 border-gray-700">
-      <HeaderProfile user={user}/>
+      <HeaderProfile user={user} />
     </div>
   );
 };
