@@ -1,26 +1,39 @@
-import { sql } from "@vercel/postgres";
 import { prisma } from "@/lib/prisma";
-import { IBClientRes, IClientRes } from "../definitions";
+import { IBClientRes } from "../definitions";
 import { getUserId } from "@/lib/helpers";
 
-export async function fetchInvoiceById(id: string) {
+export async function fetchClientById(id: string) {
   try {
-    const data = await sql<IClientRes>`
-      SELECT * FROM leads
-      WHERE leads.id = ${id};
-    `;
+    const userId = await getUserId();
+    if (!userId) throw new Error("Usuario desconocido");
 
-    const invoice = data.rows.map((invoice) => ({
-      ...invoice,
-      // Convert amount from cents to dollars
-      amount: 22,
-    }));
+    const cliente = await prisma.cliente.findUnique({
+      where: {
+        id_cliente: id,
+        id_usuario: userId,
+      },
+      select: {
+        id_cliente: true,
+        telefono: true,
+        nombre_apo: true,
+        nombre: true,
+        apellido: true,
+        edad: true,
+        grupo: true,
+        estado: true,
+      },
+    });
 
-    // console.log(invoice); // Invoice is an empty array []
-    return invoice[0];
+    if (!cliente) {
+      throw new Error("cliente no encontrado.");
+    }
+
+    return cliente;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch invoice.");
+  } finally {
+    await prisma.$disconnect(); // Asegurarse de desconectar la base de datos
   }
 }
 

@@ -1,6 +1,6 @@
 import { fetchClients } from "@/lib/clients/services";
-import ButtonCreate from "../components/ButtonCreate";
 import ClientsList from "../components/ClientsList";
+import { Button, Link } from "@nextui-org/react";
 
 const Page = async () => {
   const clientsList = await fetchClients();
@@ -10,10 +10,12 @@ const Page = async () => {
   }
 
   return (
-    <>  
+    <>
       <div className="flex justify-between items-center mb-3">
         <h1>Lista de Leads</h1>
-        <ButtonCreate />
+        <Button as={Link} color="primary" href="/dashboard/lead/crear">
+          REGISTRAR LEAD
+        </Button>
       </div>
       <ClientsList clientsList={clientsList} />
     </>

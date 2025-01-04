@@ -12,11 +12,10 @@ import {
   Button,
 } from "@nextui-org/react";
 import { IBClientRes, IFClientTable } from "@/lib/clients/definitions";
-import PhoneIcon from "@/components/icons/IconPhone";
-import IconPhone from "@/components/icons/IconTrash";
-import IconEye from "@/components/icons/IconEye";
 import { COLORES, GROUPS_CLIENT } from "@/constants";
 import { useRouter } from "next/navigation";
+import IconEdit from "@/components/icons/IconEdit";
+import IconEye from "@/components/icons/IconEye";
 
 type Props = {
   clientsList: IBClientRes[];
@@ -70,12 +69,14 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
             style={{ background: color?.code || "white" }}
           />
         );
+
       case "status":
         return (
           <div className="flex flex-col">
             <span className="text-small">{cellValue}</span>
           </div>
         );
+
       case "grupo":
         const grupo = GROUPS_CLIENT.find((group) => group.key === cellValue);
         return (
@@ -83,30 +84,36 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
             <span className="text-small">{grupo?.label}</span>
           </div>
         );
+
       case "actions":
         return (
           <div className="relative flex items-center gap-x-2">
-            <Tooltip content="Llamar">
+            <Tooltip content="Detalles" color="success">
               <Button
-                onPress={() => router.push(`/dashboard/lead/${item.id_cliente}`)}
                 isIconOnly
                 color="success"
                 variant="light"
                 size="sm"
+                onPress={() =>
+                  router.push(`/dashboard/lead/detalle/${item.id_cliente}`)
+                }
               >
-                <PhoneIcon />
+                <IconEye />
               </Button>
             </Tooltip>
 
-            <Tooltip content="Editar">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <IconEye />
-              </span>
-            </Tooltip>
-            <Tooltip color="danger" content="Eliminar">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <IconPhone />
-              </span>
+            <Tooltip content="Editar" color="default">
+              <Button
+                isIconOnly
+                color="success"
+                variant="light"
+                size="sm"
+                onPress={() =>
+                  router.push(`/dashboard/lead/editar/${item.id_cliente}`)
+                }
+              >
+                <IconEdit />
+              </Button>
             </Tooltip>
           </div>
         );
