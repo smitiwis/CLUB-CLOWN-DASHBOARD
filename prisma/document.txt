@@ -1,7 +1,37 @@
-ESTADOS:
+ESTADOS COLORES:
 
 Negro	  1
 Rojo	  2
 Blanco	3
 Verde 	4
 Azul	  5
+
+
+ORIGEN DEL LEAD
+
+Whatsapp    1
+boot        2
+facebook    3
+instagram   4
+tiktok      5
+referencia  6
+otros       7
+
+
+tipo Llamada
+
+entrante        1
+saliente        2
+seguimiento     3
+otros           4
+
+
+RESULTADO DE LA Llamada
+
+no contesto       1
+no interesado     2
+interesado        3
+venta             4
+volver a llamar   5
+otros             6
+

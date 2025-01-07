@@ -11,4 +11,9 @@ export const schemaClient = yup.object().shape({
   edad: yup.string().default(""), // Permite vacío pero no undefined
   grupo: yup.string().default(""),
   estado: yup.string().default(""),
+  fecha_recontacto: yup
+    .date()
+    .nullable()
+    .typeError("La fecha debe ser válida")
+    .min(new Date(), "La fecha de recontacto no puede ser en el pasado"),
 });

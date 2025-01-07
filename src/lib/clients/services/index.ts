@@ -62,5 +62,7 @@ export async function fetchClients() {
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Error al obtener leads .");
+  }finally {
+    await prisma.$disconnect(); // Asegurarse de desconectar la base de datos
   }
 }

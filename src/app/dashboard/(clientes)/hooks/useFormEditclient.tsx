@@ -3,13 +3,14 @@ import { useEffect, useTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schemaClient } from "@/lib/clients/schemas";
-import { IClientRes, IFClient, IStateCliente } from "@/lib/clients/definitions";
-import { createClient } from "@/lib/clients/actions/action";
+import { IClientReq, IClientRes, IFClient, IStateUpdateClient } from "@/lib/clients/definitions";
+import { editClient } from "@/lib/clients/actions/action";
 
-const useFormEditClient = (client: IClientRes) => {
+const useFormEditClient = (client: IClientRes, redirect: boolean) => {
+  
   const [loading, startTransaction] = useTransition();
-  const [state, formAction] = useActionState<IStateCliente, IFClient>(
-    createClient,
+  const [state, formAction] = useActionState<IStateUpdateClient, IClientReq>(
+    editClient,
     null
   );
 
@@ -26,7 +27,8 @@ const useFormEditClient = (client: IClientRes) => {
   });
 
   const onSubmit = (formData: IFClient) => {
-    startTransaction(() => formAction(formData));
+    const data = { ...formData, id_cliente: client.id_cliente, redirect };
+    startTransaction(() => formAction(data));
   };
 
   useEffect(() => {

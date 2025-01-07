@@ -2,17 +2,19 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { IFClient, IStateCliente } from "../definitions";
+import { IClientReq, IFClient, IStateCliente } from "../definitions";
 import { prisma } from "@/lib/prisma";
 import { getUserId } from "@/lib/helpers";
 
-export async function createClient(prevState: IStateCliente, formData: IFClient) {
+export async function createClient(
+  prevState: IStateCliente,
+  formData: IFClient
+) {
   try {
     // Validate form using Zod
 
     // VALIDAR SI EXISTE EL USERID
     const userId = await getUserId();
-    console.log("USER ====== : ", userId);
     if (!userId) return null;
 
     // VALIDAR SI EL TELEFONO YA EXISTE
@@ -57,4 +59,91 @@ export async function createClient(prevState: IStateCliente, formData: IFClient)
   // Revalidate the cache for the invoices Page and redirect the user.
   revalidatePath("/dashboard/leads");
   redirect("/dashboard/leads");
+}
+
+export async function editClient(
+  prevState: IStateCliente,
+  formData: IClientReq
+) {
+  try {
+    // Validate form using Zod
+
+    // VALIDAR SI EXISTE EL USUARIO
+    const userId = await getUserId();
+    if (!userId) return null;
+
+    // ACTUALIZAR CLIENTE
+    const updateClient = await prisma.cliente.update({
+      where: { id_cliente: formData.id_cliente },
+      data: {
+        telefono: formData.telefono,
+        nombre_apo: formData.nombre_apo,
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        edad: formData.edad,
+        grupo: formData.grupo,
+        estado: formData.estado,
+      },
+      select: {
+        id_cliente: true,
+        telefono: true,
+        nombre_apo: true,
+        nombre: true,
+        apellido: true,
+        edad: true,
+        grupo: true,
+        estado: true,
+      },
+    });
+
+    if (!updateClient) return { message: "No se pudo actualizar el cliente" };
+
+    if (!formData.redirect) {
+      return { client: updateClient };
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      return { message: error.message };
+    } else if (typeof error === "object") {
+      return error;
+    } else {
+      return { message: "Error desconocido" };
+    }
+  }
+
+  revalidatePath("/dashboard/leads");
+  redirect("/dashboard/leads");
+}
+
+type IUpdateRecontact = {
+  id_cliente: string;
+  fecha_recontacto: string;
+};
+
+export async function addRecordClient(
+  prevState: IStateCliente,
+  formData: IUpdateRecontact
+) {
+  try {
+    // Validate form using Zod
+
+    // VALIDAR SI EXISTE EL USUARIO
+    const userId = await getUserId();
+    if (!userId) return null;
+
+    await prisma.cliente.update({
+      where: { id_cliente: formData.id_cliente },
+      data: {
+        fecha_recontacto: formData.fecha_recontacto,
+      },
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return { message: error.message };
+    } else if (typeof error === "object") {
+      return error;
+    } else {
+      return { message: "Error desconocido" };
+    }
+  }
 }

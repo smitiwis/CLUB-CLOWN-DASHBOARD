@@ -13,14 +13,16 @@ import {
 } from "@nextui-org/react";
 import React, { FC, useEffect, useState } from "react";
 import { COLORES, GROUPS_CLIENT, IColors } from "@/constants";
-import { IClientRes, IStateCliente } from "@/lib/clients/definitions";
+import { IBClientRes, IClientRes, IStateCliente } from "@/lib/clients/definitions";
 import useFormEditClient from "../hooks/useFormEditclient";
 
 type Props = {
   client: IClientRes;
+  onUpdate?: (client: IBClientRes) => void;
+  redirect?: boolean;
 };
 
-const FormEditClient: FC<Props> = ({ client }) => {
+const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
   const [showApod, setShowApod] = useState(false);
 
   const {
@@ -33,7 +35,7 @@ const FormEditClient: FC<Props> = ({ client }) => {
     setValue,
     setError,
     watch,
-  } = useFormEditClient(client);
+  } = useFormEditClient(client, redirect);
 
   const [statusForm, setStatusForm] = useState<IStateCliente>(state);
 
@@ -55,6 +57,13 @@ const FormEditClient: FC<Props> = ({ client }) => {
     }
   }, [showApod]);
 
+  useEffect(()=>{
+    if (state && state.client && !loading && onUpdate) {
+      onUpdate(state.client)
+    }
+
+  },[state, loading])
+
   return (
     <>
       {!!statusForm && (
@@ -66,6 +75,7 @@ const FormEditClient: FC<Props> = ({ client }) => {
           />
         </div>
       )}
+      
       <Form onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full flex gap-4">
           <div className="flex flex-col flex-1">
@@ -73,8 +83,11 @@ const FormEditClient: FC<Props> = ({ client }) => {
               {...register("telefono")}
               className="mb-4"
               isRequired
+              isReadOnly
+              color="warning"
               label="Celular"
               size="lg"
+              variant="faded"
               isInvalid={!!errors.telefono}
               errorMessage={errors.telefono?.message}
             />
@@ -142,11 +155,12 @@ const FormEditClient: FC<Props> = ({ client }) => {
                 <SelectItem key={key}>{label}</SelectItem>
               ))}
             </Select>
+            
             <Select
               {...register("estado")}
               className="mb-4"
               label="Estado"
-              defaultSelectedKeys={[COLORES[2].key]}
+              defaultSelectedKeys={[watch("estado")]}
               items={COLORES}
               size="lg"
               isInvalid={!!errors.estado}

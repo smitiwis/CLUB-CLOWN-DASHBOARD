@@ -42,3 +42,19 @@ export const GROUPS_CLIENT = [
   { key: "2", label: "Adolescente" },
   { key: "3", label: "Adulto" },
 ];
+
+export const TIPO_LLAMADAS = [
+  { key: "1", label: "Entrante" },
+  { key: "2", label: "Saliente" },
+  { key: "3", label: "Seguimiento" },
+  { key: "4", label: "otros" },
+]
+
+export const RESULTADO_LLAMADAS = [
+  { key: "1", label: "No contesta" },
+  { key: "2", label: "No interesado" },
+  { key: "3", label: "Interesado" },
+  { key: "4", label: "Venta" },
+  { key: "5", label: "Volber a llamar" },
+  { key: "6", label: "Otros" },
+]
