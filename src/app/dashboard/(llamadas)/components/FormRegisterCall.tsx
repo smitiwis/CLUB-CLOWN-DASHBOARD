@@ -65,6 +65,10 @@ const FormRegisterCall: FC<Props> = (props) => {
   } = useFormRegisterCall();
 
   useEffect(() => {
+    if (clientOptions.length === 1) {
+      setSelectedIdClient(clientOptions[0].id_cliente);
+    }
+    
     if (selectedIdClient) {
       const currentClient = clientOptions.find(
         ({ id_cliente }) => id_cliente === selectedIdClient
@@ -158,6 +162,7 @@ const FormRegisterCall: FC<Props> = (props) => {
               <Autocomplete
                 {...register("id_cliente")}
                 onSelectionChange={setSelectedIdClient}
+                defaultSelectedKey={clientOptions.length === 1 ? clientOptions[0].id_cliente: undefined}
                 className="mb-4"
                 label="Llamando a:"
                 isRequired

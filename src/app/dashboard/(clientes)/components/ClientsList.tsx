@@ -16,6 +16,7 @@ import { COLORES, GROUPS_CLIENT } from "@/constants";
 import { useRouter } from "next/navigation";
 import IconEdit from "@/components/icons/IconEdit";
 import IconEye from "@/components/icons/IconEye";
+import IconPhone from "@/components/icons/IconPhone";
 
 type Props = {
   clientsList: IBClientRes[];
@@ -88,6 +89,20 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
       case "actions":
         return (
           <div className="relative flex items-center gap-x-2">
+            <Tooltip content="Llamar" color="primary">
+              <Button
+                isIconOnly
+                color="primary"
+                variant="light"
+                size="sm"
+                onPress={() =>
+                  router.push(`/dashboard/llamar/${item.id_cliente}/registrar`)
+                }
+              >
+                <IconPhone />
+              </Button>
+            </Tooltip>
+            
             <Tooltip content="Detalles" color="success">
               <Button
                 isIconOnly
@@ -102,7 +117,7 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
               </Button>
             </Tooltip>
 
-            <Tooltip content="Editar" color="default">
+            <Tooltip content="Editar" >
               <Button
                 isIconOnly
                 color="success"

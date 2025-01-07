@@ -1,6 +1,6 @@
 import React from "react";
-import FormRegisterCall from "../components/FormRegisterCall";
 import { fetchClients } from "@/lib/clients/services";
+import FormRegisterCall from "../../components/FormRegisterCall";
 
 const Page = async () => {
   const clientes = await fetchClients();
