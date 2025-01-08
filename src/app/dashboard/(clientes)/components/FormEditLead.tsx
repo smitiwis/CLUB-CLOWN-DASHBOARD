@@ -158,6 +158,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
             
             <Select
               {...register("estado")}
+              isDisabled
               className="mb-4"
               label="Estado"
               defaultSelectedKeys={[watch("estado")]}
