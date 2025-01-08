@@ -104,7 +104,7 @@ const CallsList: FC<Props> = ({ callsList }) => {
                 size="sm"
                 onPress={() =>
                   router.push(
-                    `/dashboard/lead/detalle/${item.id_cliente_llamada}`
+                    `/dashboard/llamada/detalle/${item.id_cliente_llamada}`
                   )
                 }
               >
@@ -120,7 +120,7 @@ const CallsList: FC<Props> = ({ callsList }) => {
                 size="sm"
                 onPress={() =>
                   router.push(
-                    `/dashboard/lead/editar/${item.id_cliente_llamada}`
+                    `/dashboard/llamada/editar/${item.id_cliente_llamada}`
                   )
                 }
               >
@@ -137,7 +137,7 @@ const CallsList: FC<Props> = ({ callsList }) => {
   }, []);
 
   return (
-    <Table aria-label="Example static collection table" selectionMode="single">
+    <Table aria-label="Example static collection table" selectionMode="none">
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>

@@ -1,8 +1,8 @@
 import React from "react";
 
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/authOptions";
 
 const Dashboard = async () => {
   const session = await getServerSession(authOptions);

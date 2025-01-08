@@ -7,8 +7,6 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
-
-
 export async function createClientLlamada(
   prevState: IStateCliente,
   formData: IFormClientCall
@@ -23,18 +21,27 @@ export async function createClientLlamada(
     // Create the client llamada
     console.log("formData", formData);
     const clienteLlamada = await prisma.cliente_llamada.create({
-      data: { 
+      data: {
         id_cliente: formData.id_cliente,
         id_usuario: userId,
         estado: formData.estado,
         observacion: formData.observacion || "",
         tipo: formData.tipo,
         resultado: formData.resultado,
-       },
+      },
+    });
+
+
+    if (!clienteLlamada) {
+      throw { message: "Error al crear la llamada" };
+    }
+    // ACTUALIZAR EL ESTADO DEL CLIENTE
+    await prisma.cliente.update({
+      where: { id_cliente: formData.id_cliente },
+      data: { estado: formData.estado },
     });
 
     console.log("clienteLlamada", clienteLlamada);
-
   } catch (error) {
     if (error instanceof Error) {
       return { message: error.message };

@@ -148,7 +148,7 @@ const UsersList: FC<Props> = ({ userList }) => {
     <>
       <Table
         aria-label="Example table with custom cells"
-        selectionMode="single"
+        selectionMode="none"
       >
         <TableHeader columns={columns}>
           {(column) => (

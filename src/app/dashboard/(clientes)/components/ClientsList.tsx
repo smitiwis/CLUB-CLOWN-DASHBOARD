@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { FC, Key, useCallback } from "react";
@@ -10,6 +11,8 @@ import {
   TableCell,
   Tooltip,
   Button,
+  Chip,
+  ChipProps,
 } from "@nextui-org/react";
 import { IBClientRes, IFClientTable } from "@/lib/clients/definitions";
 import { COLORES, GROUPS_CLIENT } from "@/constants";
@@ -58,6 +61,12 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
     { key: "actions", label: "ACTIONS" },
   ];
 
+  const statusColorGroup: Record<string, ChipProps["color"]> = {
+    "1": "primary",
+    "2": "secondary",
+    "3": "warning",
+  };
+
   const renderCell = useCallback((item: IFClientTable, columnKey: Key) => {
     const cellValue = item[columnKey as keyof IFClientTable];
 
@@ -78,11 +87,25 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
           </div>
         );
 
+      case "edad":
+        return (
+          <div className="flex flex-col">
+            <span className="text-small">{cellValue} años </span>
+          </div>
+        );
+
       case "grupo":
         const grupo = GROUPS_CLIENT.find((group) => group.key === cellValue);
         return (
           <div className="flex flex-col">
-            <span className="text-small">{grupo?.label}</span>
+            <Chip
+              className="capitalize"
+              color={statusColorGroup[cellValue]}
+              size="sm"
+              variant="flat"
+            >
+             {grupo?.label}
+            </Chip>
           </div>
         );
 
@@ -102,7 +125,7 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
                 <IconPhone />
               </Button>
             </Tooltip>
-            
+
             <Tooltip content="Detalles" color="success">
               <Button
                 isIconOnly
@@ -117,7 +140,7 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
               </Button>
             </Tooltip>
 
-            <Tooltip content="Editar" >
+            <Tooltip content="Editar">
               <Button
                 isIconOnly
                 color="success"
@@ -138,7 +161,7 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
   }, []);
 
   return (
-    <Table aria-label="Example static collection table" selectionMode="single">
+    <Table aria-label="Example static collection table" selectionMode="none">
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>

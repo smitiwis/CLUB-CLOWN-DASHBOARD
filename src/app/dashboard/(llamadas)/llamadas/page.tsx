@@ -15,7 +15,7 @@ const Page = async () => {
     <>
       <div className="flex justify-between items-center mb-3">
         <h1>Lista de Llamadas</h1>
-        <Button as={Link} color="primary" href="/dashboard/llamada/registrar">
+        <Button as={Link} color="primary" href="/dashboard/llamar/registrar">
           NUEVA LLAMADA
         </Button>
       </div>

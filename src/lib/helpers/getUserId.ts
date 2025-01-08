@@ -1,7 +1,7 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { COLORES, GROUPS_CLIENT } from "@/constants";
 import { getServerSession, Session } from "next-auth";
 import { redirect } from "next/navigation";
+import { authOptions } from "../authOptions";
 
 export const getUserId = async () => {
   const session: Session | null = await getServerSession(authOptions);

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useActionState, useTransition } from "react";
 import { deleteUsuarioById } from "@/lib/usuarios/actions";
 import { IStateDeleteUser } from "@/lib/usuarios/definicions";

@@ -17,15 +17,17 @@ CREATE TABLE "usuario" (
 -- CreateTable
 CREATE TABLE "cliente" (
     "id_cliente" TEXT NOT NULL,
+    "id_usuario" TEXT NOT NULL,
     "telefono" VARCHAR(9) NOT NULL,
     "nombre_apo" VARCHAR(25) NOT NULL,
     "nombre" VARCHAR(50) NOT NULL,
     "apellido" VARCHAR(50) NOT NULL,
+    "origen" VARCHAR(1) NOT NULL DEFAULT '3',
     "edad" VARCHAR(2) NOT NULL,
     "grupo" VARCHAR(1) NOT NULL,
     "estado" VARCHAR(1) NOT NULL DEFAULT '3',
+    "fecha_recontacto" TIMESTAMP(3),
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "id_usuario" TEXT NOT NULL,
 
     CONSTRAINT "cliente_pkey" PRIMARY KEY ("id_cliente")
 );
@@ -36,7 +38,9 @@ CREATE TABLE "cliente_llamada" (
     "id_cliente" TEXT NOT NULL,
     "id_usuario" TEXT NOT NULL,
     "estado" VARCHAR(1) NOT NULL DEFAULT '3',
-    "descripcion" TEXT NOT NULL,
+    "observacion" TEXT NOT NULL,
+    "tipo" VARCHAR(1) NOT NULL DEFAULT '3',
+    "resultado" VARCHAR(1) NOT NULL DEFAULT '1',
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "cliente_llamada_pkey" PRIMARY KEY ("id_cliente_llamada")
