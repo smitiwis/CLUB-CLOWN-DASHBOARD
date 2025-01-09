@@ -81,6 +81,8 @@ const FormRegisterCall: FC<Props> = (props) => {
     }
   }, [selectedIdClient]);
 
+  console.log("ERRORS: ", errors);
+
   return (
     <>
       {!!state && (
@@ -315,8 +317,6 @@ const FormRegisterCall: FC<Props> = (props) => {
                 </div>
               </div>
             </div>
-
-            <pre>{JSON.stringify(watch(), null, 2)}</pre>
 
             <Button
               isLoading={loading}

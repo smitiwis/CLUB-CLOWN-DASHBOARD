@@ -26,13 +26,13 @@ const useFormRegisterCall = () => {
     watch,
     setValue,
     clearErrors,
-  } = useForm({
+  } = useForm<IFormClientCall>({
     defaultValues: {
       estado: "3",
       observacion: "",
       tipo: "2",
       resultado: "2",
-      fecha_agendada: null,
+      fecha_agendada: undefined,
     },
     resolver: yupResolver<IFormClientCall>(schemaClientLlamada),
   });
@@ -54,7 +54,7 @@ const useFormRegisterCall = () => {
 
   useEffect(() => {
     if (watch("resultado") !== "5") {
-      setValue("fecha_agendada", null);
+      setValue("fecha_agendada", undefined);
     }
   }, [watch("resultado")]);
 
@@ -71,6 +71,8 @@ const useFormRegisterCall = () => {
       } else {
         clearErrors("fecha_agendada");
       }
+    }else{
+      setValue("fecha_agendada", undefined);
     }
     // setValue("fecha_agendada", new Date());
   }, [watch("fecha_agendada"), watch("resultado")]);

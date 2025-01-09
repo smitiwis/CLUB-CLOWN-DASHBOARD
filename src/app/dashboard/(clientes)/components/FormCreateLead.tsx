@@ -165,6 +165,8 @@ const FormcreateClient = () => {
               isInvalid={!!errors.nombre}
               errorMessage={errors.nombre?.message}
             />
+          </div>
+          <div className="flex flex-col flex-1">
             <Input
               {...register("apellido")}
               className="mb-4"
@@ -173,7 +175,6 @@ const FormcreateClient = () => {
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}
             />
-
             <Input
               {...register("edad")}
               className="mb-4"
@@ -201,24 +202,24 @@ const FormcreateClient = () => {
                 <SelectItem key={key}>{label}</SelectItem>
               ))}
             </Select>
-          </div>
-          <div className="flex flex-col flex-1">
-            <Input
-              {...register("direccion")}
-              className="mb-4"
-              label="Dirección"
-              size="lg"
-              isInvalid={!!errors.direccion}
-              errorMessage={errors.direccion?.message}
-            />
-            <Input
-              {...register("nro_direccion")}
-              className="mb-4"
-              label="Nro. de dirección"
-              size="lg"
-              isInvalid={!!errors.nro_direccion}
-              errorMessage={errors.nro_direccion?.message}
-            />
+            <div className="flex gap-x-1 mb-4">
+              <Input
+                {...register("direccion")}
+                className="w-[75%]"
+                label="Dirección"
+                size="lg"
+                isInvalid={!!errors.direccion}
+                errorMessage={errors.direccion?.message}
+              />
+              <Input
+                {...register("nro_direccion")}
+                className="w-[25%]"
+                label="Nro."
+                size="lg"
+                isInvalid={!!errors.nro_direccion}
+                errorMessage={errors.nro_direccion?.message}
+              />
+            </div>
             <Select
               {...register("estado")}
               className="mb-4"

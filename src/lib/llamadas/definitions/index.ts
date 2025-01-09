@@ -7,7 +7,7 @@ export interface IFormClientCall {
   observacion: string;
   tipo: TIPO_CALL;
   resultado: RESULTADO_CALL;
-  fecha_agendada: Date | null;
+  fecha_agendada?: Date | null;
 }
 
 export interface IClientCallReq extends IFormClientCall {

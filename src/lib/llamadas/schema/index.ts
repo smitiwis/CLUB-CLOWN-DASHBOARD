@@ -28,5 +28,5 @@ export const schemaClientLlamada = yup.object().shape({
         ).required("La fecha de recontacto es requerida");
       }
       return schema;
-    }).default(null),
+    }).nullable(),
 });
