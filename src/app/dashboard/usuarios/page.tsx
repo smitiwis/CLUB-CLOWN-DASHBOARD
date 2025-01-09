@@ -5,6 +5,7 @@ import { Button, Link } from "@nextui-org/react";
 
 const Page = async () => {
   const userList = await fetchUsuarios();
+  console.log(userList);
 
   return (
     <>

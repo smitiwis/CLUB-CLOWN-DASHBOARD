@@ -28,7 +28,7 @@ import {
   Textarea,
   useDisclosure,
 } from "@nextui-org/react";
-import { now, getLocalTimeZone } from "@internationalized/date";
+import { now, getLocalTimeZone, ZonedDateTime } from "@internationalized/date";
 import useFormRegisterCall from "../hooks/useFormRegisterCall";
 import {
   COLORES,
@@ -40,6 +40,7 @@ import InfoValue from "./InfoValue";
 import FormEditClient from "../../(clientes)/components/FormEditLead";
 import { getColor, getGrupoCliente, getLabelColor } from "@/lib/helpers";
 import { IBClientRes } from "@/lib/clients/definitions";
+import { convertToPrismaDate } from "@/lib/helpers/dateTime";
 
 type Props = {
   clientOptions: IBClientRes[];
@@ -57,6 +58,8 @@ const FormRegisterCall: FC<Props> = (props) => {
     loading,
     state,
     watch,
+    setValue,
+
     clientSelected,
     setClientSelected,
 
@@ -293,16 +296,27 @@ const FormRegisterCall: FC<Props> = (props) => {
                   </Select>
                   {watch("resultado") === "5" && (
                     <DatePicker
+                      {...register("fecha_agendada")}
                       hideTimeZone
                       showMonthAndYearPickers
                       defaultValue={now(getLocalTimeZone())}
                       label="Agendar llamada"
                       size="lg"
+                      isInvalid={!!errors.fecha_agendada}
+                      errorMessage={errors.fecha_agendada?.message}
+                      onChange={(date: ZonedDateTime | null) => {
+                        if (date) {
+                          const dateSelected = convertToPrismaDate(date);
+                          setValue("fecha_agendada", dateSelected);
+                        }
+                      }}
                     />
                   )}
                 </div>
               </div>
             </div>
+
+            <pre>{JSON.stringify(watch(), null, 2)}</pre>
 
             <Button
               isLoading={loading}

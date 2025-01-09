@@ -1,27 +1,32 @@
 // ====== FRONTEND ======
+export type TTypeDocumento = "" | "1" | "2";
+export type TOrigen = "1" | "2" | "3" | "4" | "5" | "6" | "7";
+export type IGrupo_Client = "" | "1" | "2" | "3";
 
-// "id_cliente": "3c6f82c3-4f15-4ed4-94ac-028114a770d9",
-// "id_usuario": "12e8b387-87dd-452f-9724-cb201a255883",
-// "telefono": "964912022",
-// "nombre_apo": "",
-// "nombre": "Luis Angel ",
-// "apellido": "peralta",
-// "origen": "3",
-// "edad": "",
-// "grupo": "",
-// "estado": "3",
-// "fecha_recontacto": null,
-// "fecha_creacion": "2025-01-03T07:29:55.372Z"
 
 export type IFClient = {
   telefono: string;
+  tipo_documento: TTypeDocumento; // Por defecto es "" (cadena vacía)
+  nro_documento: string;
   nombre_apo: string;
+
   nombre: string;
   apellido: string;
   edad: string;
-  grupo: string;
+  direccion: string; // Dirección
+  nro_direccion: string; // Número de dirección
+  origen: TOrigen; // Valor predeterminado "3"
+  grupo: IGrupo_Client;
   estado: string;
+
+  fecha_agendada?: Date | null | undefined; // Opcional o null
 };
+
+export interface IGruposClients {
+  min: number;
+  max: number;
+  grupo: IGrupo_Client;
+}
 
 export interface IClientRes extends IFClient {
   id_cliente: string;
@@ -31,8 +36,27 @@ export interface IClientReq extends IFClient {
   redirect?: boolean;
 }
 
-export interface IFClientTable extends IClientRes {
+
+export interface IRowClientTable {
+  telefono: string;
+  tipo_documento: TTypeDocumento;
+  nro_documento: string;
+  nombre_apo: string;
+
+  nombre: string;
+  apellido: string;
+  edad: string;
+  direccion: string;
+  nro_direccion: string;
+  origen: TOrigen;
+  grupo: IGrupo_Client;
+  estado: string;
+
+  fecha_agendada: string;
+  isAfter: boolean;
+
   key: string;
+  id_cliente: string;
 }
 
 // ================ BACKEND ================
@@ -43,8 +67,16 @@ export interface IBClientRes {
   nombre: string;
   apellido: string;
   edad: string;
-  grupo: string;
+  grupo: IGrupo_Client;
   estado: string;
+
+  tipo_documento: TTypeDocumento;
+  nro_documento: string;
+  direccion: string;
+  nro_direccion: string;
+  origen: TOrigen;
+
+  fecha_agendada: Date | null;
 }
 
 // ERRORES

@@ -10,7 +10,8 @@ const seedUsuarios = async () => {
 
   // Datos iniciales
   const usuarios = [
-    {
+    { 
+      id_rol:"a244cfe0-c681-4f4d-8839-5103d62e4625",
       nombre: "Luis Angel",
       apellido: "Peralta Diaz",
       telefono: "912342510",
@@ -21,15 +22,27 @@ const seedUsuarios = async () => {
       password: "Rosefer-bb123", // Esto debería ser encriptado en producción
     },
     {
+      id_rol:"a244cfe0-c681-4f4d-8839-5103d62e4625",
+      nombre: "Ester",
+      apellido: "Carhuamaca Chancasanampa",
+      telefono: "954232400",
+      dni: "47393996",
+      fecha_ingreso: "01-01-2025",
+      estado: "0", // Puede ser "activo" o "inactivo"
+      correo: "ester@gmail.com",
+      password: "123456", // Esto debería ser encriptado en producción
+    },
+    {
+      id_rol:"e4c42975-ee4e-408c-8175-862bb77c754f",
       nombre: "Kevin",
       apellido: "Arauco",
       telefono: "964912022",
       dni: "47638595",
       fecha_ingreso: "2024-12-15",
-      estado: "1", // Puede ser "activo" o "inactivo"
+      estado: "0", // Puede ser "activo" o "inactivo"
       correo: "kevin@gmail.com",
       password: "123456", // Esto debería ser encriptado en producción
-    }
+    },
   ];
 
   // Inserción de usuarios
@@ -37,7 +50,7 @@ const seedUsuarios = async () => {
     const existingUser = await prisma.usuario.findUnique({
       where: { correo: usuario.correo },
     });
-    
+
     if (!existingUser) {
       // Encriptar la contraseña antes de guardarla
       const hashedPassword = await bcrypt.hash(usuario.password, 10);
@@ -98,10 +111,38 @@ const seedUsuarios = async () => {
 //   console.log("Seed completado.");
 // };
 
+const seedRoles = async () => {
+  console.log("Conectando a la base de datos...");
+
+  // Datos iniciales
+  const roles = [
+    {
+      nombre: "Admin",
+      estado: "1",
+    },
+    {
+      nombre: "Comercial",
+      estado: "1",
+    },
+    {
+      nombre: "Marketing",
+      estado: "0",
+    },
+  ];
+
+  // Inserción de roles
+  for (const rol of roles) {
+    await prisma.rol.create({ data: rol });
+  }
+
+  console.log("Seed ROL completado.");
+};
+
 export async function GET() {
   try {
     // Llamar a la función que inserta los usuarios
-    await seedUsuarios();
+    // await seedRoles();
+    // await seedUsuarios();
     // await seedClientes();
 
     // Responder con un mensaje de éxito

@@ -14,12 +14,13 @@ import {
   Chip,
   ChipProps,
 } from "@nextui-org/react";
-import { IBClientRes, IFClientTable } from "@/lib/clients/definitions";
+import { IBClientRes, IRowClientTable } from "@/lib/clients/definitions";
 import { COLORES, GROUPS_CLIENT } from "@/constants";
 import { useRouter } from "next/navigation";
 import IconEdit from "@/components/icons/IconEdit";
 import IconEye from "@/components/icons/IconEye";
 import IconPhone from "@/components/icons/IconPhone";
+import { format, isAfter } from "@formkit/tempo";
 
 type Props = {
   clientsList: IBClientRes[];
@@ -27,15 +28,36 @@ type Props = {
 
 const ClientsList: FC<Props> = ({ clientsList }) => {
   const router = useRouter();
-  const rows: IFClientTable[] = clientsList.map((lead, i) => ({
-    ...lead,
-    key: String(i + 1),
-  }));
+  console.log("ANTES: ", clientsList);
+  const rows: IRowClientTable[] = clientsList.map((lead, i) => {
+    // Formatear la fecha
+    const fechaFormateada = lead.fecha_agendada
+      ? format(lead.fecha_agendada, { date: "medium", time: "short" })
+      : "";
+
+    const isAgendaAfter = lead.fecha_agendada
+      ? isAfter(lead.fecha_agendada, new Date())
+        ? true
+        : false
+      : false;
+
+    return {
+      ...lead,
+      key: String(i + 1),
+      fecha_agendada: fechaFormateada,
+      isAfter: isAgendaAfter,
+    };
+  });
+  console.log("::::::::", rows);
 
   const columns = [
     {
       key: "estado",
       label: "COLOR",
+    },
+    {
+      key: "fecha_agendada",
+      label: "FECHA AGENDADA",
     },
     {
       key: "telefono",
@@ -67,8 +89,8 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
     "3": "warning",
   };
 
-  const renderCell = useCallback((item: IFClientTable, columnKey: Key) => {
-    const cellValue = item[columnKey as keyof IFClientTable];
+  const renderCell = useCallback((item: IRowClientTable, columnKey: Key) => {
+    const cellValue = item[columnKey as keyof IRowClientTable];
 
     switch (columnKey) {
       case "estado":
@@ -78,6 +100,20 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
             className="w-[.5rem] h-[.5rem] rounded-full"
             style={{ background: color?.code || "white" }}
           />
+        );
+
+      case "fecha_agendada":
+        return (
+          <div className="flex flex-col">
+            {cellValue && (
+              <Chip
+                color={item.isAfter ? "success" : "danger"}
+                variant="shadow"
+              >
+                {cellValue}
+              </Chip>
+            )}
+          </div>
         );
 
       case "status":
@@ -90,7 +126,9 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
       case "edad":
         return (
           <div className="flex flex-col">
-            <span className="text-small">{cellValue} años </span>
+            <span className="text-small">
+              {cellValue} {cellValue ? "años" : "-"}
+            </span>
           </div>
         );
 
@@ -98,14 +136,16 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
         const grupo = GROUPS_CLIENT.find((group) => group.key === cellValue);
         return (
           <div className="flex flex-col">
-            <Chip
-              className="capitalize"
-              color={statusColorGroup[cellValue]}
-              size="sm"
-              variant="flat"
-            >
-             {grupo?.label}
-            </Chip>
+            {grupo && (
+              <Chip
+                className="capitalize"
+                color={statusColorGroup[item.grupo]}
+                size="sm"
+                variant="flat"
+              >
+                {grupo?.label}
+              </Chip>
+            )}
           </div>
         );
 

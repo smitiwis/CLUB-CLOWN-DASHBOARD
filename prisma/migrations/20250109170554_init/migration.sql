@@ -1,6 +1,18 @@
 -- CreateTable
+CREATE TABLE "rol" (
+    "id_rol" TEXT NOT NULL,
+    "nombre" VARCHAR(20) NOT NULL,
+    "estado" VARCHAR(1) NOT NULL DEFAULT '1',
+    "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_actualizacion" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "rol_pkey" PRIMARY KEY ("id_rol")
+);
+
+-- CreateTable
 CREATE TABLE "usuario" (
     "id_usuario" TEXT NOT NULL,
+    "id_rol" TEXT NOT NULL,
     "nombre" VARCHAR(25) NOT NULL,
     "apellido" VARCHAR(40) NOT NULL,
     "telefono" VARCHAR(9) NOT NULL,
@@ -10,6 +22,8 @@ CREATE TABLE "usuario" (
     "correo" VARCHAR(60) NOT NULL,
     "password" VARCHAR(100) NOT NULL,
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_actualizacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "rolId_rol" TEXT,
 
     CONSTRAINT "usuario_pkey" PRIMARY KEY ("id_usuario")
 );
@@ -18,16 +32,21 @@ CREATE TABLE "usuario" (
 CREATE TABLE "cliente" (
     "id_cliente" TEXT NOT NULL,
     "id_usuario" TEXT NOT NULL,
+    "tipo_documento" VARCHAR(1) NOT NULL DEFAULT '',
+    "nro_documento" VARCHAR(12),
     "telefono" VARCHAR(9) NOT NULL,
     "nombre_apo" VARCHAR(25) NOT NULL,
     "nombre" VARCHAR(50) NOT NULL,
     "apellido" VARCHAR(50) NOT NULL,
+    "direccion" VARCHAR(100) NOT NULL,
+    "nro_direccion" VARCHAR(6) NOT NULL,
     "origen" VARCHAR(1) NOT NULL DEFAULT '3',
     "edad" VARCHAR(2) NOT NULL,
     "grupo" VARCHAR(1) NOT NULL,
     "estado" VARCHAR(1) NOT NULL DEFAULT '3',
-    "fecha_recontacto" TIMESTAMP(3),
+    "fecha_agendada" TIMESTAMP(3),
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_actualizacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "cliente_pkey" PRIMARY KEY ("id_cliente")
 );
@@ -42,9 +61,13 @@ CREATE TABLE "cliente_llamada" (
     "tipo" VARCHAR(1) NOT NULL DEFAULT '3',
     "resultado" VARCHAR(1) NOT NULL DEFAULT '1',
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_actualizacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "cliente_llamada_pkey" PRIMARY KEY ("id_cliente_llamada")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "rol_nombre_key" ON "rol"("nombre");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "usuario_telefono_key" ON "usuario"("telefono");
@@ -56,6 +79,9 @@ CREATE UNIQUE INDEX "usuario_dni_key" ON "usuario"("dni");
 CREATE UNIQUE INDEX "usuario_correo_key" ON "usuario"("correo");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "cliente_nro_documento_key" ON "cliente"("nro_documento");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "cliente_telefono_key" ON "cliente"("telefono");
 
 -- CreateIndex
@@ -63,6 +89,9 @@ CREATE INDEX "cliente_telefono_idx" ON "cliente"("telefono");
 
 -- CreateIndex
 CREATE INDEX "cliente_llamada_id_cliente_id_usuario_idx" ON "cliente_llamada"("id_cliente", "id_usuario");
+
+-- AddForeignKey
+ALTER TABLE "usuario" ADD CONSTRAINT "usuario_id_rol_fkey" FOREIGN KEY ("id_rol") REFERENCES "rol"("id_rol") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "cliente" ADD CONSTRAINT "cliente_id_usuario_fkey" FOREIGN KEY ("id_usuario") REFERENCES "usuario"("id_usuario") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -38,10 +38,15 @@ export async function createClient(
       data: {
         id_usuario: userId,
         telefono: formData.telefono,
+        tipo_documento: formData.tipo_documento,
+        nro_documento: formData.nro_documento,
         nombre_apo: formData.nombre_apo,
         nombre: formData.nombre,
         apellido: formData.apellido,
         edad: formData.edad,
+        direccion: formData.direccion,
+        nro_direccion: formData.nro_direccion,
+        origen: formData.origen,
         grupo: formData.grupo,
         estado: formData.estado,
       },
@@ -117,7 +122,7 @@ export async function editClient(
 
 type IUpdateRecontact = {
   id_cliente: string;
-  fecha_recontacto: string;
+  fecha_agendada: string;
 };
 
 export async function addRecordClient(
@@ -134,7 +139,7 @@ export async function addRecordClient(
     await prisma.cliente.update({
       where: { id_cliente: formData.id_cliente },
       data: {
-        fecha_recontacto: formData.fecha_recontacto,
+        fecha_agendada: formData.fecha_agendada,
       },
     });
   } catch (error) {

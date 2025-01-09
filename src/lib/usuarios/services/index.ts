@@ -13,6 +13,12 @@ export async function fetchUsuarios() {
         fecha_ingreso: true,
         estado: true,
         correo: true,
+        rol: {
+          select:{
+            id_rol: true,
+            nombre: true,
+          }
+        }
       },
     });
 

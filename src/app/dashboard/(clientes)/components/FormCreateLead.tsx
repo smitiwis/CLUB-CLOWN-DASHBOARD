@@ -13,7 +13,14 @@ import {
 } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import useFormCreateClient from "../hooks/useFormCreateClient";
-import { COLORES, GROUPS_CLIENT, IColors } from "@/constants";
+import {
+  COLORES,
+  DOCUMENTS,
+  GROUPS_CLIENT,
+  IColors,
+  IOptionSelect,
+  ORIGENES_CLIENTS,
+} from "@/constants";
 import { IStateCliente } from "@/lib/clients/definitions";
 
 const FormcreateClient = () => {
@@ -75,6 +82,64 @@ const FormcreateClient = () => {
               errorMessage={errors.telefono?.message}
             />
 
+            <Select
+              {...register("origen")}
+              className="mb-4"
+              label="Origen del cliente"
+              defaultSelectedKeys={[ORIGENES_CLIENTS[0].key]}
+              items={ORIGENES_CLIENTS}
+              size="lg"
+              isInvalid={!!errors.origen}
+              errorMessage={errors.origen?.message}
+              renderValue={(items: SelectedItems<IOptionSelect>) => {
+                return items.map((item) => (
+                  <div key={item.key} className="flex items-center gap-2">
+                    <div>I</div>
+                    <div className="flex flex-col">
+                      <span>{item.data?.label}</span>
+                    </div>
+                  </div>
+                ));
+              }}
+            >
+              {({ key, label }) => (
+                <SelectItem key={key} textValue={label}>
+                  <div className="flex gap-x-2">
+                    <div>I</div>
+                    <span className="text-small">{label}</span>
+                  </div>
+                </SelectItem>
+              )}
+            </Select>
+
+            <div className="flex gap-1 mb-4">
+              <Select
+                {...register("tipo_documento")}
+                className="w-[35%]"
+                label="Tipo doc"
+                items={DOCUMENTS}
+                size="lg"
+                isInvalid={!!errors.tipo_documento}
+                errorMessage={errors.tipo_documento?.message}
+              >
+                {(document) => (
+                  <SelectItem key={document.key} textValue={document.label}>
+                    <div className="flex flex-col">
+                      <span className="text-small">{document.label}</span>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
+              <Input
+                {...register("nro_documento")}
+                className="w-[65%]"
+                label="Nro de documento"
+                size="lg"
+                isInvalid={!!errors.nro_documento}
+                errorMessage={errors.nro_documento?.message}
+              />
+            </div>
+
             <div className="flex items-center h-full gap-4 mb-4">
               <div className="flex flex-col gap-2 py-1">
                 <Switch isSelected={showApod} onValueChange={setShowApod} />
@@ -108,8 +173,7 @@ const FormcreateClient = () => {
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}
             />
-          </div>
-          <div className="flex flex-col flex-1">
+
             <Input
               {...register("edad")}
               className="mb-4"
@@ -119,7 +183,6 @@ const FormcreateClient = () => {
               isInvalid={!!errors.edad}
               errorMessage={errors.edad?.message}
             />
-
             <Select
               {...register("grupo")}
               className="mb-4"
@@ -138,6 +201,24 @@ const FormcreateClient = () => {
                 <SelectItem key={key}>{label}</SelectItem>
               ))}
             </Select>
+          </div>
+          <div className="flex flex-col flex-1">
+            <Input
+              {...register("direccion")}
+              className="mb-4"
+              label="Dirección"
+              size="lg"
+              isInvalid={!!errors.direccion}
+              errorMessage={errors.direccion?.message}
+            />
+            <Input
+              {...register("nro_direccion")}
+              className="mb-4"
+              label="Nro. de dirección"
+              size="lg"
+              isInvalid={!!errors.nro_direccion}
+              errorMessage={errors.nro_direccion?.message}
+            />
             <Select
               {...register("estado")}
               className="mb-4"

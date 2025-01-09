@@ -1,3 +1,17 @@
+// ========== INTERFACES Y TYPES ==========
+export type IColors = {
+  label: string;
+  code: string;
+  key: string;
+};
+
+export type IOptionSelect = {
+  label: string;
+  key: string;
+};
+
+
+// =========== CONSTANTES ===========
 export const GRUPOS = [
   { key: "niño", label: "Niño" },
   { key: "adolescente", label: "Adolescente" },
@@ -16,11 +30,20 @@ export const LEAD_STATUS = [
   { key: "inscrito", label: "Inscrito" },
 ];
 
-export type IColors = {
-  label: string;
-  code: string;
-  key: string;
-};
+export const DOCUMENTS: IOptionSelect[] = [
+  { label: "DNI", key: "1" },
+  { label: "RUC", key: "2" },
+];
+
+export const ORIGENES_CLIENTS = [
+  { label: "Whatsapp", key: "1" },
+  { label: "Boot", key: "2" },
+  { label: "Facebook", key: "3" },
+  { label: "Instagram", key: "4" },
+  { label: "Tiktok", key: "5" },
+  { label: "Referencia", key: "6" },
+  { label: "Otros", key: "7" },
+];
 
 export const COLORES: IColors[] = [
   { label: "Negro", key: "1", code: "black" },
@@ -48,7 +71,7 @@ export const TIPO_LLAMADAS = [
   { key: "2", label: "Saliente" },
   { key: "3", label: "Seguimiento" },
   { key: "4", label: "otros" },
-]
+];
 
 export const RESULTADO_LLAMADAS = [
   { key: "1", label: "No contesta" },
@@ -57,4 +80,4 @@ export const RESULTADO_LLAMADAS = [
   { key: "4", label: "Venta" },
   { key: "5", label: "Volber a llamar" },
   { key: "6", label: "Otros" },
-]
+];

@@ -3,7 +3,11 @@ import { useEffect, useTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schemaClient } from "@/lib/clients/schemas";
-import { IFClient, IStateCliente } from "@/lib/clients/definitions";
+import {
+  IFClient,
+  IGruposClients,
+  IStateCliente,
+} from "@/lib/clients/definitions";
 import { createClient } from "@/lib/clients/actions/action";
 
 const useFormCreateClient = () => {
@@ -20,7 +24,10 @@ const useFormCreateClient = () => {
     setError,
     watch,
     setValue,
-  } = useForm({
+  } = useForm<IFClient>({
+    defaultValues: {
+      fecha_agendada: undefined,
+    },
     resolver: yupResolver<IFClient>(schemaClient),
   });
 
@@ -31,7 +38,7 @@ const useFormCreateClient = () => {
   useEffect(() => {
     const edad = parseInt(watch("edad") || "", 10);
 
-    const grupos = [
+    const grupos: IGruposClients[] = [
       { min: 9, max: 12, grupo: "1" },
       { min: 13, max: 17, grupo: "2" },
       { min: 18, max: 55, grupo: "3" },
@@ -39,6 +46,7 @@ const useFormCreateClient = () => {
 
     const grupo =
       grupos.find(({ min, max }) => edad >= min && edad <= max)?.grupo || "";
+
     setValue("grupo", grupo);
   }, [watch().edad]);
 

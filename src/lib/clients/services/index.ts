@@ -42,7 +42,7 @@ export async function fetchClients() {
     const userId = await getUserId();
     if (!userId) return new Error("Usuario desconocido");
 
-    const clientes: IBClientRes[] = await prisma.cliente.findMany({
+    const clientes = await prisma.cliente.findMany({
       where: {
         id_usuario: userId,
       },
@@ -55,14 +55,20 @@ export async function fetchClients() {
         edad: true,
         grupo: true,
         estado: true,
+        tipo_documento: true,
+        nro_documento: true,
+        direccion: true,
+        nro_direccion: true,
+        origen: true,
+        fecha_agendada: true,
       },
     });
 
-    return clientes;
+    return clientes as IBClientRes[];
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Error al obtener leads .");
-  }finally {
+  } finally {
     await prisma.$disconnect(); // Asegurarse de desconectar la base de datos
   }
 }

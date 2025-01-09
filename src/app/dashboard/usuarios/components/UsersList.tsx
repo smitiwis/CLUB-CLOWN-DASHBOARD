@@ -58,6 +58,10 @@ const UsersList: FC<Props> = ({ userList }) => {
       label: "CORREO",
     },
     {
+      key: "rol",
+      label: "ROL",
+    },
+    {
       key: "estado",
       label: "ESTADO",
     },
@@ -90,6 +94,9 @@ const UsersList: FC<Props> = ({ userList }) => {
 
       case "fecha_ingreso":
         return format(String(cellValue), "medium");
+      
+      case "rol":
+        return item.rol.nombre;
 
       case "actions":
         return (

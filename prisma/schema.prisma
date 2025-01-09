@@ -14,35 +14,58 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
+model rol {
+  id_rol              String   @id @default(uuid())
+  nombre              String   @unique @db.VarChar(20) // Ejemplo: "admin", "comercial", "marketing"
+  estado              String   @default("1") @db.VarChar(1) // 1: activo, 0: inactivo
+  
+  fecha_creacion      DateTime @default(now())
+  fecha_actualizacion DateTime @updatedAt
+
+  usuarios usuario[] // Relación uno a muchos con "usuario"
+}
+
 model usuario {
-  id_usuario     String   @id @default(uuid())
-  nombre         String   @db.VarChar(25)
-  apellido       String   @db.VarChar(40)
-  telefono       String   @unique @db.VarChar(9)
-  dni            String   @unique @db.VarChar(8)
-  fecha_ingreso  String   @db.VarChar(10)
-  estado         String   @default("1")
-  correo         String   @unique @db.VarChar(60)
-  password       String   @db.VarChar(100)
-  fecha_creacion DateTime @default(now())
+  id_usuario          String   @id @default(uuid())
+  id_rol              String
+  nombre              String   @db.VarChar(25)
+  apellido            String   @db.VarChar(40)
+  telefono            String   @unique @db.VarChar(9)
+  dni                 String   @unique @db.VarChar(8)
+  fecha_ingreso       String   @db.VarChar(10)
+  estado              String   @default("1")
+  correo              String   @unique @db.VarChar(60)
+  password            String   @db.VarChar(100)
+  
+  fecha_creacion      DateTime @default(now())
+  fecha_actualizacion DateTime @default(now())
 
   cliente         cliente[]
   cliente_llamada cliente_llamada[]
+
+  rol       rol     @relation(fields: [id_rol], references: [id_rol])
+  rolId_rol String?
 }
 
 model cliente {
-  id_cliente       String    @id @default(uuid())
-  id_usuario       String
-  telefono         String    @unique @db.VarChar(9)
-  nombre_apo       String    @db.VarChar(25)
-  nombre           String    @db.VarChar(50)
-  apellido         String    @db.VarChar(50)
-  origen           String    @default("3") @db.VarChar(1)
-  edad             String    @db.VarChar(2)
-  grupo            String    @db.VarChar(1)
-  estado           String    @default("3") @db.VarChar(1)
-  fecha_recontacto DateTime?
-  fecha_creacion   DateTime  @default(now())
+  id_cliente          String    @id @default(uuid())
+  id_usuario          String
+  tipo_documento      String    @default("") @db.VarChar(1)
+  nro_documento       String?   @unique @db.VarChar(12)
+  telefono            String    @unique @db.VarChar(9)
+  nombre_apo          String    @db.VarChar(25)
+  nombre              String    @db.VarChar(50)
+  apellido            String    @db.VarChar(50)
+  direccion           String    @db.VarChar(100)
+  nro_direccion       String    @db.VarChar(6)
+  origen              String    @default("3") @db.VarChar(1)
+  edad                String    @db.VarChar(2)
+  grupo               String    @db.VarChar(1)
+  estado              String    @default("3") @db.VarChar(1)
+  fecha_agendada      DateTime?
+  
+  fecha_creacion      DateTime  @default(now())
+  fecha_actualizacion DateTime  @default(now())
 
   usuario         usuario           @relation(fields: [id_usuario], references: [id_usuario])
   cliente_llamada cliente_llamada[]
@@ -50,17 +73,18 @@ model cliente {
   @@index([telefono])
 }
 
-
 // ================== CLIENTE LLAMADA ==================
 model cliente_llamada {
-  id_cliente_llamada String   @id @default(uuid())
-  id_cliente         String
-  id_usuario         String
-  estado             String   @default("3") @db.VarChar(1)
-  observacion        String   @db.Text
-  tipo               String   @default("3") @db.VarChar(1)
-  resultado          String   @default("1") @db.VarChar(1)
-  fecha_creacion     DateTime @default(now())
+  id_cliente_llamada  String   @id @default(uuid())
+  id_cliente          String
+  id_usuario          String
+  estado              String   @default("3") @db.VarChar(1)
+  observacion         String   @db.Text
+  tipo                String   @default("3") @db.VarChar(1)
+  resultado           String   @default("1") @db.VarChar(1)
+  
+  fecha_creacion      DateTime @default(now())
+  fecha_actualizacion DateTime @default(now())
 
   cliente cliente @relation(fields: [id_cliente], references: [id_cliente])
   usuario usuario @relation(fields: [id_usuario], references: [id_usuario])

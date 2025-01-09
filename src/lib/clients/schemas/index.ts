@@ -1,19 +1,68 @@
 import * as yup from "yup";
 
+// Expresiones regulares para validar DNI y RUC
+const dniRegex = /^\d{8}$/; // DNI tiene 8 dígitos
+const rucRegex = /^\d{11}$/; // RUC tiene 11 dígitos
+
 export const schemaClient = yup.object().shape({
   telefono: yup
     .string()
     .required("El teléfono es obligatorio.")
     .matches(/^\d{9}$/, "El teléfono debe tener 9 dígitos."),
+
+  tipo_documento: yup
+    .string()
+    .oneOf(["", "1", "2"], "El tipo de documento debe ser '1' o '2'.")
+    .default(""), // Valor predeterminado "1"
+
+  nro_documento: yup
+    .string()
+    .when("tipo_documento", {
+      is: (tipo_documento: string) => tipo_documento === "1",
+      then: (schema) =>
+        schema
+          .required("El número de DNI es obligatorio.")
+          .matches(dniRegex, "El número de DNI debe ser de 8 dígitos."),
+    })
+    .when("tipo_documento", {
+      is: (tipo_documento: string) => tipo_documento === "2",
+      then: (schema) =>
+        schema
+          .required("El número de RUC es obligatorio.")
+          .matches(rucRegex, "El número de RUC debe ser de 11 dígitos."),
+    })
+    .default(""),
+
   nombre_apo: yup.string().default(""), // Valor predeterminado vacío
   nombre: yup.string().default(""),
   apellido: yup.string().default(""),
   edad: yup.string().default(""), // Permite vacío pero no undefined
-  grupo: yup.string().default(""),
+  direccion: yup.string().default(""),
+  nro_direccion: yup.string().default(""),
+  origen: yup
+    .string()
+    .required("El origen es obligatorio.")
+    .oneOf(
+      ["1", "2", "3", "4", "5", "6", "7"],
+      "El origen debe ser uno de los valores permitidos: 1, 2, 3, 4, 5, 6 o 7"
+    )
+    .default("3"), // Valor predeterminado "3"
+  grupo: yup
+    .string()
+    .oneOf(["", "1", "2", "3"], "El grupo debe ser '1', '2' o '3'.")
+    .default(""),
+
   estado: yup.string().default(""),
-  fecha_recontacto: yup
+
+  fecha_agendada: yup
     .date()
-    .nullable()
-    .typeError("La fecha debe ser válida")
-    .min(new Date(), "La fecha de recontacto no puede ser en el pasado"),
+    .optional()
+    .when("resultado", (resultado, schema) => {
+      if (resultado[0] === "5") {
+        return schema
+          .min(new Date(), "La fecha debe ser mayor a la fecha actual")
+          .required("La fecha de recontacto es requerida");
+      }
+      return schema;
+    })
 });

@@ -31,14 +31,16 @@ export async function createClientLlamada(
       },
     });
 
-
     if (!clienteLlamada) {
       throw { message: "Error al crear la llamada" };
     }
     // ACTUALIZAR EL ESTADO DEL CLIENTE
     await prisma.cliente.update({
       where: { id_cliente: formData.id_cliente },
-      data: { estado: formData.estado },
+      data: {
+        estado: formData.estado,
+        fecha_agendada: formData.fecha_agendada,
+      },
     });
 
     console.log("clienteLlamada", clienteLlamada);

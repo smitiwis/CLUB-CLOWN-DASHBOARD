@@ -6,6 +6,7 @@ export interface IUsuario {
   fecha_ingreso: string;
   estado: string;
   correo: string;
+  rol: {id_rol: string, nombre: string};
 }
 
 export interface IUsuarioForm extends IUsuario {
