@@ -9,6 +9,7 @@ import {
   Select,
   SelectedItems,
   SelectItem,
+  Spinner,
   Switch,
 } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
@@ -36,6 +37,7 @@ const FormcreateClient = () => {
     setValue,
     setError,
     watch,
+    loadingInfo,
   } = useFormCreateClient();
 
   const [statusForm, setStatusForm] = useState<IStateCliente>(state);
@@ -112,7 +114,7 @@ const FormcreateClient = () => {
               )}
             </Select>
 
-            <div className="flex gap-1 mb-4">
+            <div className="flex gap-x-3 mb-4">
               <Select
                 {...register("tipo_documento")}
                 className="w-[35%]"
@@ -132,7 +134,10 @@ const FormcreateClient = () => {
               </Select>
               <Input
                 {...register("nro_documento")}
+                endContent={loadingInfo && <Spinner />}
                 className="w-[65%]"
+                isDisabled={!watch().tipo_documento || loadingInfo}
+                value={watch().nro_documento}
                 label="Nro de documento"
                 size="lg"
                 isInvalid={!!errors.nro_documento}
@@ -161,6 +166,7 @@ const FormcreateClient = () => {
               {...register("nombre")}
               className="mb-4"
               label="Nombres"
+              value={watch("nombre")}
               size="lg"
               isInvalid={!!errors.nombre}
               errorMessage={errors.nombre?.message}
@@ -171,6 +177,7 @@ const FormcreateClient = () => {
               {...register("apellido")}
               className="mb-4"
               label="Apellidos"
+              value={watch("apellido")}
               size="lg"
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}
@@ -202,7 +209,7 @@ const FormcreateClient = () => {
                 <SelectItem key={key}>{label}</SelectItem>
               ))}
             </Select>
-            <div className="flex gap-x-1 mb-4">
+            <div className="flex gap-x-3 mb-4">
               <Input
                 {...register("direccion")}
                 className="w-[75%]"

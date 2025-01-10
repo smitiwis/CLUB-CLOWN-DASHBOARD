@@ -21,6 +21,11 @@ export async function fetchClientById(id: string) {
         edad: true,
         grupo: true,
         estado: true,
+        tipo_documento: true,
+        nro_documento: true,
+        direccion: true,
+        nro_direccion: true,
+        origen: true,
       },
     });
 

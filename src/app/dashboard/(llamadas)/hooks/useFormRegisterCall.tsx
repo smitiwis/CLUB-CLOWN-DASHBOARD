@@ -32,7 +32,7 @@ const useFormRegisterCall = () => {
       observacion: "",
       tipo: "2",
       resultado: "2",
-      fecha_agendada: undefined,
+      fecha_agendada: null,
     },
     resolver: yupResolver<IFormClientCall>(schemaClientLlamada),
   });
@@ -54,7 +54,7 @@ const useFormRegisterCall = () => {
 
   useEffect(() => {
     if (watch("resultado") !== "5") {
-      setValue("fecha_agendada", undefined);
+      setValue("fecha_agendada", null);
     }
   }, [watch("resultado")]);
 
@@ -62,7 +62,7 @@ const useFormRegisterCall = () => {
     const fechaAgendada = watch("fecha_agendada");
     const resultadoLllamada = watch("resultado");
 
-    if (fechaAgendada && resultadoLllamada === "5") {
+    if (!!fechaAgendada && resultadoLllamada === "5") {
       if (isBefore(fechaAgendada, new Date())) {
         setError("fecha_agendada", {
           type: "min",
@@ -72,7 +72,7 @@ const useFormRegisterCall = () => {
         clearErrors("fecha_agendada");
       }
     }else{
-      setValue("fecha_agendada", undefined);
+      setValue("fecha_agendada", null);
     }
     // setValue("fecha_agendada", new Date());
   }, [watch("fecha_agendada"), watch("resultado")]);

@@ -300,7 +300,6 @@ const FormRegisterCall: FC<Props> = (props) => {
                     <DatePicker
                       {...register("fecha_agendada")}
                       hideTimeZone
-                      showMonthAndYearPickers
                       defaultValue={now(getLocalTimeZone())}
                       label="Agendar llamada"
                       size="lg"

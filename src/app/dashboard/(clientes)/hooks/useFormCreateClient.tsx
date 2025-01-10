@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useTransition, useActionState } from "react";
+import { useEffect, useTransition, useActionState, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schemaClient } from "@/lib/clients/schemas";
@@ -9,8 +9,10 @@ import {
   IStateCliente,
 } from "@/lib/clients/definitions";
 import { createClient } from "@/lib/clients/actions/action";
+import axios from "axios";
 
 const useFormCreateClient = () => {
+  const [loadingInfo, setLoadigInfo] = useState(false);
   const [loading, startTransaction] = useTransition();
   const [state, formAction] = useActionState<IStateCliente, IFClient>(
     createClient,
@@ -24,6 +26,7 @@ const useFormCreateClient = () => {
     setError,
     watch,
     setValue,
+    clearErrors,
   } = useForm<IFClient>({
     defaultValues: {
       fecha_agendada: undefined,
@@ -50,6 +53,53 @@ const useFormCreateClient = () => {
     setValue("grupo", grupo);
   }, [watch().edad]);
 
+  useEffect(() => {
+    const tipoDocumento = watch("tipo_documento");
+    setValue("nro_documento", "");
+    if (!tipoDocumento) clearErrors("nro_documento");
+  }, [watch("tipo_documento")]);
+
+  const getInfoByNroDni = async () => {
+    const API = `/api/document/dni/${watch("nro_documento")}`;
+    try {
+      setLoadigInfo(true);
+      const response = await axios.get(API);
+
+      if (response.status === 200) {
+        const { data } = response;
+        clearErrors("nro_documento");
+        setValue("nombre", data.nombres);
+        setValue("apellido", data.apellidoPaterno + " " + data.apellidoMaterno);
+      }
+    } catch (error) {
+      console.error(error);
+      setValue("nombre", "");
+      setValue("apellido", "");
+    } finally {
+      setLoadigInfo(false);
+    }
+  };
+  useEffect(() => {
+    const tipoDocumento = watch("tipo_documento");
+    const nroDocumento = watch("nro_documento");
+
+    switch (tipoDocumento) {
+      case "1":
+        if (nroDocumento.length === 8) {
+          getInfoByNroDni();
+        }
+        break;
+      case "2":
+        if (nroDocumento.length === 11) {
+          
+        }
+        break;
+
+      default:
+        break;
+    }
+  }, [watch("nro_documento")]);
+
   return {
     register,
     handleSubmit,
@@ -60,6 +110,7 @@ const useFormCreateClient = () => {
     watch,
     loading,
     state,
+    loadingInfo,
   };
 };
 
