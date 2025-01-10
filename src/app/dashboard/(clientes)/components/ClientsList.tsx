@@ -28,7 +28,6 @@ type Props = {
 
 const ClientsList: FC<Props> = ({ clientsList }) => {
   const router = useRouter();
-  console.log("ANTES: ", clientsList);
   const rows: IRowClientTable[] = clientsList.map((lead, i) => {
     // Formatear la fecha
     const fechaFormateada = lead.fecha_agendada
@@ -48,7 +47,6 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
       isAfter: isAgendaAfter,
     };
   });
-  console.log("::::::::", rows);
 
   const columns = [
     {
@@ -57,7 +55,7 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
     },
     {
       key: "fecha_agendada",
-      label: "FECHA AGENDADA",
+      label: "AGENDA",
     },
     {
       key: "telefono",
@@ -146,6 +144,7 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
                 {grupo?.label}
               </Chip>
             )}
+            {!grupo && "-"}
           </div>
         );
 

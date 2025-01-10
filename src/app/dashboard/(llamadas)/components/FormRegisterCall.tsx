@@ -330,7 +330,7 @@ const FormRegisterCall: FC<Props> = (props) => {
         </div>
 
         {/* MODAL */}
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="2xl">
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl">
           <ModalContent>
             <ModalHeader className="flex flex-col gap-1">
               <h1 className="text-2xl font-semibold text-gray-400">

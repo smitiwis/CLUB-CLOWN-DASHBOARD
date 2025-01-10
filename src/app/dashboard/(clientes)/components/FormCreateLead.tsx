@@ -166,8 +166,8 @@ const FormcreateClient = () => {
               {...register("nombre")}
               className="mb-4"
               label="Nombres"
-              value={watch("nombre")}
               size="lg"
+              value={watch("nombre")}
               isInvalid={!!errors.nombre}
               errorMessage={errors.nombre?.message}
             />
@@ -177,8 +177,8 @@ const FormcreateClient = () => {
               {...register("apellido")}
               className="mb-4"
               label="Apellidos"
-              value={watch("apellido")}
               size="lg"
+              value={watch("apellido")}
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}
             />

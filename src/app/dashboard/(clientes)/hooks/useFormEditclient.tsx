@@ -1,14 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useTransition, useActionState } from "react";
+import { useEffect, useTransition, useActionState, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schemaClient } from "@/lib/clients/schemas";
-import { IClientReq, IClientRes, IFClient, IStateUpdateClient } from "@/lib/clients/definitions";
+import {
+  IClientReq,
+  IClientRes,
+  IFClient,
+  IGruposClients,
+  IStateUpdateClient,
+} from "@/lib/clients/definitions";
 import { editClient } from "@/lib/clients/actions/action";
+import axios from "axios";
 
 const useFormEditClient = (client: IClientRes, redirect: boolean) => {
-  
+  const [loadingInfo, setLoadigInfo] = useState(false);
   const [loading, startTransaction] = useTransition();
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const [state, formAction] = useActionState<IStateUpdateClient, IClientReq>(
     editClient,
     null
@@ -22,19 +30,45 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
     watch,
     setValue,
     reset,
-  } = useForm({
+    clearErrors,
+  } = useForm<IFClient>({
+    defaultValues: {
+      fecha_agendada: undefined,
+    },
     resolver: yupResolver<IFClient>(schemaClient),
   });
 
   const onSubmit = (formData: IFClient) => {
+    console.log("formData", formData);
     const data = { ...formData, id_cliente: client.id_cliente, redirect };
     startTransaction(() => formAction(data));
+  };
+
+  const getInfoByNroDni = async () => {
+    const API = `/api/document/dni/${watch("nro_documento")}`;
+    try {
+      setLoadigInfo(true);
+      const response = await axios.get(API);
+
+      if (response.status === 200) {
+        const { data } = response;
+        clearErrors("nro_documento");
+        setValue("nombre", data.nombres);
+        setValue("apellido", `${data.apellidoPaterno} ${data.apellidoMaterno}`);
+      }
+    } catch (error) {
+      console.error(error);
+      setValue("nombre", "");
+      setValue("apellido", "");
+    } finally {
+      setLoadigInfo(false);
+    }
   };
 
   useEffect(() => {
     const edad = parseInt(watch("edad") || "", 10);
 
-    const grupos = [
+    const grupos: IGruposClients[] = [
       { min: 9, max: 12, grupo: "1" },
       { min: 13, max: 17, grupo: "2" },
       { min: 18, max: 55, grupo: "3" },
@@ -42,8 +76,40 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
 
     const grupo =
       grupos.find(({ min, max }) => edad >= min && edad <= max)?.grupo || "";
+
     setValue("grupo", grupo);
   }, [watch().edad]);
+
+  useEffect(() => {
+    const tipoDocumento = watch("tipo_documento");
+    if (!tipoDocumento) clearErrors("nro_documento");
+  }, [watch("tipo_documento")]);
+
+  useEffect(() => {
+    const tipoDocumento = watch("tipo_documento");
+    const nroDocumento = watch("nro_documento");
+    if (!nroDocumento) {
+      setValue("nombre", "");
+      setValue("apellido", "");
+    }
+    if (!isFirstRender && tipoDocumento) {
+      switch (tipoDocumento) {
+        case "1":
+          if (nroDocumento.length === 8) {
+            getInfoByNroDni();
+          }
+          break;
+        case "2":
+          if (nroDocumento.length === 11) {
+          }
+          break;
+
+        default:
+          break;
+      }
+    }
+    if (isFirstRender) setIsFirstRender(false);
+  }, [watch("nro_documento")]);
 
   useEffect(() => {
     reset(client);
@@ -59,6 +125,7 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
     watch,
     loading,
     state,
+    loadingInfo,
   };
 };
 

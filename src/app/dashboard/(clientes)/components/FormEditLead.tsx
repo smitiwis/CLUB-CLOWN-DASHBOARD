@@ -9,11 +9,23 @@ import {
   Select,
   SelectedItems,
   SelectItem,
+  Spinner,
   Switch,
 } from "@nextui-org/react";
 import React, { FC, useEffect, useState } from "react";
-import { COLORES, GROUPS_CLIENT, IColors } from "@/constants";
-import { IBClientRes, IClientRes, IStateCliente } from "@/lib/clients/definitions";
+import {
+  COLORES,
+  DOCUMENTS,
+  GROUPS_CLIENT,
+  IColors,
+  IOptionSelect,
+  ORIGENES_CLIENTS,
+} from "@/constants";
+import {
+  IBClientRes,
+  IClientRes,
+  IStateCliente,
+} from "@/lib/clients/definitions";
 import useFormEditClient from "../hooks/useFormEditclient";
 
 type Props = {
@@ -35,6 +47,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
     setValue,
     setError,
     watch,
+    loadingInfo,
   } = useFormEditClient(client, redirect);
 
   const [statusForm, setStatusForm] = useState<IStateCliente>(state);
@@ -57,12 +70,11 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
     }
   }, [showApod]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (state && state.client && !loading && onUpdate) {
-      onUpdate(state.client)
+      onUpdate(state.client);
     }
-
-  },[state, loading])
+  }, [state, loading]);
 
   return (
     <>
@@ -75,7 +87,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
           />
         </div>
       )}
-      
+
       <Form onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full flex gap-4">
           <div className="flex flex-col flex-1">
@@ -91,6 +103,67 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               isInvalid={!!errors.telefono}
               errorMessage={errors.telefono?.message}
             />
+
+            <Select
+              {...register("origen")}
+              className="mb-4"
+              label="Origen del cliente"
+              defaultSelectedKeys={[ORIGENES_CLIENTS[0].key]}
+              items={ORIGENES_CLIENTS}
+              size="lg"
+              isInvalid={!!errors.origen}
+              errorMessage={errors.origen?.message}
+              renderValue={(items: SelectedItems<IOptionSelect>) => {
+                return items.map((item) => (
+                  <div key={item.key} className="flex items-center gap-2">
+                    <div>I</div>
+                    <div className="flex flex-col">
+                      <span>{item.data?.label}</span>
+                    </div>
+                  </div>
+                ));
+              }}
+            >
+              {({ key, label }) => (
+                <SelectItem key={key} textValue={label}>
+                  <div className="flex gap-x-2">
+                    <div>I</div>
+                    <span className="text-small">{label}</span>
+                  </div>
+                </SelectItem>
+              )}
+            </Select>
+
+            <div className="flex gap-x-3 mb-4">
+              <Select
+                {...register("tipo_documento")}
+                className="w-[35%]"
+                label="Tipo doc"
+                items={DOCUMENTS}
+                size="lg"
+                isInvalid={!!errors.tipo_documento}
+                errorMessage={errors.tipo_documento?.message}
+              >
+                {(document) => (
+                  <SelectItem key={document.key} textValue={document.label}>
+                    <div className="flex flex-col">
+                      <span className="text-small">{document.label}</span>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
+              <Input
+                {...register("nro_documento")}
+                endContent={loadingInfo && <Spinner />}
+                className="w-[65%]"
+                isDisabled={!watch().tipo_documento || loadingInfo}
+                value={watch().nro_documento}
+                label="Nro de documento"
+                size="lg"
+                isInvalid={!!errors.nro_documento}
+                errorMessage={errors.nro_documento?.message}
+              />
+            </div>
 
             <div className="flex items-center h-full gap-4 mb-4">
               <div className="flex flex-col gap-2 py-1">
@@ -114,19 +187,21 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               className="mb-4"
               label="Nombres"
               size="lg"
+              value={watch("nombre")}
               isInvalid={!!errors.nombre}
               errorMessage={errors.nombre?.message}
             />
+          </div>
+          <div className="flex flex-col flex-1">
             <Input
               {...register("apellido")}
               className="mb-4"
               label="Apellidos"
               size="lg"
+              value={watch("apellido")}
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}
             />
-          </div>
-          <div className="flex flex-col flex-1">
             <Input
               {...register("edad")}
               className="mb-4"
@@ -155,7 +230,24 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
                 <SelectItem key={key}>{label}</SelectItem>
               ))}
             </Select>
-            
+            <div className="flex gap-x-3 mb-4">
+              <Input
+                {...register("direccion")}
+                className="w-[75%]"
+                label="Dirección"
+                size="lg"
+                isInvalid={!!errors.direccion}
+                errorMessage={errors.direccion?.message}
+              />
+              <Input
+                {...register("nro_direccion")}
+                className="w-[25%]"
+                label="Nro."
+                size="lg"
+                isInvalid={!!errors.nro_direccion}
+                errorMessage={errors.nro_direccion?.message}
+              />
+            </div>
             <Select
               {...register("estado")}
               isDisabled

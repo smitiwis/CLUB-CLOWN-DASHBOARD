@@ -33,7 +33,7 @@ export async function fetchClientById(id: string) {
       throw new Error("cliente no encontrado.");
     }
 
-    return cliente;
+    return cliente as IBClientRes;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch invoice.");

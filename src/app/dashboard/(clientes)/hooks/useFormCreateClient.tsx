@@ -38,6 +38,27 @@ const useFormCreateClient = () => {
     startTransaction(() => formAction(formData));
   };
 
+  const getInfoByNroDni = async () => {
+    const API = `/api/document/dni/${watch("nro_documento")}`;
+    try {
+      setLoadigInfo(true);
+      const response = await axios.get(API);
+
+      if (response.status === 200) {
+        const { data } = response;
+        clearErrors("nro_documento");
+        setValue("nombre", data.nombres);
+        setValue("apellido", data.apellidoPaterno + " " + data.apellidoMaterno);
+      }
+    } catch (error) {
+      console.error(error);
+      setValue("nombre", "");
+      setValue("apellido", "");
+    } finally {
+      setLoadigInfo(false);
+    }
+  };
+
   useEffect(() => {
     const edad = parseInt(watch("edad") || "", 10);
 
@@ -59,26 +80,6 @@ const useFormCreateClient = () => {
     if (!tipoDocumento) clearErrors("nro_documento");
   }, [watch("tipo_documento")]);
 
-  const getInfoByNroDni = async () => {
-    const API = `/api/document/dni/${watch("nro_documento")}`;
-    try {
-      setLoadigInfo(true);
-      const response = await axios.get(API);
-
-      if (response.status === 200) {
-        const { data } = response;
-        clearErrors("nro_documento");
-        setValue("nombre", data.nombres);
-        setValue("apellido", data.apellidoPaterno + " " + data.apellidoMaterno);
-      }
-    } catch (error) {
-      console.error(error);
-      setValue("nombre", "");
-      setValue("apellido", "");
-    } finally {
-      setLoadigInfo(false);
-    }
-  };
   useEffect(() => {
     const tipoDocumento = watch("tipo_documento");
     const nroDocumento = watch("nro_documento");
@@ -91,7 +92,6 @@ const useFormCreateClient = () => {
         break;
       case "2":
         if (nroDocumento.length === 11) {
-          
         }
         break;
 

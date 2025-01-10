@@ -7,11 +7,11 @@ console.log("connected to db");
 
 const seedUsuarios = async () => {
   console.log("Conectando a la base de datos...");
-
+  const roles = await prisma.rol.findMany();
   // Datos iniciales
   const usuarios = [
     { 
-      id_rol:"a244cfe0-c681-4f4d-8839-5103d62e4625",
+      id_rol: roles[0].id_rol,
       nombre: "Luis Angel",
       apellido: "Peralta Diaz",
       telefono: "912342510",
@@ -21,25 +21,36 @@ const seedUsuarios = async () => {
       correo: "sistemas.luismi@gmail.com",
       password: "Rosefer-bb123", // Esto debería ser encriptado en producción
     },
+    { 
+      id_rol: roles[0].id_rol,
+      nombre: "Andreu",
+      apellido: "Ayaipoma Condi",
+      telefono: "954918555",
+      dni: "47168520",
+      fecha_ingreso: "2024-01-09",
+      estado: "0", // Puede ser "activo" o "inactivo"
+      correo: "sistemas.luismi@gmail.com",
+      password: "123456", // Esto debería ser encriptado en producción
+    },
     {
-      id_rol:"a244cfe0-c681-4f4d-8839-5103d62e4625",
+      id_rol: roles[1].id_rol,
       nombre: "Ester",
       apellido: "Carhuamaca Chancasanampa",
       telefono: "954232400",
       dni: "47393996",
-      fecha_ingreso: "01-01-2025",
-      estado: "0", // Puede ser "activo" o "inactivo"
+      fecha_ingreso: "2025-01-06",
+      estado: "1", // Puede ser "activo" o "inactivo"
       correo: "ester@gmail.com",
       password: "123456", // Esto debería ser encriptado en producción
     },
     {
-      id_rol:"e4c42975-ee4e-408c-8175-862bb77c754f",
+      id_rol:roles[2].id_rol,
       nombre: "Kevin",
       apellido: "Arauco",
       telefono: "964912022",
       dni: "47638595",
       fecha_ingreso: "2024-12-15",
-      estado: "0", // Puede ser "activo" o "inactivo"
+      estado: "1", // Puede ser "activo" o "inactivo"
       correo: "kevin@gmail.com",
       password: "123456", // Esto debería ser encriptado en producción
     },
@@ -141,8 +152,8 @@ const seedRoles = async () => {
 export async function GET() {
   try {
     // Llamar a la función que inserta los usuarios
-    // await seedRoles();
-    // await seedUsuarios();
+    await seedRoles();
+    await seedUsuarios();
     // await seedClientes();
 
     // Responder con un mensaje de éxito
