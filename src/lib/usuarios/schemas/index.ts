@@ -4,6 +4,8 @@ import * as yup from "yup";
 const { EMAIL, DNI_REGEX, PASSWORD_MIN_LENGTH } = REGEX;
 
 export const schemaUsuario = yup.object().shape({
+  id_rol: yup.string().required("Rol es requerido."),
+  
   nombre: yup
     .string()
     .required("Nombre es requerido.")

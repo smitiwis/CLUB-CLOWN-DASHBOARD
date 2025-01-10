@@ -22,6 +22,7 @@ export async function createUsuario(
     });
 
     const {
+      id_rol,
       nombre,
       apellido,
       telefono,
@@ -77,6 +78,7 @@ export async function createUsuario(
     // CREAR USUARIO
     await prisma.usuario.create({
       data: {
+        id_rol, // Rol de usuario
         nombre,
         apellido,
         telefono,

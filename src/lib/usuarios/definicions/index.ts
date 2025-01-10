@@ -1,3 +1,15 @@
+export interface IUsuarioForm  {
+  id_rol: string;
+  nombre: string;
+  apellido: string;
+  telefono: string;
+  dni: string;
+  fecha_ingreso: string;
+  estado: string;
+  correo: string;
+  password: string;
+}
+
 export interface IUsuario {
   nombre: string;
   apellido: string;
@@ -9,15 +21,11 @@ export interface IUsuario {
   rol: {id_rol: string, nombre: string};
 }
 
-export interface IUsuarioForm extends IUsuario {
-  password: string;
-}
-
 export interface IUsuarioRes extends IUsuario {
   id_usuario: string;
 }
 
-export interface IUsuarioReq extends IUsuario {
+export interface IUsuarioReq extends IUsuarioForm {
   id_usuario: string;
 }
 

@@ -14,11 +14,11 @@ export async function fetchUsuarios() {
         estado: true,
         correo: true,
         rol: {
-          select:{
+          select: {
             id_rol: true,
             nombre: true,
-          }
-        }
+          },
+        },
       },
     });
 
@@ -37,21 +37,27 @@ export async function fetchUserById(id_usuario: string) {
       where: {
         id_usuario,
       },
+      select: {
+        id_usuario: true,
+        nombre: true,
+        apellido: true,
+        telefono: true,
+        dni: true,
+        fecha_ingreso: true,
+        estado: true,
+        correo: true,
+        rol: {
+          select: {
+            id_rol: true,
+            nombre: true,
+          },
+        },
+      },
     });
     if (!user) {
       throw new Error("Usuario no encontrado.");
     }
-    return {
-      id_usuario: user.id_usuario,
-      nombre: user.nombre,
-      apellido: user.apellido,
-      telefono: user.telefono,
-      dni: user.dni,
-      fecha_ingreso: user.fecha_ingreso,
-      estado: user.estado,
-      correo: user.correo,
-      password: '',
-    };
+    return user;
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Error al obtener usuario.");

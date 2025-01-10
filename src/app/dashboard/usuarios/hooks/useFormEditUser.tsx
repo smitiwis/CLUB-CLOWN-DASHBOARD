@@ -29,7 +29,7 @@ const useFormEditUser = (usuario: IUsuarioRes) => {
   });
 
   const onSubmit = (formData: IUsuarioForm) => {
-    const data = { ...formData, id_usuario: usuario.id_usuario };
+    const data = { ...formData, id_usuario: usuario.id_usuario, id_rol:"" };
     startTransaction(() => formAction(data));
   };
 
