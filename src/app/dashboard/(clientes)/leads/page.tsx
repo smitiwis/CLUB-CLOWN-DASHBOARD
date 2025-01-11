@@ -1,6 +1,7 @@
 import { fetchClients } from "@/lib/clients/services";
 import ClientsList from "../components/ClientsList";
-import { Button, Link } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
+import Link from "next/link";
 
 const Page = async () => {
   const clientsList = await fetchClients();

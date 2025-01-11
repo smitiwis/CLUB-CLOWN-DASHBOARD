@@ -39,7 +39,6 @@ export async function fetchLlamadas() {
         fecha_creacion: format(llamada.fecha_creacion, 'D de MMM h:mm a'),
       }
     });
-    console.log("callsList", callsList);
 
     return callsList;
   } catch (err) {

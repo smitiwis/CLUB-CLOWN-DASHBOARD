@@ -7,10 +7,9 @@ import CallsList from "../components/CallsList";
 const Page = async () => {
   const callsList = await fetchLlamadas();
   if (callsList instanceof Error) {
-    console.error("Error al cargar las llamadas", callsList);
+    console.error("Error al cargar las llamadas");
     return <div>Error al cargar las llamadas</div>;
   }
-  console.log("callsList", callsList);
   return (
     <>
       <div className="flex justify-between items-center mb-3">

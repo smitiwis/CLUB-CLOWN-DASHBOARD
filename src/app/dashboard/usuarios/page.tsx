@@ -1,7 +1,8 @@
 import React from "react";
 import { fetchUsuarios } from "@/lib/usuarios/services";
 import UsersList from "./components/UsersList";
-import { Button, Link } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
+import Link from "next/link";
 
 const Page = async () => {
   const userList = await fetchUsuarios();

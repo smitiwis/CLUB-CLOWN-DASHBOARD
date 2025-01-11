@@ -10,15 +10,14 @@ import {
 import { signOut } from "next-auth/react";
 import React, { FC } from "react";
 
-interface IUser {
+interface IUserProfile {
   user: {
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
+    name: string;
+    rolName: string;
   };
 }
 
-const HeaderProfile: FC<IUser> = ({ user }) => {
+const HeaderProfile: FC<IUserProfile> = ({ user }) => {
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
@@ -26,7 +25,7 @@ const HeaderProfile: FC<IUser> = ({ user }) => {
           as="button"
           avatarProps={{ isBordered: true }}
           className="transition-transform"
-          description="Admin"
+          description={user.rolName}
           name={user.name}
         />
       </DropdownTrigger>

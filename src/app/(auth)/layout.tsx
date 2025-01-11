@@ -1,9 +1,10 @@
-import { Button, Link } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import Image from "next/image";
 import React, { FC } from "react";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/authOptions";
+import Link from "next/link";
 
 type Props = {
   children: React.ReactNode;
