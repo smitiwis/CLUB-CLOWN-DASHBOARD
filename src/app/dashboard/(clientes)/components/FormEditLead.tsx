@@ -48,6 +48,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
     setError,
     watch,
     loadingInfo,
+    hasDataByDocument
   } = useFormEditClient(client, redirect);
 
   const [statusForm, setStatusForm] = useState<IStateCliente>(state);
@@ -187,6 +188,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               className="mb-4"
               label="Nombres"
               size="lg"
+              isDisabled={hasDataByDocument}
               value={watch("nombre")}
               isInvalid={!!errors.nombre}
               errorMessage={errors.nombre?.message}
@@ -198,6 +200,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               className="mb-4"
               label="Apellidos"
               size="lg"
+              isDisabled={hasDataByDocument}
               value={watch("apellido")}
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}

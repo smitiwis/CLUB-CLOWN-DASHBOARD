@@ -68,7 +68,6 @@ export async function fetchUserById(id_usuario: string) {
 
 export async function fetchProfileById(id_usuario: string) {
   try {
-    console.log("==> id_usuario ==== : ", id_usuario);
     const user = await prisma.usuario.findUnique({
       where: {
         id_usuario,
@@ -91,7 +90,6 @@ export async function fetchProfileById(id_usuario: string) {
       },
     });
 
-    console.log("===> user: ", user);
     if (!user) {
       throw new Error("Usuario no encontrado.");
     }

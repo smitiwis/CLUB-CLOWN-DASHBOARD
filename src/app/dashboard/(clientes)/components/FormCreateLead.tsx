@@ -38,6 +38,7 @@ const FormcreateClient = () => {
     setError,
     watch,
     loadingInfo,
+    hasDataByDocument,
   } = useFormCreateClient();
 
   const [statusForm, setStatusForm] = useState<IStateCliente>(state);
@@ -161,12 +162,15 @@ const FormcreateClient = () => {
                 />
               )}
             </div>
-
+            <pre>
+              {JSON.stringify(hasDataByDocument, null, 2)}
+            </pre>
             <Input
               {...register("nombre")}
               className="mb-4"
               label="Nombres"
               size="lg"
+              isDisabled={hasDataByDocument}
               value={watch("nombre")}
               isInvalid={!!errors.nombre}
               errorMessage={errors.nombre?.message}
@@ -178,6 +182,7 @@ const FormcreateClient = () => {
               className="mb-4"
               label="Apellidos"
               size="lg"
+              isDisabled={hasDataByDocument}
               value={watch("apellido")}
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}

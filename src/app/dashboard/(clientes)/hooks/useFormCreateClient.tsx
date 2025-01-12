@@ -12,6 +12,7 @@ import { createClient } from "@/lib/clients/actions/action";
 import axios from "axios";
 
 const useFormCreateClient = () => {
+  const [hasDataByDocument, setHasDataByDocument] = useState(false);
   const [loadingInfo, setLoadigInfo] = useState(false);
   const [loading, startTransaction] = useTransition();
   const [state, formAction] = useActionState<IStateCliente, IFClient>(
@@ -43,14 +44,16 @@ const useFormCreateClient = () => {
     try {
       setLoadigInfo(true);
       const response = await axios.get(API);
-
+      
       if (response.status === 200) {
+        setHasDataByDocument(true);
         const { data } = response;
         clearErrors("nro_documento");
         setValue("nombre", data.nombres);
         setValue("apellido", data.apellidoPaterno + " " + data.apellidoMaterno);
       }
     } catch (error) {
+      setHasDataByDocument(false);
       console.error(error);
       setValue("nombre", "");
       setValue("apellido", "");
@@ -111,6 +114,7 @@ const useFormCreateClient = () => {
     loading,
     state,
     loadingInfo,
+    hasDataByDocument
   };
 };
 
