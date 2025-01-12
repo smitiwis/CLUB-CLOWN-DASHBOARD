@@ -10,9 +10,9 @@ const RootLayout: FC<Props> = ({ children }) => {
   return (
     <div className="grid grid-cols-[256px,1fr] grid-rows-1 h-screen">
       <AsideMain />
-      <div className="grid grid-cols-1 grid-rows-[60px,1fr] h-full overflow-y-auto">
+      <div className="grid grid-cols-1 grid-rows-[70px,1fr] h-full overflow-y-auto">
         <HeaderMain />
-        <main className="p-8 flex-1">{children}</main>
+        <main className="p-6 flex-1 bg-gray-900">{children}</main>
       </div>
     </div>
   );

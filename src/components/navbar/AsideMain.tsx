@@ -3,6 +3,8 @@
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import { Divider } from "@nextui-org/react";
 
 const AsideMain = () => {
   const pathname = usePathname();
@@ -30,17 +32,25 @@ const AsideMain = () => {
   ];
 
   return (
-    <aside className="w-64 bg-gray-900 border-r-1 border-gray-700">
-      <div className="p-6 h-full">
+    <aside className="w-64 px-6 pt-8 pb-6 bg-gray-900 border-r-1 border-gray-700">
+      <div className="h-full">
         <nav>
           <ul className="space-y-4">
             <li>
               <Link
-                className="text-2xl font-bold text-center text-white mb-8"
+                className="flex flex-col gap-y-3 items-center text-2xl font-bold text-center text-white mb-8"
                 href="/dashboard"
               >
+                <Image
+                  className="rounded-full shadow-md shadow-slate-700"
+                  src="/images/logo.jpg"
+                  alt="Logo"
+                  width={100}
+                  height={100}
+                />
                 Dashboard
               </Link>
+              <Divider className="mb-6"/>
             </li>
             {menuItems.map((item) => (
               <li key={item.id}>

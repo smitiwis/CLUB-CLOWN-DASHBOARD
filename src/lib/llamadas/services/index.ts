@@ -30,14 +30,13 @@ export async function fetchLlamadas() {
     });
 
     const callsList: IBClientCallRes[] = llamadas.map((llamada, i) => {
-
       return {
         ...llamada,
         key: i + 1,
         tipo: llamada.tipo as TIPO_CALL,
         resultado: llamada.resultado as RESULTADO_CALL,
-        fecha_creacion: format(llamada.fecha_creacion, 'D de MMM h:mm a'),
-      }
+        fecha_creacion: format(llamada.fecha_creacion, "D de MMM h:mm a"),
+      };
     });
 
     return callsList;
@@ -47,4 +46,34 @@ export async function fetchLlamadas() {
   } finally {
     await prisma.$disconnect(); // Asegurarse de desconectar la base de datos
   }
+}
+
+export async function fetchStateCalls(id_usuario: string) {
+  const hoy = new Date();
+  const inicioDia = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+  const finDia = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + 1);
+
+  // Obtener el total de llamadas y las de hoy
+  const [totalLlamadas, llamadasHoy] = await Promise.all([
+    prisma.cliente_llamada.count({
+      where: {
+        id_usuario,
+      },
+    }),
+    prisma.cliente_llamada.count({
+      where: {
+        id_usuario,
+        fecha_creacion: {
+          gte: inicioDia,
+          lt: finDia,
+        },
+      },
+    }),
+  ]);
+
+  console.log({ totalLlamadas, llamadasHoy });
+  return {
+    totalLlamadas,
+    llamadasHoy,
+  };
 }

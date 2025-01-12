@@ -92,20 +92,27 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
       setValue("nombre", "");
       setValue("apellido", "");
     }
-    if (!isFirstRender && tipoDocumento) {
-      switch (tipoDocumento) {
-        case "1":
-          if (nroDocumento.length === 8) {
-            getInfoByNroDni();
-          }
-          break;
-        case "2":
-          if (nroDocumento.length === 11) {
-          }
-          break;
 
-        default:
-          break;
+    debugger;
+    if (tipoDocumento) {
+      if (client.nro_documento !== nroDocumento) {
+        switch (tipoDocumento) {
+          case "1":
+            if (nroDocumento.length === 8) {
+              getInfoByNroDni();
+            }
+            break;
+          case "2":
+            if (nroDocumento.length === 11) {
+            }
+            break;
+
+          default:
+            break;
+        }
+      } else {
+        setValue("nombre", client.nombre);
+        setValue("apellido", client.apellido);
       }
     }
     if (isFirstRender) setIsFirstRender(false);
