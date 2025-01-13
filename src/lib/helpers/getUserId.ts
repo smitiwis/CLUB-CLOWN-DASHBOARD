@@ -1,4 +1,11 @@
-import { COLORES, GROUPS_CLIENT } from "@/constants";
+import {
+  COLORES,
+  DOCUMENTS,
+  GROUPS_CLIENT,
+  ORIGENES_CLIENTS,
+  RESULTADO_LLAMADAS,
+  TIPO_LLAMADAS,
+} from "@/constants";
 import { getServerSession, Session } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "../authOptions";
@@ -19,4 +26,20 @@ export const getLabelColor = (estado: string) => {
 
 export const getGrupoCliente = (grupo: string) => {
   return GROUPS_CLIENT.find(({ key }) => key === grupo)?.label || "";
+};
+
+export const getOrigenCliente = (grupo: string) => {
+  return ORIGENES_CLIENTS.find(({ key }) => key === grupo)?.label || "";
+};
+
+export const getTipeDocument = (tipo: string) => {
+  return DOCUMENTS.find(({ key }) => key === tipo)?.label || "";
+};
+
+export const getTipeLlamada = (tipo: string) => {
+  return TIPO_LLAMADAS.find(({ key }) => key === tipo)?.label || "";
+};
+
+export const getResultLlamada = (tipo: string) => {
+  return RESULTADO_LLAMADAS.find(({ key }) => key === tipo)?.label || "";
 };
