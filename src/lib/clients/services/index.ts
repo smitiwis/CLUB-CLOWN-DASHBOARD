@@ -60,7 +60,6 @@ export async function fetchClients() {
         direccion: true,
         nro_direccion: true,
         origen: true,
-        fecha_agendada: true,
       },
     });
 
@@ -94,7 +93,6 @@ export async function fetchDetailsClient(id_cliente: string) {
         direccion: true,
         nro_direccion: true,
         origen: true,
-        fecha_agendada: true,
         cliente_llamada: {
           select: {
             id_cliente_llamada: true,

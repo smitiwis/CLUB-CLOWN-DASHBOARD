@@ -28,6 +28,7 @@ export async function createClientLlamada(
         observacion: formData.observacion || "",
         tipo: formData.tipo,
         resultado: formData.resultado,
+        fecha_agendada: formData.fecha_agendada,
       },
     });
 
@@ -39,7 +40,6 @@ export async function createClientLlamada(
       where: { id_cliente: formData.id_cliente },
       data: {
         estado: formData.estado,
-        fecha_agendada: formData.fecha_agendada,
       },
     });
 

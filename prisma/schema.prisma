@@ -62,7 +62,6 @@ model cliente {
   edad                String    @db.VarChar(2)
   grupo               String    @db.VarChar(1)
   estado              String    @default("3") @db.VarChar(1)
-  fecha_agendada      DateTime?
   
   fecha_creacion      DateTime  @default(now())
   fecha_actualizacion DateTime  @default(now())
@@ -82,6 +81,8 @@ model cliente_llamada {
   observacion         String   @db.Text
   tipo                String   @default("3") @db.VarChar(1)
   resultado           String   @default("1") @db.VarChar(1)
+  fecha_agendada      DateTime?
+  agenda_atendida     String   @db.VarChar(1)
   
   fecha_creacion      DateTime @default(now())
   fecha_actualizacion DateTime @default(now())

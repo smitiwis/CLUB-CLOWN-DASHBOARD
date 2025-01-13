@@ -1,14 +1,19 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
-  const numeroDocument = req.url.split("/").pop();
+type params = {
+  params: {
+    numero: string;
+  };
+};
+
+export async function GET(req: NextRequest, { params }: params) {
 
   const path = process.env.NEXT_PATH_DOC;
   const token = process.env.NEXT_TOKEN_DOC;
   try {
     const response = await axios.get(
-      `${path}/dni/${numeroDocument}?token=${token}`
+      `${path}/dni/${params.numero}?token=${token}`
     );
     if (!response.data.success) {
       return NextResponse.json(
