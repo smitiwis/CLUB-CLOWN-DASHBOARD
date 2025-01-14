@@ -103,12 +103,7 @@ const Page = async ({ params }: Params) => {
               <span>{getGrupoCliente(cliente.grupo)}</span>
             </p>
           )}
-          {cliente.fecha_agendada && (
-            <p className="text-lg flex gap-x-2">
-              <strong className="text-gray-400">Fecha Agendada:</strong>
-              <span>{String(cliente.fecha_agendada)}</span>
-            </p>
-          )}
+  
           <p className="text-lg flex gap-x-2">
             <strong className="text-gray-400">Total Llamadas:</strong>
             <span>{cliente.cliente_llamada.length || 0}</span>
