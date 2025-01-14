@@ -16,13 +16,12 @@ const HeaderMain = async () => {
   const userProfile = {
     name: profile.nombre,
     rolName: profile.rol.nombre,
-  }
+    callsPending: profile.callsPending,
+  };
 
   return (
     <div className="bg-gray-900 h-full py-3 px-8 flex justify-end items-center border-b-1 border-gray-700">
-      <HeaderProfile
-        user={userProfile}
-      />
+      <HeaderProfile user={userProfile} />
     </div>
   );
 };

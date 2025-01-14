@@ -81,7 +81,6 @@ const FormRegisterCall: FC<Props> = (props) => {
     }
   }, [selectedIdClient]);
 
-  console.log("ERRORS: ", errors);
 
   return (
     <>
@@ -94,78 +93,8 @@ const FormRegisterCall: FC<Props> = (props) => {
           />
         </div>
       )}
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col flex-1 w-full">
-          {clientSelected && (
-            <Card className=" w-1/2 mx-auto" isHoverable shadow="md">
-              <CardHeader className="gap-x-4">
-                <h1 className="text-2xl font-semibold text-gray-400">
-                  Detalles del cliente
-                </h1>
-              </CardHeader>
-              <Divider />
-
-              <CardBody>
-                <div className="grid grid-cols-2 gap-2 rounded-md shadow-md">
-                  <InfoValue
-                    label="Telefono: "
-                    value={
-                      <Chip color="secondary" variant="shadow">
-                        {clientSelected?.telefono}
-                      </Chip>
-                    }
-                  />
-                  <InfoValue
-                    label="Nombre del Apoderado: "
-                    value={clientSelected.nombre_apo}
-                  />
-                  <InfoValue label="Nombre:" value={clientSelected.nombre} />
-                  <InfoValue
-                    label="Apellido:"
-                    value={clientSelected.apellido}
-                  />
-                  <InfoValue
-                    label="Edad: "
-                    value={
-                      clientSelected.edad ? `${clientSelected.edad} años` : ""
-                    }
-                  />
-                  <InfoValue
-                    label="Grupo:"
-                    value={getGrupoCliente(clientSelected.grupo)}
-                  />
-                  <InfoValue
-                    label="Estado:"
-                    value={
-                      <Chip
-                        size="sm"
-                        variant="faded"
-                        className="flex items-center gap-x-1"
-                        style={{ color: getColor(clientSelected.estado) }}
-                      >
-                        <div className="flex items-center gap-x-2">
-                          <div
-                            className="w-[0.5rem] h-[0.5rem] rounded-full"
-                            style={{
-                              background: getColor(clientSelected.estado),
-                            }}
-                          />
-                          {getLabelColor(clientSelected.estado)}
-                        </div>
-                      </Chip>
-                    }
-                  />
-                </div>
-              </CardBody>
-              <Divider />
-              <CardFooter>
-                <Button fullWidth color="primary" onPress={onOpen}>
-                  ACTUALIZAR VALORES
-                </Button>
-              </CardFooter>
-            </Card>
-          )}
-        </div>
+      <div className="flex  gap-4">
+   
 
         <div className="flex flex-col flex-1">
           <h1 className="text-2xl font-semibold text-gray-400 mb-4">
@@ -233,7 +162,7 @@ const FormRegisterCall: FC<Props> = (props) => {
                   className="mb-4"
                   label="Estado"
                   items={COLORES}
-                  defaultSelectedKeys={[COLORES[2].key]}
+                  defaultSelectedKeys={[COLORES[3].key]}
                   size="lg"
                   isInvalid={!!errors.estado}
                   errorMessage={errors.estado?.message}
@@ -329,6 +258,77 @@ const FormRegisterCall: FC<Props> = (props) => {
           </Form>
         </div>
 
+        <div className="flex flex-col flex-1 w-full">
+          {clientSelected && (
+            <Card className="w-full " isHoverable shadow="md">
+              <CardHeader className="gap-x-4">
+                <h1 className="text-2xl font-semibold text-gray-400">
+                  Detalles del Lead
+                </h1>
+              </CardHeader>
+              <Divider />
+
+              <CardBody>
+                <div className="grid grid-cols-2 gap-2 rounded-md shadow-md">
+                  <InfoValue
+                    label="Telefono: "
+                    value={
+                      <Chip color="secondary" variant="shadow">
+                        {clientSelected?.telefono}
+                      </Chip>
+                    }
+                  />
+                  <InfoValue
+                    label="Nombre del Apoderado: "
+                    value={clientSelected.nombre_apo}
+                  />
+                  <InfoValue label="Nombre:" value={clientSelected.nombre} />
+                  <InfoValue
+                    label="Apellido:"
+                    value={clientSelected.apellido}
+                  />
+                  <InfoValue
+                    label="Edad: "
+                    value={
+                      clientSelected.edad ? `${clientSelected.edad} años` : ""
+                    }
+                  />
+                  <InfoValue
+                    label="Grupo:"
+                    value={getGrupoCliente(clientSelected.grupo)}
+                  />
+                  <InfoValue
+                    label="Estado:"
+                    value={
+                      <Chip
+                        size="sm"
+                        variant="faded"
+                        className="flex items-center gap-x-1"
+                        style={{ color: getColor(clientSelected.estado) }}
+                      >
+                        <div className="flex items-center gap-x-2">
+                          <div
+                            className="w-[0.5rem] h-[0.5rem] rounded-full"
+                            style={{
+                              background: getColor(clientSelected.estado),
+                            }}
+                          />
+                          {getLabelColor(clientSelected.estado)}
+                        </div>
+                      </Chip>
+                    }
+                  />
+                </div>
+              </CardBody>
+              <Divider />
+              <CardFooter>
+                <Button  color="primary" variant="ghost" onPress={onOpen}>
+                  Actualizar Lead
+                </Button>
+              </CardFooter>
+            </Card>
+          )}
+        </div>
         {/* MODAL */}
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl">
           <ModalContent>

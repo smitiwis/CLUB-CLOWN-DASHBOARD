@@ -28,7 +28,6 @@ type Props = {
 
 const ClientsList: FC<Props> = ({ clientsList }) => {
   const router = useRouter();
-  console.log("clientsList", clientsList);
 
   const rows: IRowClientTable[] = clientsList.map((lead, i) => {
     const isAgendaAfter =
@@ -55,7 +54,6 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
           : null,
     };
   });
-  console.log("rows", rows);
   const columns = [
     {
       key: "estado",
@@ -108,10 +106,23 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
       case "estado":
         const color = COLORES.find((color) => color.key === cellValue);
         return (
-          <div
-            className="w-[.5rem] h-[.5rem] rounded-full"
-            style={{ background: color?.code || "white" }}
-          />
+          <Tooltip
+            showArrow
+            classNames={{
+              base: ["before:bg-neutral-400 dark:before:bg-white"],
+              content: [
+                "py-2 px-4 shadow-xl",
+                "text-black bg-gradient-to-br from-white to-neutral-400",
+              ],
+            }}
+            content={color?.label}
+            placement="right"
+          >
+            <div
+              className="w-[1.75rem] h-[1.75rem] rounded-full"
+              style={{ background: color?.code || "white" }}
+            />
+          </Tooltip>
         );
 
       case "estadoAgenda":
@@ -135,7 +146,7 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
                   ],
                 }}
               >
-                <Chip color={statusColorAgenda[cellValue]} variant="faded">
+                <Chip color={statusColorAgenda[cellValue]} variant="light">
                   {value?.label}
                 </Chip>
               </Tooltip>

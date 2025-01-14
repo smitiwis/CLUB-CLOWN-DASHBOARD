@@ -71,7 +71,6 @@ export async function fetchStateCalls(id_usuario: string) {
     }),
   ]);
 
-  console.log({ totalLlamadas, llamadasHoy });
   return {
     totalLlamadas,
     llamadasHoy,

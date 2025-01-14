@@ -7,7 +7,7 @@ export async function GET() {
       status: 200,
     });
   } catch (error: unknown) {
-    console.log(error)
+    console.error(error)
     // Usar 'unknown' en lugar de 'any'
     // Verificar si el error tiene la propiedad 'message'
     if (error instanceof Error) {

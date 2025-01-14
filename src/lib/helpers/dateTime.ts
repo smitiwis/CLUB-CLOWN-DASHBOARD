@@ -9,8 +9,6 @@ export function convertToPrismaDate(date: ZonedDateTime): Date {
     Date.UTC(year, month - 1, day, hour + 5, minute, second, millisecond)
   );
 
-  // Log para ver la fecha convertida a UTC
-  console.log("Fecha en UTC:", utcDate);
 
   return utcDate; // Devolvemos la fecha en UTC
 }

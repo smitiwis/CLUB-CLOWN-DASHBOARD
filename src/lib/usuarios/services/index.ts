@@ -93,15 +93,25 @@ export async function fetchProfileById(id_usuario: string) {
     if (!user) {
       throw new Error("Usuario no encontrado.");
     }
+
+    const callsPending = await prisma.cliente_llamada.count({
+      where: {
+        id_usuario, // Reemplaza con el ID del usuario
+        estado_agenda: "1", // Estado pendiente
+        fecha_agendada: { not: null }, // Asegurarse de que está agendada
+      },
+    });
+
     return {
       nombre: user.nombre,
       apellido: user.apellido,
       estado: user.estado,
-      
-      rol:{
+      callsPending,
+
+      rol: {
         id_rol: user.rol.id_rol,
-        nombre: user.rol.nombre
-      }
+        nombre: user.rol.nombre,
+      },
     };
   } catch (err) {
     console.error("Database Error:", err);

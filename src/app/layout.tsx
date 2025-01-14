@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "../icons/styles.css"
+
 import { FC } from "react";
 
 export const metadata: Metadata = {

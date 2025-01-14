@@ -8,8 +8,8 @@ export type IColors = {
 export type IOptionSelect = {
   label: string;
   key: string;
+  icon?: string;
 };
-
 
 // =========== CONSTANTES ===========
 export const GRUPOS = [
@@ -36,21 +36,23 @@ export const DOCUMENTS: IOptionSelect[] = [
 ];
 
 export const ORIGENES_CLIENTS = [
-  { label: "Whatsapp", key: "1" },
-  { label: "Boot", key: "2" },
-  { label: "Facebook", key: "3" },
-  { label: "Instagram", key: "4" },
-  { label: "Tiktok", key: "5" },
-  { label: "Referencia", key: "6" },
-  { label: "Otros", key: "7" },
+  { label: "Whatsapp", key: "1", icon: "icon-whatsapp" },
+  { label: "Boot", key: "2", icon: "icon-robo" },
+  { label: "Facebook", key: "3", icon: "icon-facebook-square" },
+  { label: "Instagram", key: "4", icon: "icon-instagram" },
+  { label: "Tiktok", key: "5", icon: "icon-smile-o" },
+  { label: "Referencia", key: "6", icon: "icon-hand-o-right" },
+  { label: "Otros", key: "7", icon: "icon-question" },
 ];
 
 export const COLORES: IColors[] = [
-  { label: "Negro", key: "1", code: "black" },
-  { label: "Rojo", key: "2", code: "red" },
-  { label: "Blanco", key: "3", code: "white" },
-  { label: "Verde", key: "4", code: "green" },
-  { label: "Azul", key: "5", code: "blue" },
+  { label: "No interesados", key: "1", code: "#101010" }, // Gris oscuro para lista negra
+  { label: "No responde, deja en visto", key: "6", code: "#FF6F61" }, // Rojo coral vibrante
+  { label: "Interesados", key: "2", code: "#FFF700" }, // Amarillo más intenso
+  { label: "No hay contacto", key: "3", code: "#FFFFFF" }, // Blanco puro
+  { label: "Seguimiento", key: "4", code: "#BF5EFF" }, // Lila vibrante
+  { label: "Pago Realizado", key: "5", code: "#69e76f" }, // Verde brillante y llamativo
+  { label: "Más adelante, Otras sedes", key: "7", code: "#5DA9FF" }, // Lavanda fuerte y vivo
 ];
 
 export const STATUS_USER = [
@@ -75,16 +77,17 @@ export const TIPO_LLAMADAS = [
 
 export const RESULTADO_LLAMADAS = [
   { key: "1", label: "No contesta" },
-  { key: "2", label: "No interesado" },
-  { key: "3", label: "Interesado" },
-  { key: "4", label: "Venta" },
-  { key: "5", label: "Volber a llamar" },
-  { key: "6", label: "Otros" },
+  { key: "2", label: "Llamada cortada" },
+  { key: "3", label: "Desinteresado" },
+  { key: "4", label: "Interesado" },
+  { key: "5", label: "Para otros lugares" },
+  { key: "6", label: "Venta" },
+  { key: "7", label: "Agendar llamada" },
+  { key: "8", label: "Otros" },
 ];
 
-
 export const ESTADO_LLAMADA_AGENDA = [
-  {key: "1", label: "Pendiente"},
-  {key: "2", label: "Atendido"},
-  {key: "3", label: "Sin atender"}
-]
+  { key: "1", label: "Pendiente" },
+  { key: "2", label: "Atendido" },
+  { key: "3", label: "Sin atender" },
+];

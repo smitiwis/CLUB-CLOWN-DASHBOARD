@@ -40,7 +40,6 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
   });
 
   const onSubmit = (formData: IFClient) => {
-    console.log("formData", formData);
     const data = { ...formData, id_cliente: client.id_cliente, redirect };
     startTransaction(() => formAction(data));
   };

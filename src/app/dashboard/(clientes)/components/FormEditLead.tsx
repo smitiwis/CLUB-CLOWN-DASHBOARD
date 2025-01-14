@@ -48,7 +48,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
     setError,
     watch,
     loadingInfo,
-    hasDataByDocument
+    hasDataByDocument,
   } = useFormEditClient(client, redirect);
 
   const [statusForm, setStatusForm] = useState<IStateCliente>(state);
@@ -116,8 +116,8 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               errorMessage={errors.origen?.message}
               renderValue={(items: SelectedItems<IOptionSelect>) => {
                 return items.map((item) => (
-                  <div key={item.key} className="flex items-center gap-2">
-                    <div>I</div>
+                  <div key={item.key} className="flex items-center gap-x-1">
+                    <i className={`text-lg flex ${item.data?.icon}`} />
                     <div className="flex flex-col">
                       <span>{item.data?.label}</span>
                     </div>
@@ -125,10 +125,10 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
                 ));
               }}
             >
-              {({ key, label }) => (
+              {({ key, label, icon }) => (
                 <SelectItem key={key} textValue={label}>
-                  <div className="flex gap-x-2">
-                    <div>I</div>
+                  <div className="flex items-center gap-x-1">
+                    <i className={`text-lg flex ${icon}`} />
                     <span className="text-small">{label}</span>
                   </div>
                 </SelectItem>
@@ -158,7 +158,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
                 endContent={loadingInfo && <Spinner />}
                 className="w-[65%]"
                 isDisabled={!watch().tipo_documento || loadingInfo}
-                value={watch().nro_documento}
+                value={watch("nro_documento") || ""}
                 label="Nro de documento"
                 size="lg"
                 isInvalid={!!errors.nro_documento}
@@ -189,7 +189,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               label="Nombres"
               size="lg"
               isDisabled={hasDataByDocument}
-              value={watch("nombre")}
+              value={watch("nombre") || ""}
               isInvalid={!!errors.nombre}
               errorMessage={errors.nombre?.message}
             />
@@ -201,7 +201,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               label="Apellidos"
               size="lg"
               isDisabled={hasDataByDocument}
-              value={watch("apellido")}
+              value={watch("apellido") || ""}
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}
             />

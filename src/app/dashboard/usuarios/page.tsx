@@ -6,7 +6,6 @@ import Link from "next/link";
 
 const Page = async () => {
   const userList = await fetchUsuarios();
-  console.log(userList);
 
   return (
     <>

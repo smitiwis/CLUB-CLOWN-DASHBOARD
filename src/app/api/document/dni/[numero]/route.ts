@@ -17,6 +17,12 @@ export async function GET(request: NextRequest, { params }: params) {
         { status: 404 }
       );
     }
+    if (nroDni.length < 8) {
+      return NextResponse.json(
+        { message: { error: "El número de documento debe tener 8 dígitos" } },
+        { status: 404 }
+      );
+    }
     const response = await axios.get(`${path}/dni/${nroDni}?token=${token}`);
     if (!response.data.success) {
       return NextResponse.json(

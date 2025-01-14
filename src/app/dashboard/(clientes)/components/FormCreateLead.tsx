@@ -96,8 +96,8 @@ const FormcreateClient = () => {
               errorMessage={errors.origen?.message}
               renderValue={(items: SelectedItems<IOptionSelect>) => {
                 return items.map((item) => (
-                  <div key={item.key} className="flex items-center gap-2">
-                    <div>I</div>
+                  <div key={item.key} className="flex items-center gap-x-1">
+                    <i className={`text-lg flex ${item.data?.icon}`} />
                     <div className="flex flex-col">
                       <span>{item.data?.label}</span>
                     </div>
@@ -105,10 +105,10 @@ const FormcreateClient = () => {
                 ));
               }}
             >
-              {({ key, label }) => (
+              {({ key, label, icon }) => (
                 <SelectItem key={key} textValue={label}>
-                  <div className="flex gap-x-2">
-                    <div>I</div>
+                  <div className="flex items-center gap-x-1">
+                    <i className={`text-lg flex ${icon}`} />
                     <span className="text-small">{label}</span>
                   </div>
                 </SelectItem>
@@ -233,7 +233,7 @@ const FormcreateClient = () => {
               {...register("estado")}
               className="mb-4"
               label="Estado"
-              defaultSelectedKeys={[COLORES[2].key]}
+              defaultSelectedKeys={[COLORES[3].key]}
               items={COLORES}
               size="lg"
               isInvalid={!!errors.estado}
