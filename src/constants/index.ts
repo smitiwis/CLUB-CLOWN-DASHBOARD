@@ -82,8 +82,9 @@ export const RESULTADO_LLAMADAS = [
   { key: "6", label: "Otros" },
 ];
 
-export const RESULTADO_LLAMADA_AGENDA = [
-  {key: "1", label: "Atendida"},
-  {key: "2", label: "Atendida fuera de tiempo"},
-  {key: "3", label: "No atendida"},
+
+export const ESTADO_LLAMADA_AGENDA = [
+  {key: "1", label: "Pendiente"},
+  {key: "2", label: "Atendido"},
+  {key: "3", label: "Sin atender"}
 ]

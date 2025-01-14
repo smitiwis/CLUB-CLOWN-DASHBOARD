@@ -32,14 +32,13 @@ export async function createClient(
         field: "telefono",
       };
     }
-
     // CREAR CLIENTE
     await prisma.cliente.create({
       data: {
         id_usuario: userId,
         telefono: formData.telefono,
         tipo_documento: formData.tipo_documento,
-        nro_documento: formData.nro_documento,
+        nro_documento: formData.nro_documento || null,
         nombre_apo: formData.nombre_apo,
         nombre: formData.nombre,
         apellido: formData.apellido,
@@ -53,6 +52,7 @@ export async function createClient(
     });
   } catch (error) {
     if (error instanceof Error) {
+      console.error("Error:", error.message);
       return { message: error.message };
     } else if (typeof error === "object") {
       return error;
@@ -128,37 +128,4 @@ export async function editClient(
 
   revalidatePath("/dashboard/leads");
   redirect("/dashboard/leads");
-}
-
-type IUpdateRecontact = {
-  id_cliente: string;
-  fecha_agendada: string;
-};
-
-export async function addRecordClient(
-  prevState: IStateCliente,
-  formData: IUpdateRecontact
-) {
-  try {
-    // Validate form using Zod
-
-    // VALIDAR SI EXISTE EL USUARIO
-    const userId = await getUserId();
-    if (!userId) return null;
-
-    await prisma.cliente.update({
-      where: { id_cliente: formData.id_cliente },
-      data: {
-        fecha_agendada: formData.fecha_agendada,
-      },
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      return { message: error.message };
-    } else if (typeof error === "object") {
-      return error;
-    } else {
-      return { message: "Error desconocido" };
-    }
-  }
 }

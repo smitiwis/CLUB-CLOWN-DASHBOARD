@@ -15,7 +15,7 @@ import {
   ChipProps,
 } from "@nextui-org/react";
 import { IBClientRes, IRowClientTable } from "@/lib/clients/definitions";
-import { COLORES, GROUPS_CLIENT } from "@/constants";
+import { COLORES, ESTADO_LLAMADA_AGENDA, GROUPS_CLIENT } from "@/constants";
 import { useRouter } from "next/navigation";
 import IconEdit from "@/components/icons/IconEdit";
 import IconEye from "@/components/icons/IconEye";
@@ -29,24 +29,29 @@ type Props = {
 const ClientsList: FC<Props> = ({ clientsList }) => {
   const router = useRouter();
   const rows: IRowClientTable[] = clientsList.map((lead, i) => {
-    // Formatear la fecha
-    const fechaFormateada = lead.fecha_agendada
-      ? format(lead.fecha_agendada, { date: "medium", time: "short" })
-      : "";
-
-    const isAgendaAfter = lead.fecha_agendada
-      ? isAfter(lead.fecha_agendada, new Date())
-        ? true
-        : false
-      : false;
-
+    const isAgendaAfter =
+      lead.llamada && lead.llamada.estado_agenda
+        ? isAfter(new Date(String(lead.llamada.fecha_agendada)), new Date())
+          ? true
+          : false
+        : false;
     return {
       ...lead,
       key: String(i + 1),
-      fecha_agendada: fechaFormateada,
-      isAfter: isAgendaAfter,
+      estadoAgenda: lead.llamada
+        ? isAgendaAfter
+          ? "3"
+          : lead.llamada.estado_agenda
+        : "",
+      fechaAgendada: lead.llamada
+        ? format(new Date(String(lead.llamada.fecha_agendada)), {
+            date: "medium",
+            time: "short",
+          })
+        : null,
     };
   });
+
 
   const columns = [
     {
@@ -54,7 +59,7 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
       label: "COLOR",
     },
     {
-      key: "fecha_agendada",
+      key: "estadoAgenda",
       label: "AGENDA",
     },
     {
@@ -87,6 +92,12 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
     "3": "warning",
   };
 
+  const statusColorAgenda: Record<string, ChipProps["color"]> = {
+    "1": "warning",
+    "2": "success",
+    "3": "danger",
+  };
+
   const renderCell = useCallback((item: IRowClientTable, columnKey: Key) => {
     const cellValue = item[columnKey as keyof IRowClientTable];
 
@@ -100,16 +111,31 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
           />
         );
 
-      case "fecha_agendada":
+      case "estadoAgenda":
+        const value = ESTADO_LLAMADA_AGENDA.find(
+          (status) => status.key === cellValue
+        );
+
         return (
           <div className="flex flex-col">
             {cellValue && (
-              <Chip
-                color={item.isAfter ? "success" : "danger"}
-                variant="shadow"
+              <Tooltip
+                isDisabled={item.estadoAgenda === "2"}
+                content={item.fechaAgendada}
+                placement="right"
+                showArrow
+                classNames={{
+                  base: ["before:bg-neutral-400 dark:before:bg-white"],
+                  content: [
+                    "py-2 px-4 shadow-xl",
+                    "text-black bg-gradient-to-br from-white to-neutral-400",
+                  ],
+                }}
               >
-                {cellValue}
-              </Chip>
+                <Chip color={statusColorAgenda[cellValue]} variant="faded">
+                  {value?.label}
+                </Chip>
+              </Tooltip>
             )}
           </div>
         );
@@ -117,7 +143,7 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
       case "status":
         return (
           <div className="flex flex-col">
-            <span className="text-small">{cellValue}</span>
+            <span className="text-small">{item.estado}</span>
           </div>
         );
 
@@ -125,7 +151,7 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
         return (
           <div className="flex flex-col">
             <span className="text-small">
-              {cellValue} {cellValue ? "años" : "-"}
+              {item.edad} {cellValue ? "años" : "-"}
             </span>
           </div>
         );

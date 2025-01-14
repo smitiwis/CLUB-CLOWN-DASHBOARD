@@ -162,7 +162,6 @@ const FormcreateClient = () => {
                 />
               )}
             </div>
-   
             <Input
               {...register("nombre")}
               className="mb-4"

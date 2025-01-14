@@ -2,7 +2,7 @@
 export type TTypeDocumento = "" | "1" | "2";
 export type TOrigen = "1" | "2" | "3" | "4" | "5" | "6" | "7";
 export type IGrupo_Client = "" | "1" | "2" | "3";
-
+export type IEstado_agenda = "" | "1" | "2";
 
 export type IFClient = {
   telefono: string;
@@ -36,7 +36,6 @@ export interface IClientReq extends IFClient {
   redirect?: boolean;
 }
 
-
 export interface IRowClientTable {
   telefono: string;
   tipo_documento: TTypeDocumento;
@@ -52,8 +51,8 @@ export interface IRowClientTable {
   grupo: IGrupo_Client;
   estado: string;
 
-  fecha_agendada: string;
-  isAfter: boolean;
+  estadoAgenda: string;
+  fechaAgendada: string | null;
 
   key: string;
   id_cliente: string;
@@ -76,7 +75,11 @@ export interface IBClientRes {
   nro_direccion: string;
   origen: TOrigen;
 
-  fecha_agendada: Date | null;
+  llamada: {
+    id_cliente_llamada: string;
+    fecha_agendada: Date | null;
+    estado_agenda: string;
+  } | null;
 }
 
 // ERRORES
