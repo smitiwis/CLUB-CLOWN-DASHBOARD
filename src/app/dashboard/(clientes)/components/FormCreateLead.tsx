@@ -162,9 +162,6 @@ const FormcreateClient = () => {
                 />
               )}
             </div>
-            <pre>
-              {JSON.stringify(hasDataByDocument, null, 2)}
-            </pre>
             <Input
               {...register("nombre")}
               className="mb-4"

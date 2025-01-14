@@ -44,7 +44,7 @@ const useFormCreateClient = () => {
     try {
       setLoadigInfo(true);
       const response = await axios.get(API);
-      
+
       if (response.status === 200) {
         setHasDataByDocument(true);
         const { data } = response;
@@ -103,6 +103,21 @@ const useFormCreateClient = () => {
     }
   }, [watch("nro_documento")]);
 
+  useEffect(() => {
+    const tipoDocumento = watch("tipo_documento");
+    const nroDocumento = watch("nro_documento");
+    if (!tipoDocumento) {
+      setHasDataByDocument(false);
+      setValue("nombre", "");
+      setValue("apellido", "");
+      setValue("nro_documento", "");
+    }
+    if (!nroDocumento) {
+      setValue("nombre", "");
+      setValue("apellido", "");
+    }
+  }, [watch("tipo_documento"), watch("nro_documento")]);
+
   return {
     register,
     handleSubmit,
@@ -114,7 +129,7 @@ const useFormCreateClient = () => {
     loading,
     state,
     loadingInfo,
-    hasDataByDocument
+    hasDataByDocument,
   };
 };
 

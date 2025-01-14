@@ -96,7 +96,6 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
       setValue("apellido", "");
     }
 
-    debugger;
     if (tipoDocumento) {
       if (client.nro_documento !== nroDocumento) {
         switch (tipoDocumento) {

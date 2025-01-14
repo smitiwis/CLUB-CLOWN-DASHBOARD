@@ -32,19 +32,18 @@ CREATE TABLE "usuario" (
 CREATE TABLE "cliente" (
     "id_cliente" TEXT NOT NULL,
     "id_usuario" TEXT NOT NULL,
+    "telefono" VARCHAR(9) NOT NULL,
     "tipo_documento" VARCHAR(1) NOT NULL DEFAULT '',
     "nro_documento" VARCHAR(12),
-    "telefono" VARCHAR(9) NOT NULL,
     "nombre_apo" VARCHAR(25) NOT NULL,
     "nombre" VARCHAR(50) NOT NULL,
     "apellido" VARCHAR(50) NOT NULL,
+    "edad" VARCHAR(2) NOT NULL,
     "direccion" VARCHAR(100) NOT NULL,
     "nro_direccion" VARCHAR(6) NOT NULL,
     "origen" VARCHAR(1) NOT NULL DEFAULT '3',
-    "edad" VARCHAR(2) NOT NULL,
     "grupo" VARCHAR(1) NOT NULL,
     "estado" VARCHAR(1) NOT NULL DEFAULT '3',
-    "fecha_agendada" TIMESTAMP(3),
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "fecha_actualizacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -60,6 +59,8 @@ CREATE TABLE "cliente_llamada" (
     "observacion" TEXT NOT NULL,
     "tipo" VARCHAR(1) NOT NULL DEFAULT '3',
     "resultado" VARCHAR(1) NOT NULL DEFAULT '1',
+    "fecha_agendada" TIMESTAMP(3),
+    "estado_agenda" VARCHAR(1) DEFAULT '',
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "fecha_actualizacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -79,10 +80,10 @@ CREATE UNIQUE INDEX "usuario_dni_key" ON "usuario"("dni");
 CREATE UNIQUE INDEX "usuario_correo_key" ON "usuario"("correo");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "cliente_nro_documento_key" ON "cliente"("nro_documento");
+CREATE UNIQUE INDEX "cliente_telefono_key" ON "cliente"("telefono");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "cliente_telefono_key" ON "cliente"("telefono");
+CREATE UNIQUE INDEX "cliente_nro_documento_key" ON "cliente"("nro_documento");
 
 -- CreateIndex
 CREATE INDEX "cliente_telefono_idx" ON "cliente"("telefono");

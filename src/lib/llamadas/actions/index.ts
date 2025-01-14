@@ -18,18 +18,44 @@ export async function createClientLlamada(
     const userId = await getUserId();
     if (!userId) return null;
 
-    // Create the client llamada
-    console.log("formData", formData);
-    const clienteLlamada = await prisma.cliente_llamada.create({
-      data: {
-        id_cliente: formData.id_cliente,
+    // OBTENENER TODAS LAS LLAMADAS
+    const calls = await prisma.cliente_llamada.findMany({
+      where: {
         id_usuario: userId,
-        estado: formData.estado,
-        observacion: formData.observacion || "",
-        tipo: formData.tipo,
-        resultado: formData.resultado,
+        id_cliente: formData.id_cliente,
+      },
+      select: {
+        id_usuario: true,
+        id_cliente_llamada: true,
+        fecha_agendada: true,
+        estado_agenda: true,
       },
     });
+
+    const hasAgenda =
+      calls &&
+      calls.find((call) => call.estado_agenda === "1" && call.fecha_agendada);
+
+    // ACTUALIZAR ESTADO DE LA LLAMADA AGENDADA
+    if (hasAgenda) {
+      await prisma.cliente_llamada.update({
+        where: { id_cliente_llamada: hasAgenda.id_cliente_llamada },
+        data: { estado_agenda: "2" },
+      });
+    }
+
+    // Create the client llamada
+    const data = {
+      id_cliente: formData.id_cliente,
+      id_usuario: userId,
+      estado: formData.estado,
+      observacion: formData.observacion || "",
+      tipo: formData.tipo,
+      resultado: formData.resultado,
+      fecha_agendada: formData.fecha_agendada,
+      estado_agenda: formData.fecha_agendada ? "1" : "",
+    };
+    const clienteLlamada = await prisma.cliente_llamada.create({ data });
 
     if (!clienteLlamada) {
       throw { message: "Error al crear la llamada" };
@@ -37,13 +63,8 @@ export async function createClientLlamada(
     // ACTUALIZAR EL ESTADO DEL CLIENTE
     await prisma.cliente.update({
       where: { id_cliente: formData.id_cliente },
-      data: {
-        estado: formData.estado,
-        fecha_agendada: formData.fecha_agendada,
-      },
+      data: { estado: formData.estado },
     });
-
-    console.log("clienteLlamada", clienteLlamada);
   } catch (error) {
     if (error instanceof Error) {
       return { message: error.message };

@@ -60,11 +60,24 @@ export async function fetchClients() {
         direccion: true,
         nro_direccion: true,
         origen: true,
-        fecha_agendada: true,
+        cliente_llamada: {
+          select: {
+            id_cliente_llamada: true,
+            estado_agenda: true,
+            fecha_agendada: true,
+          },
+        },
       },
     });
 
-    return clientes as IBClientRes[];
+    const clientesList = clientes.map((cliente) => {
+      return {
+        ...cliente,
+        llamada:
+          cliente.cliente_llamada.find((call) => call.fecha_agendada) || null,
+      };
+    }); // Aquí se puede mapear los datos
+    return clientesList as IBClientRes[];
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Error al obtener leads .");
@@ -94,7 +107,6 @@ export async function fetchDetailsClient(id_cliente: string) {
         direccion: true,
         nro_direccion: true,
         origen: true,
-        fecha_agendada: true,
         cliente_llamada: {
           select: {
             id_cliente_llamada: true,
@@ -103,8 +115,8 @@ export async function fetchDetailsClient(id_cliente: string) {
             tipo: true,
             resultado: true,
             fecha_creacion: true,
-          }
-        }
+          },
+        },
       },
     });
 
