@@ -74,9 +74,10 @@ export async function fetchClients() {
       return {
         ...cliente,
         llamada:
-          cliente.cliente_llamada.find((call) => call.fecha_agendada) || null,
+          cliente.cliente_llamada.find((call) => call.estado_agenda) || null,
       };
     }); // Aquí se puede mapear los datos
+    
     return clientesList as IBClientRes[];
   } catch (err) {
     console.error("Database Error:", err);

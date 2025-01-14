@@ -28,31 +28,34 @@ type Props = {
 
 const ClientsList: FC<Props> = ({ clientsList }) => {
   const router = useRouter();
+  console.log("clientsList", clientsList);
+
   const rows: IRowClientTable[] = clientsList.map((lead, i) => {
     const isAgendaAfter =
-      lead.llamada && lead.llamada.estado_agenda
-        ? isAfter(new Date(String(lead.llamada.fecha_agendada)), new Date())
+      lead.llamada && lead.llamada.estado_agenda === "1"
+        ? isAfter(new Date(), new Date(String(lead.llamada.fecha_agendada)))
           ? true
           : false
         : false;
+
     return {
       ...lead,
       key: String(i + 1),
       estadoAgenda: lead.llamada
-        ? isAgendaAfter
+        ? isAgendaAfter && lead.llamada.estado_agenda === "1"
           ? "3"
           : lead.llamada.estado_agenda
         : "",
-      fechaAgendada: lead.llamada
-        ? format(new Date(String(lead.llamada.fecha_agendada)), {
-            date: "medium",
-            time: "short",
-          })
-        : null,
+      fechaAgendada:
+        lead.llamada && lead.llamada.fecha_agendada
+          ? format(new Date(String(lead.llamada.fecha_agendada)), {
+              date: "medium",
+              time: "short",
+            })
+          : null,
     };
   });
-
-
+  console.log("rows", rows);
   const columns = [
     {
       key: "estado",

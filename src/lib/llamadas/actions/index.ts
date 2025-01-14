@@ -40,7 +40,7 @@ export async function createClientLlamada(
     if (hasAgenda) {
       await prisma.cliente_llamada.update({
         where: { id_cliente_llamada: hasAgenda.id_cliente_llamada },
-        data: { estado_agenda: "2" },
+        data: { estado_agenda: "2", fecha_agendada: null },
       });
     }
 
