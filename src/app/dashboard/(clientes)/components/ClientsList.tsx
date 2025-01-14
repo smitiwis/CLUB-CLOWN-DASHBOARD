@@ -13,6 +13,7 @@ import {
   Button,
   Chip,
   ChipProps,
+  Badge,
 } from "@nextui-org/react";
 import { IBClientRes, IRowClientTable } from "@/lib/clients/definitions";
 import { COLORES, ESTADO_LLAMADA_AGENDA, GROUPS_CLIENT } from "@/constants";
@@ -106,23 +107,39 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
       case "estado":
         const color = COLORES.find((color) => color.key === cellValue);
         return (
-          <Tooltip
-            showArrow
-            classNames={{
-              base: ["before:bg-neutral-400 dark:before:bg-white"],
-              content: [
-                "py-2 px-4 shadow-xl",
-                "text-black bg-gradient-to-br from-white to-neutral-400",
-              ],
-            }}
-            content={color?.label}
-            placement="right"
+          <Badge
+            color="primary"
+            content={
+              <Tooltip
+                content="Total de llamadas"
+                placement="right"
+                color="primary"
+              >
+                <span className="flex p-0 text-xs">
+                  {item.nro_llamadas || 0}
+                </span>
+              </Tooltip>
+            }
+            variant="shadow"
           >
-            <div
-              className="w-[1.75rem] h-[1.75rem] rounded-full"
-              style={{ background: color?.code || "white" }}
-            />
-          </Tooltip>
+            <Tooltip
+              showArrow
+              classNames={{
+                base: ["before:bg-neutral-400 dark:before:bg-white"],
+                content: [
+                  "py-2 px-4 shadow-xl",
+                  "text-black bg-gradient-to-br from-white to-neutral-400",
+                ],
+              }}
+              content={color?.label}
+              placement="right"
+            >
+              <div
+                className="w-[1.75rem] h-[1.75rem] rounded-full"
+                style={{ background: color?.code || "white" }}
+              />
+            </Tooltip>
+          </Badge>
         );
 
       case "estadoAgenda":
@@ -132,7 +149,7 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
 
         return (
           <div className="flex flex-col">
-            {cellValue && (
+            {cellValue ? (
               <Tooltip
                 isDisabled={item.estadoAgenda === "2"}
                 content={item.fechaAgendada}
@@ -150,6 +167,8 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
                   {value?.label}
                 </Chip>
               </Tooltip>
+            ) : (
+              "-"
             )}
           </div>
         );

@@ -93,3 +93,6 @@ model cliente_llamada {
 
   @@index([id_cliente, id_usuario])
 }
+
+
+// ================== HORARIOS DE TALLERES ==================  

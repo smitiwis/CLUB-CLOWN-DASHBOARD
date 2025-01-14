@@ -50,6 +50,7 @@ export interface IRowClientTable {
   origen: TOrigen;
   grupo: IGrupo_Client;
   estado: string;
+  nro_llamadas: number;
 
   estadoAgenda: string;
   fechaAgendada: string | null;
@@ -80,6 +81,8 @@ export interface IBClientRes {
     fecha_agendada: Date | null;
     estado_agenda: string;
   } | null;
+
+  nro_llamadas: number;
 }
 
 // ERRORES

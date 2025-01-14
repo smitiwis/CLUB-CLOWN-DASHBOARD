@@ -53,7 +53,7 @@ const useFormRegisterCall = () => {
   }, [selectedIdClient]);
 
   useEffect(() => {
-    if (watch("resultado") !== "5") {
+    if (watch("resultado") !== "7") {
       setValue("fecha_agendada", null);
     }
   }, [watch("resultado")]);
@@ -62,7 +62,7 @@ const useFormRegisterCall = () => {
     const fechaAgendada = watch("fecha_agendada");
     const resultadoLllamada = watch("resultado");
 
-    if (!!fechaAgendada && resultadoLllamada === "5") {
+    if (!!fechaAgendada && resultadoLllamada === "7") {
       if (isBefore(fechaAgendada, new Date())) {
         setError("fecha_agendada", {
           type: "min",

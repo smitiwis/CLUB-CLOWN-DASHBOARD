@@ -1,5 +1,5 @@
 export type TIPO_CALL = "1" | "2" | "3" | "4";
-export type RESULTADO_CALL = "1" | "2" | "3" | "4" | "5" | "6";
+export type RESULTADO_CALL = "1" | "2" | "3" | "4" | "5" | "6" | "7";
 
 export interface IFormClientCall {
   id_cliente: string;

@@ -69,6 +69,9 @@ export async function fetchClients() {
         },
       },
     });
+    if (!clientes) {
+      throw new Error("No se encontraron leads.");
+    }
 
     const clientesList = clientes.map((cliente) => {
       const getPendingCall = cliente.cliente_llamada.find(
@@ -80,6 +83,7 @@ export async function fetchClients() {
         llamada: getPendingCall
           ? getPendingCall
           : cliente.cliente_llamada.find((call) => call.estado_agenda) || null,
+        nro_llamadas: cliente.cliente_llamada.length,
       };
     }); // Aquí se puede mapear los datos
 

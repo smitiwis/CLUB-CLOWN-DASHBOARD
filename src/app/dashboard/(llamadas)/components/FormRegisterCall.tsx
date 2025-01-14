@@ -214,7 +214,7 @@ const FormRegisterCall: FC<Props> = (props) => {
                   <Select
                     {...register("resultado")}
                     className="mb-4"
-                    label="Resultado de la llamada"
+                    label="Fin de la llamada"
                     items={RESULTADO_LLAMADAS}
                     defaultSelectedKeys={["2"]}
                     size="lg"
@@ -225,7 +225,7 @@ const FormRegisterCall: FC<Props> = (props) => {
                       <SelectItem key={key}>{label}</SelectItem>
                     ))}
                   </Select>
-                  {watch("resultado") === "5" && (
+                  {watch("resultado") === "7" && (
                     <DatePicker
                       {...register("fecha_agendada")}
                       hideTimeZone
