@@ -71,13 +71,18 @@ export async function fetchClients() {
     });
 
     const clientesList = clientes.map((cliente) => {
+      const getPendingCall = cliente.cliente_llamada.find(
+        (call) => call.estado_agenda === "1" && call.fecha_agendada
+      );
+
       return {
         ...cliente,
-        llamada:
-          cliente.cliente_llamada.find((call) => call.estado_agenda) || null,
+        llamada: getPendingCall
+          ? getPendingCall
+          : cliente.cliente_llamada.find((call) => call.estado_agenda) || null,
       };
     }); // Aquí se puede mapear los datos
-    
+
     return clientesList as IBClientRes[];
   } catch (err) {
     console.error("Database Error:", err);
