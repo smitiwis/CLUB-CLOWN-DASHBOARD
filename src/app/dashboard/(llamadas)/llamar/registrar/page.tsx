@@ -11,7 +11,7 @@ const Page = async () => {
     return <div>Error: {clientes.message}</div>;
   }
 
-  return <FormRegisterCall clientOptions={clientes} />;
+  return <FormRegisterCall clientOptions={clientes.data} />;
 };
 
 export default Page;
