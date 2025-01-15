@@ -3,7 +3,10 @@ import { fetchClients } from "@/lib/clients/services";
 import FormRegisterCall from "../../components/FormRegisterCall";
 
 const Page = async () => {
-  const clientes = await fetchClients();
+  // EVALUAR SOLO OBTENER NUMERO DE CELULARES Y NOMBRES
+  // CUANDO ELIJA UN CLIENTE, SE CONSULTARA PARA OBTENER MAS INFORMACION
+  const pagination = { page: 1, limit: 20 };
+  const clientes = await fetchClients(pagination);
   if (clientes instanceof Error) {
     return <div>Error: {clientes.message}</div>;
   }

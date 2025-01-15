@@ -39,15 +39,15 @@ import {
 import InfoValue from "./InfoValue";
 import FormEditClient from "../../(clientes)/components/FormEditLead";
 import { getColor, getGrupoCliente, getLabelColor } from "@/lib/helpers";
-import { IBClients } from "@/lib/clients/definitions";
+import { IBClientsResp } from "@/lib/clients/definitions";
 import { convertToPrismaDate } from "@/lib/helpers/dateTime";
 
 type Props = {
-  clientOptions: IBClients[];
+  clientOptions: IBClientsResp;
 };
 
 const FormRegisterCall: FC<Props> = (props) => {
-  const [clientOptions, setClientOptions] = useState(props.clientOptions);
+  const [clientOptions, setClientOptions] = useState(props.clientOptions.data);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const {
