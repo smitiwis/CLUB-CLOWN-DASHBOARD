@@ -297,13 +297,18 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
 
   const loadingState = isLoading ? "loading" : "idle";
 
-  const fetchPageData = async (filter?: { text?: string; status?: string }) => {
+  const fetchPageData = async (filter?: {
+    text?: string;
+    status?: string;
+    init?: boolean;
+  }) => {
     setIsLoading(true);
     const text = filter?.text || "";
     const status = filter?.status || "";
+    const init = filter?.init || false;
 
     try {
-      const base = `/api/cliente/list?page=1&limit=${limit}`;
+      const base = `/api/cliente/list?page=${init ? "1" : page}&limit=${limit}`;
       const path = `${base}${text ? `&phoneNumber=${text}` : ""}${
         status ? `&status=${status}` : ""
       }`;
@@ -327,8 +332,8 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
   }, [page]);
 
   // ========= FILTROS =========
-  // const [filterPhone, setFilterPhone] = useState("");
-  // const [filterStatus, setFilterStatus] = useState<string | undefined>("");
+  const [filterPhone, setFilterPhone] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
   const [pagination, setPagination] = useState({
     page: clientsResp.page,
     limit: clientsResp.limit,
@@ -337,17 +342,13 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
   });
 
   const onSearchChange = useCallback(
-    debounce(async (text?: string) => {
-      if (text && text?.length > 3) {
-        fetchPageData({ text });
-      }
+    debounce((filter: { text: string; status: string }) => {
+      fetchPageData({...filter, init: true});
     }, 1000),
     []
   );
 
   const onClear = React.useCallback(() => {
-    // setFilterPhone("");
-    fetchPageData();
     setPage(1);
   }, []);
 
@@ -361,19 +362,16 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
             className="w-full sm:max-w-[44%]"
             placeholder="Buscar por celular..."
             startContent={<i className="icon-search" />}
-            // value={filterPhone}
             onClear={onClear}
             onValueChange={(value) => {
-              onSearchChange(value);
+              setFilterPhone(value);
+              onSearchChange({ text: value, status: filterStatus });
             }}
           />
           <div className="flex gap-3 w-full sm:max-w-[30%]">
             <Select
-              // {...register("estado")}
               items={COLORES}
               placeholder="Estado"
-              // isInvalid={!!errors.estado}
-              // errorMessage={errors.estado?.message}
               renderValue={(items: SelectedItems<IColors>) => {
                 return items.map((item) => (
                   <div key={item.key} className="flex items-center gap-2">
@@ -386,6 +384,13 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
                     </div>
                   </div>
                 ));
+              }}
+              onChange={(items) => {
+                setFilterStatus(items.target.value);
+                onSearchChange({
+                  text: filterPhone,
+                  status: items.target.value,
+                });
               }}
             >
               {(color) => (
@@ -443,13 +448,12 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
         </div>
       </div>
     );
-  }, [onSearchChange, rows.length]);
+  }, [filterPhone, filterStatus, onSearchChange, rows.length]);
 
   const bottomContent = React.useMemo(() => {
     if (pagination.totalPages === 1 || !data.length) return null;
     return (
       <div className="flex w-full justify-center">
-        
         <Pagination
           isCompact
           showControls
