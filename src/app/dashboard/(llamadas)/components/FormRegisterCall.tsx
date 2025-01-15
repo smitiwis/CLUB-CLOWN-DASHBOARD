@@ -39,11 +39,11 @@ import {
 import InfoValue from "./InfoValue";
 import FormEditClient from "../../(clientes)/components/FormEditLead";
 import { getColor, getGrupoCliente, getLabelColor } from "@/lib/helpers";
-import { IBClientRes } from "@/lib/clients/definitions";
+import { IBClients } from "@/lib/clients/definitions";
 import { convertToPrismaDate } from "@/lib/helpers/dateTime";
 
 type Props = {
-  clientOptions: IBClientRes[];
+  clientOptions: IBClients[];
 };
 
 const FormRegisterCall: FC<Props> = (props) => {

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import { IBClientRes } from "../definitions";
+import { IBClients, IBClientsResp } from "../definitions";
 import { getUserId } from "@/lib/helpers";
+import { IPagination } from "@/lib/definitions";
 
 export async function fetchClientById(id_cliente: string) {
   try {
@@ -30,7 +31,7 @@ export async function fetchClientById(id_cliente: string) {
       throw new Error("cliente no encontrado.");
     }
 
-    return cliente as IBClientRes;
+    return cliente as IBClients;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch invoice.");
@@ -39,13 +40,21 @@ export async function fetchClientById(id_cliente: string) {
   }
 }
 
-export async function fetchClients() {
+export async function fetchClients(pagination: IPagination) {
+  const { page, limit } = pagination;
+
   try {
     const id_usuario = await getUserId();
     if (!id_usuario) return new Error("Usuario desconocido");
 
+    const total = await prisma.cliente.count({
+      where: { id_usuario },
+    });
+
     const clientes = await prisma.cliente.findMany({
       where: { id_usuario },
+      skip: (page - 1) * limit,
+      take: limit,
       select: {
         id_cliente: true,
         telefono: true,
@@ -73,6 +82,8 @@ export async function fetchClients() {
       throw new Error("No se encontraron leads.");
     }
 
+    const totalPages = Math.ceil(total / limit);
+
     const clientesList = clientes.map((cliente) => {
       const getPendingCall = cliente.cliente_llamada.find(
         (call) => call.estado_agenda === "1" && call.fecha_agendada
@@ -87,7 +98,12 @@ export async function fetchClients() {
       };
     }); // Aquí se puede mapear los datos
 
-    return clientesList as IBClientRes[];
+    return {
+      data: clientesList,
+      totalPages,
+      page,
+      limit,
+    } as IBClientsResp;
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Error al obtener leads .");

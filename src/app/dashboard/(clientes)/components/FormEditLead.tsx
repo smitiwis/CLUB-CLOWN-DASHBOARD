@@ -22,7 +22,7 @@ import {
   ORIGENES_CLIENTS,
 } from "@/constants";
 import {
-  IBClientRes,
+  IBClients,
   IClientRes,
   IStateCliente,
 } from "@/lib/clients/definitions";
@@ -30,7 +30,7 @@ import useFormEditClient from "../hooks/useFormEditclient";
 
 type Props = {
   client: IClientRes;
-  onUpdate?: (client: IBClientRes) => void;
+  onUpdate?: (client: IBClients) => void;
   redirect?: boolean;
 };
 

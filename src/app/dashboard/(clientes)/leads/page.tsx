@@ -4,8 +4,9 @@ import { Button } from "@nextui-org/react";
 import Link from "next/link";
 
 const Page = async () => {
-  const clientsList = await fetchClients();
-
+  const pagination = { page: 1, limit: 4 };
+  const clientsList = await fetchClients(pagination);
+  
   if (clientsList instanceof Error) {
     return <div>Error: {clientsList.message}</div>;
   }
@@ -18,7 +19,7 @@ const Page = async () => {
           REGISTRAR LEAD
         </Button>
       </div>
-      <ClientsList clientsList={clientsList} />
+      <ClientsList clientsResp={clientsList} />
     </>
   );
 };

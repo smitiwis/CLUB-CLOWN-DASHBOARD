@@ -2,7 +2,7 @@
 import { Key, useState, useTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { IBClientRes, IStateCliente } from "@/lib/clients/definitions";
+import { IBClients, IStateCliente } from "@/lib/clients/definitions";
 import { IFormClientCall } from "@/lib/llamadas/definitions";
 import { schemaClientLlamada } from "@/lib/llamadas/schema";
 import { createClientLlamada } from "@/lib/llamadas/actions";
@@ -10,7 +10,7 @@ import { isBefore } from "@formkit/tempo";
 
 const useFormRegisterCall = () => {
   const [selectedIdClient, setSelectedIdClient] = useState<Key | null>("");
-  const [clientSelected, setClientSelected] = useState<IBClientRes>();
+  const [clientSelected, setClientSelected] = useState<IBClients>();
 
   const [loading, startTransaction] = useTransition();
   const [state, formAction] = useActionState<IStateCliente, IFormClientCall>(

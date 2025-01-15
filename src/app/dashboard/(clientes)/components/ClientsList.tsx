@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { FC, Key, useCallback } from "react";
+import React, { FC, Key, useCallback, useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -14,47 +14,55 @@ import {
   Chip,
   ChipProps,
   Badge,
+  Pagination,
+  Spinner,
 } from "@nextui-org/react";
-import { IBClientRes, IRowClientTable } from "@/lib/clients/definitions";
+import { IBClients, IBClientsResp, IRowClientTable } from "@/lib/clients/definitions";
 import { COLORES, ESTADO_LLAMADA_AGENDA, GROUPS_CLIENT } from "@/constants";
 import { useRouter } from "next/navigation";
 import IconEdit from "@/components/icons/IconEdit";
 import IconEye from "@/components/icons/IconEye";
 import IconPhone from "@/components/icons/IconPhone";
 import { format, isAfter } from "@formkit/tempo";
+import axios from "axios";
 
 type Props = {
-  clientsList: IBClientRes[];
+  clientsResp: IBClientsResp;
 };
 
-const ClientsList: FC<Props> = ({ clientsList }) => {
+const ClientsList: FC<Props> = ({ clientsResp }) => {
   const router = useRouter();
 
-  const rows: IRowClientTable[] = clientsList.map((lead, i) => {
-    const isAgendaAfter =
-      lead.llamada && lead.llamada.estado_agenda === "1"
-        ? isAfter(new Date(), new Date(String(lead.llamada.fecha_agendada)))
-          ? true
-          : false
-        : false;
+  const adapteRows = (clients: IBClients[]) => {
+    return clients.map((lead, i) => {
+      const isAgendaAfter =
+        lead.llamada && lead.llamada.estado_agenda === "1"
+          ? isAfter(new Date(), new Date(String(lead.llamada.fecha_agendada)))
+            ? true
+            : false
+          : false;
 
-    return {
-      ...lead,
-      key: String(i + 1),
-      estadoAgenda: lead.llamada
-        ? isAgendaAfter && lead.llamada.estado_agenda === "1"
-          ? "3"
-          : lead.llamada.estado_agenda
-        : "",
-      fechaAgendada:
-        lead.llamada && lead.llamada.fecha_agendada
-          ? format(new Date(String(lead.llamada.fecha_agendada)), {
-              date: "medium",
-              time: "short",
-            })
-          : null,
-    };
-  });
+      return {
+        ...lead,
+        key: String(i + 1),
+        estadoAgenda: lead.llamada
+          ? isAgendaAfter && lead.llamada.estado_agenda === "1"
+            ? "3"
+            : lead.llamada.estado_agenda
+          : "",
+        fechaAgendada:
+          lead.llamada && lead.llamada.fecha_agendada
+            ? format(new Date(String(lead.llamada.fecha_agendada)), {
+                date: "medium",
+                time: "short",
+              })
+            : null,
+      };
+    });
+  };
+
+  const rows: IRowClientTable[] = adapteRows(clientsResp.data);
+
   const columns = [
     {
       key: "estado",
@@ -258,13 +266,69 @@ const ClientsList: FC<Props> = ({ clientsList }) => {
     }
   }, []);
 
+  const [data, setData] = useState(rows); // Usamos la lista inicial
+  const [page, setPage] = useState(clientsResp.page);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const limit = 4;
+
+  const pages = React.useMemo(() => {
+    return data?.length ? Math.ceil(data.length / limit) : 0;
+  }, [data?.length, limit]);
+
+  const loadingState = isLoading || !data?.length ? "loading" : "idle";
+
+  const fetchPageData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `/api/cliente/list?page=${page}&limit=${limit}`
+      );
+      setData(adapteRows(response.data.clientsList.data));
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (page === 1) {
+      setData(adapteRows(clientsResp.data)); // Si estamos en la primera página, usamos la lista inicial
+      return;
+    }; // Evitamos volver a cargar si estamos en la primera página
+    fetchPageData();
+  }, [page]);
+
   return (
-    <Table aria-label="Example static collection table" selectionMode="none">
+    <Table
+      aria-label="Example static collection table"
+      selectionMode="none"
+      bottomContent={
+        pages > 0 ? (
+          <div className="flex w-full justify-center">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              color="primary"
+              page={page}
+              total={clientsResp.totalPages}
+              onChange={(newPage) => setPage(newPage)}
+            />
+          </div>
+        ) : null
+      }
+    >
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
 
-      <TableBody items={rows}>
+      <TableBody
+        items={data ?? []}
+        loadingContent={<Spinner />}
+        loadingState={loadingState}
+      >
         {(item) => (
           <TableRow key={item.key}>
             {(columnKey) => (

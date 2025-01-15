@@ -60,7 +60,13 @@ export interface IRowClientTable {
 }
 
 // ================ BACKEND ================
-export interface IBClientRes {
+export interface IBClientsResp {
+  data: IBClients[];
+  totalPages: number;
+  page: number;
+  limit: number;
+}
+export interface IBClients {
   id_cliente: string;
   telefono: string;
   nombre_apo: string;
@@ -109,6 +115,6 @@ export type IStateUpdateClient = {
     | "edad"
     | "grupo"
     | "estado";
-  client?: IBClientRes;
+  client?: IBClients;
   status?: number;
 } | null;
