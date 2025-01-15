@@ -273,7 +273,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
                 router.push(`/dashboard/lead/editar/${item.id_cliente}`)
               }
             >
-              <span className="transform rotate-35">
+              <span className="transform rotate-[35deg]">
                 <IconEdit />
               </span>
             </Button>
@@ -343,7 +343,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
 
   const onSearchChange = useCallback(
     debounce((filter: { text: string; status: string }) => {
-      fetchPageData({...filter, init: true});
+      fetchPageData({ ...filter, init: true });
     }, 1000),
     []
   );
@@ -357,6 +357,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between gap-3">
           <Input
+            size="lg"
             isClearable
             type="search"
             className="w-full sm:max-w-[44%]"
@@ -370,6 +371,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
           />
           <div className="flex gap-3 w-full sm:max-w-[30%]">
             <Select
+              size="lg"
               items={COLORES}
               placeholder="Estado"
               renderValue={(items: SelectedItems<IColors>) => {
@@ -412,6 +414,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
                 as={Link}
                 href="/dashboard/lead/crear"
                 color="primary"
+                size="lg"
                 endContent={<i className="icon-plus" />}
               >
                 Agregar lead
@@ -448,7 +451,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
         </div>
       </div>
     );
-  }, [filterPhone, filterStatus, onSearchChange, rows.length]);
+  }, [filterPhone, filterStatus, onSearchChange, data.length]);
 
   const bottomContent = React.useMemo(() => {
     if (pagination.totalPages === 1 || !data.length) return null;
@@ -472,7 +475,6 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
       <Table
         isHeaderSticky
         topContent={topContent}
-        topContentPlacement="outside"
         aria-label="Tabla de clientes"
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
