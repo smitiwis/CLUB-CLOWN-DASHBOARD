@@ -1,7 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { FC, Key, useCallback, useEffect, useState } from "react";
+import React, {
+  FC,
+  Key,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   Table,
   TableHeader,
@@ -16,15 +23,30 @@ import {
   Badge,
   Pagination,
   Spinner,
+  Input,
+  Select,
+  SelectedItems,
+  SelectItem,
 } from "@nextui-org/react";
-import { IBClients, IBClientsResp, IRowClientTable } from "@/lib/clients/definitions";
-import { COLORES, ESTADO_LLAMADA_AGENDA, GROUPS_CLIENT } from "@/constants";
+import {
+  IBClients,
+  IBClientsResp,
+  IRowClientTable,
+} from "@/lib/clients/definitions";
+import {
+  COLORES,
+  ESTADO_LLAMADA_AGENDA,
+  GROUPS_CLIENT,
+  IColors,
+} from "@/constants";
 import { useRouter } from "next/navigation";
 import IconEdit from "@/components/icons/IconEdit";
 import IconEye from "@/components/icons/IconEye";
 import IconPhone from "@/components/icons/IconPhone";
 import { format, isAfter } from "@formkit/tempo";
 import axios from "axios";
+import Link from "next/link";
+import debounce from "debounce";
 
 type Props = {
   clientsResp: IBClientsResp;
@@ -66,7 +88,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
   const columns = [
     {
       key: "estado",
-      label: "COLOR",
+      label: "ESTADO",
     },
     {
       key: "estadoAgenda",
@@ -218,47 +240,43 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
       case "actions":
         return (
           <div className="relative flex items-center gap-x-2">
-            <Tooltip content="Llamar" color="primary">
-              <Button
-                isIconOnly
-                color="primary"
-                variant="light"
-                size="sm"
-                onPress={() =>
-                  router.push(`/dashboard/llamar/${item.id_cliente}/registrar`)
-                }
-              >
-                <IconPhone />
-              </Button>
-            </Tooltip>
+            <Button
+              isIconOnly
+              color="primary"
+              variant="light"
+              size="sm"
+              onPress={() =>
+                router.push(`/dashboard/llamar/${item.id_cliente}/registrar`)
+              }
+            >
+              <IconPhone />
+            </Button>
 
-            <Tooltip content="Detalles" color="success">
-              <Button
-                isIconOnly
-                color="success"
-                variant="light"
-                size="sm"
-                onPress={() =>
-                  router.push(`/dashboard/lead/detalle/${item.id_cliente}`)
-                }
-              >
-                <IconEye />
-              </Button>
-            </Tooltip>
+            <Button
+              isIconOnly
+              color="success"
+              variant="light"
+              size="sm"
+              onPress={() =>
+                router.push(`/dashboard/lead/detalle/${item.id_cliente}`)
+              }
+            >
+              <IconEye />
+            </Button>
 
-            <Tooltip content="Editar">
-              <Button
-                isIconOnly
-                color="success"
-                variant="light"
-                size="sm"
-                onPress={() =>
-                  router.push(`/dashboard/lead/editar/${item.id_cliente}`)
-                }
-              >
+            <Button
+              isIconOnly
+              color="success"
+              variant="light"
+              size="sm"
+              onPress={() =>
+                router.push(`/dashboard/lead/editar/${item.id_cliente}`)
+              }
+            >
+              <span className="transform rotate-35">
                 <IconEdit />
-              </Button>
-            </Tooltip>
+              </span>
+            </Button>
           </div>
         );
       default:
@@ -266,25 +284,33 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
     }
   }, []);
 
+  // ======== TABLA Y PAGINACION =========
   const [data, setData] = useState(rows); // Usamos la lista inicial
   const [page, setPage] = useState(clientsResp.page);
   const [isLoading, setIsLoading] = useState(false);
 
-  const limit = 4;
+  const limit = clientsResp.limit;
 
   const pages = React.useMemo(() => {
     return data?.length ? Math.ceil(data.length / limit) : 0;
   }, [data?.length, limit]);
 
-  const loadingState = isLoading || !data?.length ? "loading" : "idle";
+  const loadingState = isLoading ? "loading" : "idle";
 
-  const fetchPageData = async () => {
+  const fetchPageData = async (filter?: { text?: string; status?: string }) => {
     setIsLoading(true);
+    const text = filter?.text || "";
+    const status = filter?.status || "";
+
     try {
-      const response = await axios.get(
-        `/api/cliente/list?page=${page}&limit=${limit}`
-      );
-      setData(adapteRows(response.data.clientsList.data));
+      const base = `/api/cliente/list?page=1&limit=${limit}`;
+      const path = `${base}${text ? `&phoneNumber=${text}` : ""}${
+        status ? `&status=${status}` : ""
+      }`;
+
+      const response = await axios.get(path);
+      setData(adapteRows(response.data.data));
+      setPagination(response.data.pagination);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -294,50 +320,181 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
 
   useEffect(() => {
     if (page === 1) {
-      setData(adapteRows(clientsResp.data)); // Si estamos en la primera página, usamos la lista inicial
+      setData(adapteRows(clientsResp.data));
       return;
-    }; // Evitamos volver a cargar si estamos en la primera página
+    }
     fetchPageData();
   }, [page]);
 
-  return (
-    <Table
-      aria-label="Example static collection table"
-      selectionMode="none"
-      bottomContent={
-        pages > 0 ? (
-          <div className="flex w-full justify-center">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              color="primary"
-              page={page}
-              total={clientsResp.totalPages}
-              onChange={(newPage) => setPage(newPage)}
-            />
-          </div>
-        ) : null
-      }
-    >
-      <TableHeader columns={columns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
-      </TableHeader>
+  // ========= FILTROS =========
+  // const [filterPhone, setFilterPhone] = useState("");
+  // const [filterStatus, setFilterStatus] = useState<string | undefined>("");
+  const [pagination, setPagination] = useState({
+    page: clientsResp.page,
+    limit: clientsResp.limit,
+    total: clientsResp.total,
+    totalPages: clientsResp.totalPages,
+  });
 
-      <TableBody
-        items={data ?? []}
-        loadingContent={<Spinner />}
-        loadingState={loadingState}
+  const onSearchChange = useCallback(
+    debounce(async (text?: string) => {
+      if (text && text?.length > 3) {
+        fetchPageData({ text });
+      }
+    }, 1000),
+    []
+  );
+
+  const onClear = React.useCallback(() => {
+    // setFilterPhone("");
+    fetchPageData();
+    setPage(1);
+  }, []);
+
+  const topContent = useMemo(() => {
+    return (
+      <div className="flex flex-col gap-y-1">
+        <div className="flex justify-between gap-3">
+          <Input
+            isClearable
+            type="search"
+            className="w-full sm:max-w-[44%]"
+            placeholder="Buscar por celular..."
+            startContent={<i className="icon-search" />}
+            // value={filterPhone}
+            onClear={onClear}
+            onValueChange={(value) => {
+              onSearchChange(value);
+            }}
+          />
+          <div className="flex gap-3 w-full sm:max-w-[30%]">
+            <Select
+              // {...register("estado")}
+              items={COLORES}
+              placeholder="Estado"
+              // isInvalid={!!errors.estado}
+              // errorMessage={errors.estado?.message}
+              renderValue={(items: SelectedItems<IColors>) => {
+                return items.map((item) => (
+                  <div key={item.key} className="flex items-center gap-2">
+                    <div
+                      className="w-[1rem] h-[1rem] rounded-full"
+                      style={{ background: item.data?.code }}
+                    />
+                    <div className="flex flex-col">
+                      <span>{item.data?.label}</span>
+                    </div>
+                  </div>
+                ));
+              }}
+            >
+              {(color) => (
+                <SelectItem key={color.key} textValue={color.label}>
+                  <div className="flex gap-2 items-center">
+                    <div
+                      className="w-[1rem] h-[1rem] rounded-full"
+                      style={{ background: color.code }}
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-small">{color.label}</span>
+                    </div>
+                  </div>
+                </SelectItem>
+              )}
+            </Select>
+            <div>
+              <Button
+                as={Link}
+                href="/dashboard/lead/crear"
+                color="primary"
+                endContent={<i className="icon-plus" />}
+              >
+                Agregar lead
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-between items-end my-2">
+          <span className="text-default-400 text-small">
+            Total {data.length} clientes
+          </span>
+          <label className="flex gap-x-2 items-center text-default-400 text-small">
+            <span>Filas por pagina:</span>
+            <div className="w-[70px]">
+              <Select
+                defaultSelectedKeys={[String(limit)]}
+                size="sm"
+                items={[
+                  { label: "5", key: "5" },
+                  { label: "10", key: "10" },
+                  { label: "15", key: "15" },
+                ]}
+              >
+                {(document) => (
+                  <SelectItem key={document.key} textValue={document.label}>
+                    <div className="flex flex-col">
+                      <span className="text-small">{document.label}</span>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
+            </div>
+          </label>
+        </div>
+      </div>
+    );
+  }, [onSearchChange, rows.length]);
+
+  const bottomContent = React.useMemo(() => {
+    if (pagination.totalPages === 1 || !data.length) return null;
+    return (
+      <div className="flex w-full justify-center">
+        
+        <Pagination
+          isCompact
+          showControls
+          showShadow
+          color="primary"
+          page={pagination.page}
+          total={pagination.totalPages}
+          onChange={(newPage) => setPage(newPage)}
+        />
+      </div>
+    );
+  }, [pages, pagination]);
+
+  return (
+    <div>
+      <Table
+        isHeaderSticky
+        topContent={topContent}
+        topContentPlacement="outside"
+        aria-label="Tabla de clientes"
+        bottomContent={bottomContent}
+        bottomContentPlacement="outside"
       >
-        {(item) => (
-          <TableRow key={item.key}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key}>{column.label}</TableColumn>
+          )}
+        </TableHeader>
+
+        <TableBody
+          items={data ?? []}
+          loadingContent={<Spinner />}
+          loadingState={loadingState}
+          emptyContent={"No hay registros para mostrar"}
+        >
+          {(item) => (
+            <TableRow key={item.key}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 

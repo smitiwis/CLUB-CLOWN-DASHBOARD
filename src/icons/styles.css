@@ -158,3 +158,27 @@
 .icon-plus:before {
   content: "\4e";
 }
+.icon-angle-down:before {
+  content: "\4f";
+}
+.icon-angle-left:before {
+  content: "\50";
+}
+.icon-angle-right:before {
+  content: "\51";
+}
+.icon-angle-up:before {
+  content: "\52";
+}
+.icon-bolt:before {
+  content: "\53";
+}
+.icon-commenting-o:before {
+  content: "\54";
+}
+.icon-frown-o:before {
+  content: "\55";
+}
+.icon-heart:before {
+  content: "\56";
+}

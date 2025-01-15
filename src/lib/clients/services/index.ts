@@ -100,6 +100,7 @@ export async function fetchClients(pagination: IPagination) {
 
     return {
       data: clientesList,
+      total,
       totalPages,
       page,
       limit,

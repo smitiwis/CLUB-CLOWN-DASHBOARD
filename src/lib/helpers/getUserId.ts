@@ -43,3 +43,7 @@ export const getTipeLlamada = (tipo: string) => {
 export const getResultLlamada = (tipo: string) => {
   return RESULTADO_LLAMADAS.find(({ key }) => key === tipo)?.label || "";
 };
+
+export function toCapitalize(s: string) {
+  return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
+}

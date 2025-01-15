@@ -62,6 +62,7 @@ export interface IRowClientTable {
 // ================ BACKEND ================
 export interface IBClientsResp {
   data: IBClients[];
+  total: number;
   totalPages: number;
   page: number;
   limit: number;
