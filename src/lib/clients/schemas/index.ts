@@ -31,6 +31,26 @@ export const schemaClient = yup.object().shape({
           .required("El número de RUC es obligatorio.")
           .matches(rucRegex, "El número de RUC debe ser de 11 dígitos."),
     })
+    .when("tipo_documento", {
+      is: (tipo_documento: string) => tipo_documento === "3",
+      then: (schema) =>
+        schema
+          .required("El número de CE es obligatorio.")
+          .matches(rucRegex, "El número de CE debe ser válido."),
+    })
+    .when("tipo_documento", {
+      is: (tipo_documento: string) => tipo_documento === "4",
+      then: (schema) =>
+        schema
+          .required("El número de PASS es obligatorio.")
+          .matches(rucRegex, "El número de PASS debe ser de 11 dígitos."),
+    })
+    .when("tipo_documento", {
+      is: (tipo_documento: string) => tipo_documento === "5",
+      then: (schema) =>
+        schema
+          .required("El número es obligatorio.")
+    })
     .default(""),
 
   nombre_apo: yup.string().default(""), // Valor predeterminado vacío

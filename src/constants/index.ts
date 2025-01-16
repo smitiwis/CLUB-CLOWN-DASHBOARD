@@ -33,6 +33,9 @@ export const LEAD_STATUS = [
 export const DOCUMENTS: IOptionSelect[] = [
   { label: "DNI", key: "1" },
   { label: "RUC", key: "2" },
+  { label: "CE", key: "3" },
+  { label: "PASS", key: "4" },
+  { label: "Otro", key: "5" },
 ];
 
 export const ORIGENES_CLIENTS = [

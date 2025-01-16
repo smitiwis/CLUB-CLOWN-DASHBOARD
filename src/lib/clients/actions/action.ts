@@ -38,7 +38,7 @@ export async function createClient(
         id_usuario: userId,
         telefono: formData.telefono,
         tipo_documento: formData.tipo_documento,
-        nro_documento: formData.nro_documento || null,
+        nro_documento: formData.nro_documento,
         nombre_apo: formData.nombre_apo,
         nombre: formData.nombre,
         apellido: formData.apellido,

@@ -153,6 +153,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
                   </SelectItem>
                 )}
               </Select>
+    
               <Input
                 {...register("nro_documento")}
                 endContent={loadingInfo && <Spinner />}

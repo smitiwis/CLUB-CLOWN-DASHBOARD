@@ -25,19 +25,19 @@ const HeaderProfile: FC<IUserProfile> = ({ user }) => {
 
   return (
     <div className="text-lg flex gap-x-4 items-center cursor-pointer">
-      <Badge color="danger" content={callsPending}>
-        <i className="icon-bell-o" />
-      </Badge>
-
-      <Dropdown placement="bottom-end">
+      <Dropdown placement="bottom-end" backdrop="blur">
         <DropdownTrigger>
-          <User
-            as="button"
-            avatarProps={{ isBordered: true }}
-            className="transition-transform"
-            description={rolName}
-            name={name}
-          />
+          <div className="flex items-center gap-x-4">
+            <Badge color="danger" placement="top-left" content={callsPending || ""}>
+              <User
+                as="button"
+                avatarProps={{ isBordered: true }}
+                className="transition-transform"
+                description={rolName}
+                name={name}
+              />
+            </Badge>
+          </div>
         </DropdownTrigger>
         <DropdownMenu aria-label="Profile Actions" variant="flat">
           <DropdownItem key="settings">Mi perfil</DropdownItem>

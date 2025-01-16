@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import useFormCreateUser from "../hooks/useFormCreateUser";
 import { IStateUsuario } from "@/lib/usuarios/definicions";
 import { Alert, Button, Input, Select, SelectItem } from "@nextui-org/react";
@@ -8,7 +8,11 @@ import EyeOffIcon from "@/components/icons/IconEyeOff";
 import IconEye from "@/components/icons/IconEye";
 import { STATUS_USER } from "@/constants";
 
-const FormCreateUser = () => {
+type Props = {
+  roles: { key: number; rolId: string; label: string; estado: boolean }[];
+};
+
+const FormCreateUser: FC<Props> = ({ roles }) => {
   const { register, handleSubmit, errors, onSubmit, loading, state, setError } =
     useFormCreateUser();
 
@@ -61,6 +65,19 @@ const FormCreateUser = () => {
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}
             />
+
+            <Select
+              {...register("id_rol")}
+              className="mb-4"
+              label="Rol"
+              size="lg"
+              isInvalid={!!errors.id_rol}
+              errorMessage={errors.id_rol?.message}
+            >
+              {roles.map(({ rolId, label }) => (
+                <SelectItem key={rolId}>{label}</SelectItem>
+              ))}
+            </Select>
 
             <Input
               {...register("telefono")}

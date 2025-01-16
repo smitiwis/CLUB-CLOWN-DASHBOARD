@@ -14,6 +14,7 @@ import { editClient } from "@/lib/clients/actions/action";
 import axios from "axios";
 
 const useFormEditClient = (client: IClientRes, redirect: boolean) => {
+  const [documentNumber, setDocumentNumber] = useState("");
   const [hasDataByDocument, setHasDataByDocument] = useState(false);
   const [loadingInfo, setLoadigInfo] = useState(false);
   const [loading, startTransaction] = useTransition();
@@ -35,12 +36,14 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
   } = useForm<IFClient>({
     defaultValues: {
       fecha_agendada: undefined,
+      nro_documento:""
     },
     resolver: yupResolver<IFClient>(schemaClient),
   });
 
   const onSubmit = (formData: IFClient) => {
     const data = { ...formData, id_cliente: client.id_cliente, redirect };
+    console.log("formData", data);
     startTransaction(() => formAction(data));
   };
 
@@ -84,7 +87,14 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
 
   useEffect(() => {
     const tipoDocumento = watch("tipo_documento");
-    if (!tipoDocumento) clearErrors("nro_documento");
+    setValue("nombre", "");
+    setValue("apellido", "");
+    setValue("nro_documento", "");
+    setHasDataByDocument(false);
+
+    if (!tipoDocumento) {
+      clearErrors("nro_documento")
+    };
   }, [watch("tipo_documento")]);
 
   useEffect(() => {
@@ -100,6 +110,8 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
         switch (tipoDocumento) {
           case "1":
             if (nroDocumento.length === 8) {
+              if (documentNumber === nroDocumento) return
+              setDocumentNumber(nroDocumento);
               getInfoByNroDni();
             }
             break;
@@ -120,6 +132,7 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
   }, [watch("nro_documento")]);
 
   useEffect(() => {
+    console.log("client", client);
     reset(client);
   }, []);
 
