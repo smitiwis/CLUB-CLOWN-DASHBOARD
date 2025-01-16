@@ -2,7 +2,7 @@
 
 import React, { FC, useEffect, useState } from "react";
 import useFormEditUser from "../hooks/useFormEditUser";
-import { IStateUsuario, IUsuarioRes } from "@/lib/usuarios/definicions";
+import { IStateUsuario, IUsuarioByIdRes } from "@/lib/usuarios/definicions";
 import {
   Alert,
   Button,
@@ -17,7 +17,7 @@ import { DOCUMENTS } from "@/constants";
 import { IRolesOptions } from "@/lib/definitions";
 
 type Props = {
-  usuario: IUsuarioRes;
+  usuario: IUsuarioByIdRes;
   roles: IRolesOptions[];
 };
 

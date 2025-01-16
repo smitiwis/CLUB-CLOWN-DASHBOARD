@@ -52,7 +52,12 @@ export async function fetchUserById(id_usuario: string) {
         nro_direccion: true,
         estado: true,
         correo: true,
-        id_rol: true,
+        rol: {
+          select: {
+            id_rol: true,
+            nombre: true,
+          },
+        },
       },
     });
     if (!user) {

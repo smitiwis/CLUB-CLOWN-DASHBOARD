@@ -6,12 +6,12 @@ import { editUsuario } from "@/lib/usuarios/actions";
 import {
   IStateUsuario,
   IUsuarioForm,
-  IUsuarioRes,
   IUsuarioReq,
+  IUsuarioByIdRes,
 } from "@/lib/usuarios/definicions";
 import { useActionState, useEffect, useTransition } from "react";
 
-const useFormEditUser = (usuario: IUsuarioRes) => {
+const useFormEditUser = (usuario: IUsuarioByIdRes) => {
   const [loading, startTransaction] = useTransition();
   const [state, formAction] = useActionState<IStateUsuario, IUsuarioReq>(
     editUsuario,
