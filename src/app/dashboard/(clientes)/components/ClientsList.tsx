@@ -47,6 +47,7 @@ import { format, isAfter } from "@formkit/tempo";
 import axios from "axios";
 import Link from "next/link";
 import debounce from "debounce";
+import { REGEX } from "@/constants/regex";
 
 type Props = {
   clientsResp: IBClientsResp;
@@ -332,6 +333,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
   }, [page]);
 
   // ========= FILTROS =========
+  const [errorPhone, setErrorPhone] = useState(false);
   const [filterPhone, setFilterPhone] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [pagination, setPagination] = useState({
@@ -343,7 +345,12 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
 
   const onSearchChange = useCallback(
     debounce((filter: { text: string; status: string }) => {
-      fetchPageData({ ...filter, init: true });
+      if (!REGEX.PHONE.test(filter.text)) setErrorPhone(true);
+      if (!filter.text) setErrorPhone(false);
+
+      if (pagination.total > pagination.limit) {
+        fetchPageData({ ...filter, init: true });
+      }
     }, 1000),
     []
   );
@@ -359,13 +366,15 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
           <Input
             size="lg"
             isClearable
-            type="search"
             className="w-full sm:max-w-[44%]"
             placeholder="Buscar por celular..."
             startContent={<i className="icon-search" />}
             onClear={onClear}
+            isInvalid={errorPhone}
+            errorMessage={errorPhone ? "Ingrese un número válido" : ""}
             onValueChange={(value) => {
               setFilterPhone(value);
+              setErrorPhone(false);
               onSearchChange({ text: value, status: filterStatus });
             }}
           />
@@ -451,7 +460,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
         </div>
       </div>
     );
-  }, [filterPhone, filterStatus, onSearchChange, data.length]);
+  }, [filterPhone, filterStatus, onSearchChange, data.length, errorPhone]);
 
   const bottomContent = React.useMemo(() => {
     if (pagination.totalPages === 1 || !data.length) return null;
