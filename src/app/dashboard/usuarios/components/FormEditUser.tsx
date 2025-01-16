@@ -62,7 +62,6 @@ const FormEditUser: FC<Props> = ({ usuario, roles }) => {
               <Select
                 {...register("tipo_documento")}
                 isDisabled={true}
-                defaultSelectedKeys={[DOCUMENTS[0].key]}
                 className="w-[20%]"
                 label="Tipo doc"
                 items={DOCUMENTS}

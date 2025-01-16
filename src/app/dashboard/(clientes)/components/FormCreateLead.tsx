@@ -119,7 +119,6 @@ const FormcreateClient = () => {
               <Select
                 {...register("tipo_documento")}
                 className="w-[35%]"
-                defaultSelectedKeys={[DOCUMENTS[0].key]}
                 label="Tipo doc"
                 items={DOCUMENTS}
                 size="lg"
