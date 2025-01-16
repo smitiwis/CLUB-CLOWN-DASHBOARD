@@ -130,7 +130,6 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
   }, [watch("nro_documento")]);
 
   useEffect(() => {
-    console.log("client", client);
     reset(client);
   }, []);
 

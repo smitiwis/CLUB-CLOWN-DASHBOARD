@@ -14,9 +14,10 @@ import {
 import EyeOffIcon from "@/components/icons/IconEyeOff";
 import IconEye from "@/components/icons/IconEye";
 import { DOCUMENTS, STATUS_USER } from "@/constants";
+import { IRolesOptions } from "@/lib/definitions";
 
 type Props = {
-  roles: { key: number; rolId: string; label: string; estado: boolean }[];
+  roles: IRolesOptions[];
 };
 
 const FormCreateUser: FC<Props> = ({ roles }) => {

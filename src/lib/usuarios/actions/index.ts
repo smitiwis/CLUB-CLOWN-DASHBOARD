@@ -7,7 +7,7 @@ import {
   IUsuarioForm,
   IUsuarioReq,
 } from "../definicions";
-import { schemaUsuario } from "../schemas";
+import { schemaUsuario, schemaUsuarioEdit } from "../schemas";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -77,24 +77,23 @@ export async function createUsuario(
 
     // ENCRYPTAR LA CONTRASEÑA
     const hashedPassword = await bcrypt.hash(password, 10);
+    const data = {
+      id_rol, // Rol de usuario
+      tipo_documento,
+      nro_documento,
+      nombre,
+      apellido,
+      telefono,
+      fecha_ingreso,
+      direccion,
+      nro_direccion,
+      estado,
+      correo,
+      password: hashedPassword,
+    };
 
     // CREAR USUARIO
-    await prisma.usuario.create({
-      data: {
-        id_rol, // Rol de usuario
-        tipo_documento,
-        nro_documento,
-        nombre,
-        apellido,
-        telefono,
-        fecha_ingreso,
-        direccion,
-        nro_direccion,
-        estado,
-        correo,
-        password: hashedPassword, // Guardar la contraseña encriptada
-      },
-    });
+    await prisma.usuario.create({ data });
   } catch (error) {
     if (error instanceof Error) {
       return { message: error.message };
@@ -114,12 +113,19 @@ export async function editUsuario(
   formData: IUsuarioReq
 ) {
   try {
-    const validatedUsuario = await schemaUsuario.validate(formData, {
+    const validatedUsuario = await schemaUsuarioEdit.validate(formData, {
       abortEarly: false,
     });
 
-    const { nombre, apellido, telefono, nro_documento, fecha_ingreso, estado, correo } =
-      validatedUsuario;
+    const {
+      telefono,
+      fecha_ingreso,
+      direccion,
+      nro_direccion,
+      estado,
+      correo,
+      password,
+    } = validatedUsuario;
 
     // VALIDAR POR CORREO
     const existingUser = await prisma.usuario.findFirst({
@@ -162,19 +168,23 @@ export async function editUsuario(
         field: "dni",
       };
     }
+    const data: Record<string, string> = {
+      telefono,
+      fecha_ingreso,
+      direccion,
+      nro_direccion,
+      estado,
+      correo,
+    };
 
+    if (password) {
+      const hashedPassword = await bcrypt.hash(validatedUsuario.password, 10);
+      data.password = hashedPassword;
+    }
     // ACTUALIZAR USUARIO
     await prisma.usuario.update({
       where: { id_usuario: formData.id_usuario },
-      data: {
-        nombre,
-        apellido,
-        telefono,
-        nro_documento,
-        fecha_ingreso,
-        estado,
-        correo,
-      },
+      data,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -207,6 +217,7 @@ export async function deleteUsuarioById(
     revalidatePath("/dashboard/usuarios");
     return { message: "Usuario eliminado correctamente.", status: 200 };
   } catch (error) {
+    console.error("Error al editar usuario:", error);
     if (error instanceof Error) {
       return { message: error.message };
     } else if (typeof error === "object") {

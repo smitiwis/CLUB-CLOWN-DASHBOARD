@@ -12,7 +12,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Tooltip,
   Chip,
   Modal,
   ModalContent,
@@ -27,6 +26,7 @@ import IconTrash from "@/components/icons/IconTrash";
 import IconEdit from "@/components/icons/IconEdit";
 import { useRouter } from "next/navigation";
 import useDeleteUser from "../hooks/useDeleteUser";
+import { DOCUMENTS } from "@/constants";
 
 type Props = {
   userList: IUsuarioRes[];
@@ -50,16 +50,20 @@ const UsersList: FC<Props> = ({ userList }) => {
       label: "APELLIDO",
     },
     {
-      key: "dni",
-      label: "DNI",
+      key: "tipo_documento",
+      label: "TIPO",
     },
     {
-      key: "correo",
-      label: "CORREO",
+      key: "nro_documento",
+      label: "DOCUMENTO",
     },
     {
       key: "rol",
       label: "ROL",
+    },
+    {
+      key: "correo",
+      label: "CORREO",
     },
     {
       key: "estado",
@@ -80,6 +84,10 @@ const UsersList: FC<Props> = ({ userList }) => {
     const cellValue = item[columnKey as keyof IUsuarioTable];
 
     switch (columnKey) {
+
+      case "tipo_documento":
+        return DOCUMENTS.find(({key}) => key === cellValue)?.label || "-";
+
       case "estado":
         const isActive = parseInt(item.estado);
         return (
@@ -94,45 +102,37 @@ const UsersList: FC<Props> = ({ userList }) => {
 
       case "fecha_ingreso":
         return format(String(cellValue), "medium");
-      
+
       case "rol":
         return item.rol.nombre;
 
       case "actions":
         return (
           <div className="relative flex items-center">
-            <Tooltip content="Detalles" color="success">
-              <Button
-                onPress={() => console.log("detalles")}
-                isIconOnly
-                color="success"
-                variant="light"
-              >
-                <IconEye />
-              </Button>
-            </Tooltip>
-            <Tooltip content="Editar">
-              <Button
-                onPress={() => handleEdit(item)}
-                isIconOnly
-                variant="light"
-              >
+            <Button
+              onPress={() => console.log("detalles")}
+              isIconOnly
+              color="success"
+              variant="light"
+            >
+              <IconEye />
+            </Button>
+            <Button onPress={() => handleEdit(item)} isIconOnly variant="light">
+              <span className="transform rotate-[30deg]">
                 <IconEdit />
-              </Button>
-            </Tooltip>
-            <Tooltip color="danger" content="Eliminar">
-              <Button
-                onPress={() => {
-                  onOpen();
-                  setUserToDelete(item);
-                }}
-                isIconOnly
-                color="danger"
-                variant="light"
-              >
-                <IconTrash />
-              </Button>
-            </Tooltip>
+              </span>
+            </Button>
+            <Button
+              onPress={() => {
+                onOpen();
+                setUserToDelete(item);
+              }}
+              isIconOnly
+              color="danger"
+              variant="light"
+            >
+              <IconTrash />
+            </Button>
           </div>
         );
 
@@ -153,10 +153,7 @@ const UsersList: FC<Props> = ({ userList }) => {
 
   return (
     <>
-      <Table
-        aria-label="Example table with custom cells"
-        selectionMode="none"
-      >
+      <Table aria-label="Example table with custom cells" selectionMode="none">
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn key={column.key}>{column.label}</TableColumn>

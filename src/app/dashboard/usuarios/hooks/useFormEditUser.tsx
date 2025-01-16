@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { schemaUsuario } from "@/lib/usuarios/schemas";
+import { schemaUsuarioEdit } from "@/lib/usuarios/schemas";
 import { editUsuario } from "@/lib/usuarios/actions";
 import {
   IStateUsuario,
@@ -25,17 +25,17 @@ const useFormEditUser = (usuario: IUsuarioRes) => {
     setError,
     reset,
   } = useForm({
-    resolver: yupResolver<IUsuarioForm>(schemaUsuario),
+    resolver: yupResolver<IUsuarioForm>(schemaUsuarioEdit),
   });
 
   const onSubmit = (formData: IUsuarioForm) => {
-    const data = { ...formData, id_usuario: usuario.id_usuario, id_rol:"" };
+    const data = { ...formData, id_usuario: usuario.id_usuario};
     startTransaction(() => formAction(data));
   };
 
   useEffect(() => {
     if (!!usuario) {
-      reset({ ...usuario, password: "default" });
+      reset(usuario);
     }
   }, []);
 

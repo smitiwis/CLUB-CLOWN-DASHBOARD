@@ -1,15 +1,19 @@
 import { prisma } from "@/lib/prisma";
+import { IUsuarioByIdRes, IUsuarioRes } from "../definicions";
 
 export async function fetchUsuarios() {
   try {
-    // Obtener todos los usuarios de la tabla 'usuarios'
     const usuarios = await prisma.usuario.findMany({
       select: {
         id_usuario: true,
+        tipo_documento: true,
+        nro_documento: true,
         nombre: true,
         apellido: true,
         telefono: true,
         fecha_ingreso: true,
+        direccion: true,
+        nro_direccion: true,
         estado: true,
         correo: true,
         rol: {
@@ -21,7 +25,7 @@ export async function fetchUsuarios() {
       },
     });
 
-    return usuarios;
+    return usuarios as IUsuarioRes[];
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Error al obtener usuarios.");
@@ -38,24 +42,23 @@ export async function fetchUserById(id_usuario: string) {
       },
       select: {
         id_usuario: true,
+        tipo_documento: true,
+        nro_documento: true,
         nombre: true,
         apellido: true,
         telefono: true,
         fecha_ingreso: true,
+        direccion: true,
+        nro_direccion: true,
         estado: true,
         correo: true,
-        rol: {
-          select: {
-            id_rol: true,
-            nombre: true,
-          },
-        },
+        id_rol: true,
       },
     });
     if (!user) {
       throw new Error("Usuario no encontrado.");
     }
-    return user;
+    return user as IUsuarioByIdRes;
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Error al obtener usuario.");
