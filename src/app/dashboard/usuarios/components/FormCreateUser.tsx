@@ -3,18 +3,35 @@
 import React, { FC, useEffect, useState } from "react";
 import useFormCreateUser from "../hooks/useFormCreateUser";
 import { IStateUsuario } from "@/lib/usuarios/definicions";
-import { Alert, Button, Input, Select, SelectItem } from "@nextui-org/react";
+import {
+  Alert,
+  Button,
+  Input,
+  Select,
+  SelectItem,
+  Spinner,
+} from "@nextui-org/react";
 import EyeOffIcon from "@/components/icons/IconEyeOff";
 import IconEye from "@/components/icons/IconEye";
-import { STATUS_USER } from "@/constants";
+import { DOCUMENTS, STATUS_USER } from "@/constants";
 
 type Props = {
   roles: { key: number; rolId: string; label: string; estado: boolean }[];
 };
 
 const FormCreateUser: FC<Props> = ({ roles }) => {
-  const { register, handleSubmit, errors, onSubmit, loading, state, setError } =
-    useFormCreateUser();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    onSubmit,
+    loading,
+    state,
+    setError,
+    watch,
+    loadingInfo,
+    hasDataByDocument,
+  } = useFormCreateUser();
 
   const [isVisible, setIsVisible] = useState(false);
   const [statusForm, setStatusForm] = useState<IStateUsuario>(state);
@@ -48,11 +65,43 @@ const FormCreateUser: FC<Props> = ({ roles }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex gap-4">
           <div className="flex flex-col flex-1">
+            <div className="flex gap-x-3 mb-4">
+              <Select
+                {...register("tipo_documento")}
+                defaultSelectedKeys={[DOCUMENTS[0].key]}
+                className="w-[20%]"
+                label="Tipo doc"
+                items={DOCUMENTS}
+                size="lg"
+                isInvalid={!!errors.tipo_documento}
+                errorMessage={errors.tipo_documento?.message}
+              >
+                {(document) => (
+                  <SelectItem key={document.key} textValue={document.label}>
+                    <div className="flex flex-col">
+                      <span className="text-small">{document.label}</span>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
+              <Input
+                {...register("nro_documento")}
+                endContent={loadingInfo && <Spinner />}
+                className="w-[80%]"
+                value={watch().nro_documento}
+                label="Nro de documento"
+                size="lg"
+                isInvalid={!!errors.nro_documento}
+                errorMessage={errors.nro_documento?.message}
+              />
+            </div>
             <Input
               {...register("nombre")}
               className="mb-4"
               label="Nombres"
               size="lg"
+              isDisabled={hasDataByDocument}
+              value={watch("nombre")}
               isInvalid={!!errors.nombre}
               errorMessage={errors.nombre?.message}
             />
@@ -62,9 +111,30 @@ const FormCreateUser: FC<Props> = ({ roles }) => {
               className="mb-4"
               label="Apellidos"
               size="lg"
+              isDisabled={hasDataByDocument}
+              value={watch("apellido")}
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}
             />
+
+            <div className="flex gap-x-3 mb-4">
+              <Input
+                {...register("direccion")}
+                className="w-[75%]"
+                label="Dirección"
+                size="lg"
+                isInvalid={!!errors.direccion}
+                errorMessage={errors.direccion?.message}
+              />
+              <Input
+                {...register("nro_direccion")}
+                className="w-[25%]"
+                label="Nro."
+                size="lg"
+                isInvalid={!!errors.nro_direccion}
+                errorMessage={errors.nro_direccion?.message}
+              />
+            </div>
 
             <Select
               {...register("id_rol")}
@@ -78,7 +148,9 @@ const FormCreateUser: FC<Props> = ({ roles }) => {
                 <SelectItem key={rolId}>{label}</SelectItem>
               ))}
             </Select>
+          </div>
 
+          <div className="flex flex-col flex-1">
             <Input
               {...register("telefono")}
               className="mb-4"
@@ -88,16 +160,6 @@ const FormCreateUser: FC<Props> = ({ roles }) => {
               errorMessage={errors.telefono?.message}
             />
 
-            <Input
-              {...register("dni")}
-              className="mb-4"
-              label="Nro. DNI"
-              size="lg"
-              isInvalid={!!errors.dni}
-              errorMessage={errors.dni?.message}
-            />
-          </div>
-          <div className="flex flex-col flex-1">
             <Input
               {...register("fecha_ingreso")}
               className="mb-4"

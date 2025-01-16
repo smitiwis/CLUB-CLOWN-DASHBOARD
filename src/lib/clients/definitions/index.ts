@@ -1,5 +1,5 @@
 // ====== FRONTEND ======
-export type TTypeDocumento = "" | "1" | "2";
+export type TTypeDocumento = "" | "1" | "2" | "3" | "4" | "5";
 export type TOrigen = "1" | "2" | "3" | "4" | "5" | "6" | "7";
 export type IGrupo_Client = "" | "1" | "2" | "3";
 export type IEstado_agenda = "" | "1" | "2";

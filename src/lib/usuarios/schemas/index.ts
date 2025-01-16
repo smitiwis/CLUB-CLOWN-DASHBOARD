@@ -1,11 +1,58 @@
 import { REGEX } from "@/constants/regex";
 import * as yup from "yup";
 
-const { EMAIL, DNI_REGEX, PASSWORD_MIN_LENGTH } = REGEX;
+const { EMAIL, PASSWORD_MIN_LENGTH } = REGEX;
 
 export const schemaUsuario = yup.object().shape({
   id_rol: yup.string().required("Rol es requerido."),
-  
+  tipo_documento: yup
+    .string()
+    .required("Tipo de documento es requerido.")
+    .oneOf(
+      ["", "1", "2", "3", "4", "5"],
+      "El tipo de documento debe ser '1', '2', '3', '4' o '5'."
+    )
+    .default(""), // Valor predeterminado "1"
+
+  nro_documento: yup
+    .string()
+    .required("Número de documento es requerido.")
+    .when("tipo_documento", {
+      is: (tipo_documento: string) => tipo_documento === "1",
+      then: (schema) =>
+        schema
+          .required("El número de DNI es obligatorio.")
+          .matches( REGEX.NUMBER ,"El número de DNI debe ser numerico .")
+          .matches(REGEX.DNI, "El número de DNI debe ser de 8 dígitos."),
+    })
+    .when("tipo_documento", {
+      is: (tipo_documento: string) => tipo_documento === "2",
+      then: (schema) =>
+        schema
+          .required("El número de RUC es obligatorio.")
+          .matches(REGEX.RUC, "El número de RUC debe ser de 11 dígitos."),
+    })
+    .when("tipo_documento", {
+      is: (tipo_documento: string) => tipo_documento === "3",
+      then: (schema) =>
+        schema
+          .required("El número de CE es obligatorio.")
+          .matches(REGEX.CE, "El número de CE de ser de 12 dígitos."),
+    })
+    .when("tipo_documento", {
+      is: (tipo_documento: string) => tipo_documento === "4",
+      then: (schema) =>
+        schema
+          .required("El número de PASS es obligatorio.")
+          .matches(REGEX.PASS, "El número de PASS debe ser de 11 dígitos."),
+    })
+    .when("tipo_documento", {
+      is: (tipo_documento: string) => tipo_documento === "5",
+      then: (schema) =>
+        schema.required("El número de documento es obligatorio."),
+    })
+    .default(""),
+
   nombre: yup
     .string()
     .required("Nombre es requerido.")
@@ -24,13 +71,8 @@ export const schemaUsuario = yup.object().shape({
     .matches(/^9/, "El teléfono debe comenzar con 9.")
     .matches(/^\d{9}$/, "El teléfono debe tener exactamente 9 dígitos."),
 
-  dni: yup
-    .string()
-    .required("DNI es requerido.")
-    .matches(
-      DNI_REGEX,
-      "El DNI debe contener exactamente 8 dígitos numéricos."
-    ),
+  direccion: yup.string().default(""),
+  nro_direccion: yup.string().default(""),
 
   fecha_ingreso: yup.string().required("Fecha de ingreso es requerida."),
 

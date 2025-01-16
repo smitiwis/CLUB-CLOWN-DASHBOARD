@@ -9,8 +9,11 @@ export const REGEX = {
   UPPER_LETTER: /[A-Z]/,
   LOWERCASE_LETTER: /[a-z]/,
   NUMBER: /[0-9]/,
-  DOTA2_ID: /^[0-9]\d{7,10}$/,
   PHONE_REGEX: /^[0-9]{9}$/,
-  DNI_REGEX: /^[0-9]{8}$/,
+  DNI: /^[0-9]{8}$/,
+  RUC: /^[0-9]{11}$/,
+  CE: /^[0-9]{8}$/,
+  PASS: /^[0-9]{11}$/,
+  
   PASSWORD_MIN_LENGTH: 6,
 };

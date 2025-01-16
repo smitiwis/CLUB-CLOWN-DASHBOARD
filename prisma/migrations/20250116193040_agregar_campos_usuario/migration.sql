@@ -13,17 +13,19 @@ CREATE TABLE "rol" (
 CREATE TABLE "usuario" (
     "id_usuario" TEXT NOT NULL,
     "id_rol" TEXT NOT NULL,
+    "tipo_documento" VARCHAR(1) NOT NULL DEFAULT '',
+    "nro_documento" VARCHAR(15) NOT NULL,
     "nombre" VARCHAR(25) NOT NULL,
     "apellido" VARCHAR(40) NOT NULL,
     "telefono" VARCHAR(9) NOT NULL,
-    "dni" VARCHAR(8) NOT NULL,
     "fecha_ingreso" VARCHAR(10) NOT NULL,
+    "direccion" VARCHAR(100) NOT NULL,
+    "nro_direccion" VARCHAR(10) NOT NULL,
     "estado" TEXT NOT NULL DEFAULT '1',
     "correo" VARCHAR(60) NOT NULL,
     "password" VARCHAR(100) NOT NULL,
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "fecha_actualizacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "rolId_rol" TEXT,
 
     CONSTRAINT "usuario_pkey" PRIMARY KEY ("id_usuario")
 );
@@ -34,13 +36,13 @@ CREATE TABLE "cliente" (
     "id_usuario" TEXT NOT NULL,
     "telefono" VARCHAR(9) NOT NULL,
     "tipo_documento" VARCHAR(1) NOT NULL DEFAULT '',
-    "nro_documento" VARCHAR(12),
+    "nro_documento" VARCHAR(15) NOT NULL,
     "nombre_apo" VARCHAR(25) NOT NULL,
     "nombre" VARCHAR(50) NOT NULL,
     "apellido" VARCHAR(50) NOT NULL,
     "edad" VARCHAR(2) NOT NULL,
     "direccion" VARCHAR(100) NOT NULL,
-    "nro_direccion" VARCHAR(6) NOT NULL,
+    "nro_direccion" VARCHAR(10) NOT NULL,
     "origen" VARCHAR(1) NOT NULL DEFAULT '3',
     "grupo" VARCHAR(1) NOT NULL,
     "estado" VARCHAR(1) NOT NULL DEFAULT '3',
@@ -71,10 +73,10 @@ CREATE TABLE "cliente_llamada" (
 CREATE UNIQUE INDEX "rol_nombre_key" ON "rol"("nombre");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "usuario_telefono_key" ON "usuario"("telefono");
+CREATE UNIQUE INDEX "usuario_nro_documento_key" ON "usuario"("nro_documento");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "usuario_dni_key" ON "usuario"("dni");
+CREATE UNIQUE INDEX "usuario_telefono_key" ON "usuario"("telefono");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "usuario_correo_key" ON "usuario"("correo");

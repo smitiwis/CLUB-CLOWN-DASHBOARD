@@ -26,16 +26,20 @@ model rol {
 }
 
 model usuario {
-  id_usuario    String @id @default(uuid())
-  id_rol        String
-  nombre        String @db.VarChar(25)
-  apellido      String @db.VarChar(40)
-  telefono      String @unique @db.VarChar(9)
-  dni           String @unique @db.VarChar(8)
-  fecha_ingreso String @db.VarChar(10)
-  estado        String @default("1")
-  correo        String @unique @db.VarChar(60)
-  password      String @db.VarChar(100)
+  id_usuario String @id @default(uuid())
+  id_rol     String
+
+  tipo_documento String @default("") @db.VarChar(1)
+  nro_documento  String @unique @db.VarChar(15)
+  nombre         String @db.VarChar(25)
+  apellido       String @db.VarChar(40)
+  telefono       String @unique @db.VarChar(9)
+  fecha_ingreso  String @db.VarChar(10)
+  direccion      String @db.VarChar(100)
+  nro_direccion  String @db.VarChar(10)
+  estado         String @default("1")
+  correo         String @unique @db.VarChar(60)
+  password       String @db.VarChar(100)
 
   fecha_creacion      DateTime @default(now())
   fecha_actualizacion DateTime @default(now())
@@ -44,25 +48,24 @@ model usuario {
   cliente_llamada cliente_llamada[]
 
   rol       rol     @relation(fields: [id_rol], references: [id_rol])
-  rolId_rol String?
 }
 
 model cliente {
-  id_cliente     String  @id @default(uuid())
-  id_usuario     String
+  id_cliente String @id @default(uuid())
+  id_usuario String
 
-  telefono       String  @unique @db.VarChar(9)
-  tipo_documento String  @default("") @db.VarChar(1)
-  nro_documento  String? @unique @db.VarChar(12)
-  nombre_apo     String  @db.VarChar(25)
-  nombre         String  @db.VarChar(50)
-  apellido       String  @db.VarChar(50)
-  edad           String  @db.VarChar(2)
-  direccion      String  @db.VarChar(100)
-  nro_direccion  String  @db.VarChar(6)
-  origen         String  @default("3") @db.VarChar(1)
-  grupo          String  @db.VarChar(1)
-  estado         String  @default("3") @db.VarChar(1)
+  telefono       String @unique @db.VarChar(9)
+  tipo_documento String @default("") @db.VarChar(1)
+  nro_documento  String @unique @db.VarChar(15)
+  nombre_apo     String @db.VarChar(25)
+  nombre         String @db.VarChar(50)
+  apellido       String @db.VarChar(50)
+  edad           String @db.VarChar(2)
+  direccion      String @db.VarChar(100)
+  nro_direccion  String @db.VarChar(10)
+  origen         String @default("3") @db.VarChar(1)
+  grupo          String @db.VarChar(1)
+  estado         String @default("3") @db.VarChar(1)
 
   fecha_creacion      DateTime @default(now())
   fecha_actualizacion DateTime @default(now())
@@ -83,7 +86,7 @@ model cliente_llamada {
   tipo               String    @default("3") @db.VarChar(1)
   resultado          String    @default("1") @db.VarChar(1)
   fecha_agendada     DateTime?
-  estado_agenda      String?    @default("") @db.VarChar(1)
+  estado_agenda      String?   @default("") @db.VarChar(1)
 
   fecha_creacion      DateTime @default(now())
   fecha_actualizacion DateTime @default(now())
@@ -93,6 +96,5 @@ model cliente_llamada {
 
   @@index([id_cliente, id_usuario])
 }
-
 
 // ================== HORARIOS DE TALLERES ==================  

@@ -12,6 +12,7 @@ import { createClient } from "@/lib/clients/actions/action";
 import axios from "axios";
 
 const useFormCreateClient = () => {
+  const [documentNumber, setDocumentNumber] = useState("");
   const [hasDataByDocument, setHasDataByDocument] = useState(false);
   const [loadingInfo, setLoadigInfo] = useState(false);
   const [loading, startTransaction] = useTransition();
@@ -31,6 +32,7 @@ const useFormCreateClient = () => {
   } = useForm<IFClient>({
     defaultValues: {
       fecha_agendada: undefined,
+      nro_documento: "",
     },
     resolver: yupResolver<IFClient>(schemaClient),
   });
@@ -75,21 +77,32 @@ const useFormCreateClient = () => {
       grupos.find(({ min, max }) => edad >= min && edad <= max)?.grupo || "";
 
     setValue("grupo", grupo);
-  }, [watch().edad]);
+  }, [watch("edad")]);
 
   useEffect(() => {
-    const tipoDocumento = watch("tipo_documento");
+    setValue("nombre", "");
+    setValue("apellido", "");
     setValue("nro_documento", "");
-    if (!tipoDocumento) clearErrors("nro_documento");
+
+    setHasDataByDocument(false);
+    setDocumentNumber("");
+    
+    clearErrors("nro_documento");
   }, [watch("tipo_documento")]);
 
   useEffect(() => {
     const tipoDocumento = watch("tipo_documento");
     const nroDocumento = watch("nro_documento");
+    if (!nroDocumento) {
+      setValue("nombre", "");
+      setValue("apellido", "");
+    }
 
     switch (tipoDocumento) {
       case "1":
         if (nroDocumento.length === 8) {
+          if (documentNumber === nroDocumento) return;
+          setDocumentNumber(nroDocumento);
           getInfoByNroDni();
         }
         break;

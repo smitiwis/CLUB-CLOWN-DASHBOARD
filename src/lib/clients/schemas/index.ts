@@ -1,8 +1,6 @@
+import { REGEX } from "@/constants/regex";
 import * as yup from "yup";
 
-// Expresiones regulares para validar DNI y RUC
-const dniRegex = /^\d{8}$/; // DNI tiene 8 dígitos
-const rucRegex = /^\d{11}$/; // RUC tiene 11 dígitos
 
 export const schemaClient = yup.object().shape({
   telefono: yup
@@ -12,7 +10,10 @@ export const schemaClient = yup.object().shape({
 
   tipo_documento: yup
     .string()
-    .oneOf(["", "1", "2"], "El tipo de documento debe ser '1' o '2'.")
+    .oneOf(
+      ["", "1", "2", "3", "4", "5"],
+      "El tipo de documento debe ser '1', '2', '3', '4' o '5'."
+    )
     .default(""), // Valor predeterminado "1"
 
   nro_documento: yup
@@ -22,34 +23,32 @@ export const schemaClient = yup.object().shape({
       then: (schema) =>
         schema
           .required("El número de DNI es obligatorio.")
-          .matches(dniRegex, "El número de DNI debe ser de 8 dígitos."),
+          .matches(REGEX.DNI, "El número de DNI debe ser de 8 dígitos."),
     })
     .when("tipo_documento", {
       is: (tipo_documento: string) => tipo_documento === "2",
       then: (schema) =>
         schema
           .required("El número de RUC es obligatorio.")
-          .matches(rucRegex, "El número de RUC debe ser de 11 dígitos."),
+          .matches(REGEX.RUC, "El número de RUC debe ser de 11 dígitos."),
     })
     .when("tipo_documento", {
       is: (tipo_documento: string) => tipo_documento === "3",
       then: (schema) =>
         schema
           .required("El número de CE es obligatorio.")
-          .matches(rucRegex, "El número de CE debe ser válido."),
+          .matches(REGEX.CE, "El número de CE debe ser válido."),
     })
     .when("tipo_documento", {
       is: (tipo_documento: string) => tipo_documento === "4",
       then: (schema) =>
         schema
           .required("El número de PASS es obligatorio.")
-          .matches(rucRegex, "El número de PASS debe ser de 11 dígitos."),
+          .matches(REGEX.PASS, "El número de PASS debe ser de 11 dígitos."),
     })
     .when("tipo_documento", {
       is: (tipo_documento: string) => tipo_documento === "5",
-      then: (schema) =>
-        schema
-          .required("El número es obligatorio.")
+      then: (schema) => schema.required("El número es obligatorio."),
     })
     .default(""),
 
@@ -84,5 +83,5 @@ export const schemaClient = yup.object().shape({
           .required("La fecha de recontacto es requerida");
       }
       return schema;
-    })
+    }),
 });

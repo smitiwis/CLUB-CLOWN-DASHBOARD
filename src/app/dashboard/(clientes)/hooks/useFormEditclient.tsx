@@ -36,14 +36,13 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
   } = useForm<IFClient>({
     defaultValues: {
       fecha_agendada: undefined,
-      nro_documento:""
+      nro_documento: "",
     },
     resolver: yupResolver<IFClient>(schemaClient),
   });
 
   const onSubmit = (formData: IFClient) => {
     const data = { ...formData, id_cliente: client.id_cliente, redirect };
-    console.log("formData", data);
     startTransaction(() => formAction(data));
   };
 
@@ -83,18 +82,17 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
       grupos.find(({ min, max }) => edad >= min && edad <= max)?.grupo || "";
 
     setValue("grupo", grupo);
-  }, [watch().edad]);
+  }, [watch("edad")]);
 
   useEffect(() => {
-    const tipoDocumento = watch("tipo_documento");
     setValue("nombre", "");
     setValue("apellido", "");
     setValue("nro_documento", "");
-    setHasDataByDocument(false);
 
-    if (!tipoDocumento) {
-      clearErrors("nro_documento")
-    };
+    setHasDataByDocument(false);
+    setDocumentNumber("");
+    
+    clearErrors("nro_documento");
   }, [watch("tipo_documento")]);
 
   useEffect(() => {
@@ -110,7 +108,7 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
         switch (tipoDocumento) {
           case "1":
             if (nroDocumento.length === 8) {
-              if (documentNumber === nroDocumento) return
+              if (documentNumber === nroDocumento) return;
               setDocumentNumber(nroDocumento);
               getInfoByNroDni();
             }
@@ -147,7 +145,7 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
     loading,
     state,
     loadingInfo,
-    hasDataByDocument
+    hasDataByDocument,
   };
 };
 

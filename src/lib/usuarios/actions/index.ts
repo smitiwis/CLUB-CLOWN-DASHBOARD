@@ -23,11 +23,14 @@ export async function createUsuario(
 
     const {
       id_rol,
+      tipo_documento,
+      nro_documento,
       nombre,
       apellido,
       telefono,
-      dni,
       fecha_ingreso,
+      direccion,
+      nro_direccion,
       estado,
       correo,
       password,
@@ -61,7 +64,7 @@ export async function createUsuario(
 
     // VALIDAR POR DNI
     const existingUserDni = await prisma.usuario.findUnique({
-      where: { dni: validatedUsuario.dni },
+      where: { nro_documento: validatedUsuario.nro_documento },
     });
 
     if (existingUserDni) {
@@ -79,11 +82,14 @@ export async function createUsuario(
     await prisma.usuario.create({
       data: {
         id_rol, // Rol de usuario
+        tipo_documento,
+        nro_documento,
         nombre,
         apellido,
         telefono,
-        dni,
         fecha_ingreso,
+        direccion,
+        nro_direccion,
         estado,
         correo,
         password: hashedPassword, // Guardar la contraseña encriptada
@@ -112,7 +118,7 @@ export async function editUsuario(
       abortEarly: false,
     });
 
-    const { nombre, apellido, telefono, dni, fecha_ingreso, estado, correo } =
+    const { nombre, apellido, telefono, nro_documento, fecha_ingreso, estado, correo } =
       validatedUsuario;
 
     // VALIDAR POR CORREO
@@ -146,7 +152,7 @@ export async function editUsuario(
 
     // VALIDAR POR DNI
     const existingUserDni = await prisma.usuario.findFirst({
-      where: { dni: validatedUsuario.dni },
+      where: { nro_documento: validatedUsuario.nro_documento },
     });
 
     if (existingUserDni && existingUserDni.id_usuario !== formData.id_usuario) {
@@ -164,7 +170,7 @@ export async function editUsuario(
         nombre,
         apellido,
         telefono,
-        dni,
+        nro_documento,
         fecha_ingreso,
         estado,
         correo,
