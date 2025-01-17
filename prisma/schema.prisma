@@ -56,7 +56,7 @@ model cliente {
 
   telefono       String @unique @db.VarChar(9)
   tipo_documento String @default("") @db.VarChar(1)
-  nro_documento  String @unique @db.VarChar(15)
+  nro_documento  String? @unique @db.VarChar(15)
   nombre_apo     String @db.VarChar(25)
   nombre         String @db.VarChar(50)
   apellido       String @db.VarChar(50)

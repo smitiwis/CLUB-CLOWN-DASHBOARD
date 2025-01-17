@@ -75,9 +75,7 @@ export async function fetchUserById(id_usuario: string) {
 export async function fetchProfileById(id_usuario: string) {
   try {
     const user = await prisma.usuario.findUnique({
-      where: {
-        id_usuario,
-      },
+      where: { id_usuario },
       select: {
         id_usuario: true,
         nombre: true,

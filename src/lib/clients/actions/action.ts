@@ -33,12 +33,27 @@ export async function createClient(
       };
     }
     // CREAR CLIENTE
+    console.log({
+      id_usuario: userId,
+      telefono: formData.telefono,
+      tipo_documento: formData.tipo_documento,
+      nro_documento: formData.nro_documento || null,
+      nombre_apo: formData.nombre_apo,
+      nombre: formData.nombre,
+      apellido: formData.apellido,
+      edad: formData.edad,
+      direccion: formData.direccion,
+      nro_direccion: formData.nro_direccion,
+      origen: formData.origen,
+      grupo: formData.grupo,
+      estado: formData.estado,
+    },)
     await prisma.cliente.create({
       data: {
         id_usuario: userId,
         telefono: formData.telefono,
         tipo_documento: formData.tipo_documento,
-        nro_documento: formData.nro_documento,
+        nro_documento: formData.nro_documento || null,
         nombre_apo: formData.nombre_apo,
         nombre: formData.nombre,
         apellido: formData.apellido,

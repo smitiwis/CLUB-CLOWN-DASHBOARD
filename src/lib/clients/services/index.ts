@@ -31,7 +31,10 @@ export async function fetchClientById(id_cliente: string) {
       throw new Error("cliente no encontrado.");
     }
 
-    return cliente as IBClients;
+    return {
+      ...cliente,
+      nro_documento: cliente.nro_documento || "",
+    } as IBClients;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch invoice.");
