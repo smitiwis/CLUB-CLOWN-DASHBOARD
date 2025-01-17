@@ -4,9 +4,13 @@
 import IconEdit from "@/components/icons/IconEdit";
 import IconEye from "@/components/icons/IconEye";
 import { COLORES, RESULTADO_LLAMADAS, TIPO_LLAMADAS } from "@/constants";
-import { IBClientCallRes } from "@/lib/llamadas/definitions";
+import { IBCallsResp, IBClientCallRes } from "@/lib/llamadas/definitions";
 import {
   Button,
+  Pagination,
+  Select,
+  SelectItem,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -15,16 +19,25 @@ import {
   TableRow,
   Tooltip,
 } from "@nextui-org/react";
+import axios from "axios";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { FC, Key, useCallback } from "react";
+import React, {
+  FC,
+  Key,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 type Props = {
-  callsList: IBClientCallRes[];
+  callsData: IBCallsResp;
 };
 
-const CallsList: FC<Props> = ({ callsList }) => {
+const CallsList: FC<Props> = ({ callsData }) => {
   const router = useRouter();
-  const rows = callsList;
+  const rows = callsData.data;
 
   const columns = [
     {
@@ -136,13 +149,127 @@ const CallsList: FC<Props> = ({ callsList }) => {
     }
   }, []);
 
+  // ======== TABLA Y PAGINACION =========
+  const [data, setData] = useState(rows); // Usamos la lista inicial
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [pagination, setPagination] = useState({
+    page: callsData.pagination.page,
+    limit: callsData.pagination.limit,
+    total: callsData.pagination.total,
+    totalPages: callsData.pagination.totalPages,
+  });
+
+  const limit = callsData.pagination.limit;
+
+  const pages = React.useMemo(() => {
+    return data?.length ? Math.ceil(data.length / limit) : 0;
+  }, [data?.length, limit]);
+
+  const loadingState = isLoading ? "loading" : "idle";
+
+  const fetchPageData = async () => {
+    setIsLoading(true);
+
+    try {
+      const path = `/api/llamada/list?page=${page}&limit=${limit}`;
+      const response = await axios.get(path);
+      setData(response.data.data);
+      setPagination(response.data.pagination);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const topContent = useMemo(() => {
+    return (
+      <div className="flex flex-col gap-y-1">
+        <div className="flex justify-end gap-3">
+          <Button
+            as={Link}
+            href="/dashboard/llamar/registrar"
+            color="primary"
+            endContent={<i className="icon-plus" />}
+          >
+            Registrar llamada
+          </Button>
+        </div>
+        <div className="flex justify-between items-end my-2">
+          <span className="text-default-400 text-small">
+            Total {data.length} clientes
+          </span>
+          <label className="flex gap-x-2 items-center text-default-400 text-small">
+            <span>Filas por pagina:</span>
+            <div className="w-[70px]">
+              <Select
+                defaultSelectedKeys={[String(limit)]}
+                size="sm"
+                items={[
+                  { label: "5", key: "5" },
+                  { label: "10", key: "10" },
+                  { label: "15", key: "15" },
+                ]}
+              >
+                {(document) => (
+                  <SelectItem key={document.key} textValue={document.label}>
+                    <div className="flex flex-col">
+                      <span className="text-small">{document.label}</span>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
+            </div>
+          </label>
+        </div>
+      </div>
+    );
+  }, [data.length]);
+
+  const bottomContent = React.useMemo(() => {
+    if (pagination.totalPages === 1 || !data.length) return null;
+    return (
+      <div className="flex w-full justify-center">
+        <Pagination
+          isCompact
+          showControls
+          showShadow
+          color="primary"
+          page={pagination.page}
+          total={pagination.totalPages}
+          onChange={(newPage) => setPage(newPage)}
+        />
+      </div>
+    );
+  }, [pages, pagination]);
+
+  useEffect(() => {
+    if (page === 1) {
+      return setData(callsData.data);
+    }
+    fetchPageData();
+  }, [page]);
+
   return (
-    <Table aria-label="Example static collection table" selectionMode="none">
+    <Table
+      topContent={topContent}
+      aria-label="Tabla de llamadas"
+      selectionMode="none"
+      bottomContent={bottomContent}
+      bottomContentPlacement="outside"
+    >
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
 
-      <TableBody items={rows}>
+      <TableBody
+        items={data || []}
+        loadingContent={<Spinner />}
+        loadingState={loadingState}
+        emptyContent={"No hay registros para mostrar"}
+      >
         {(item) => (
           <TableRow key={item.key}>
             {(columnKey) => (

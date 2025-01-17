@@ -28,6 +28,17 @@ export type IclientOptions = {
 };
 
 // ======== BACKEND ========
+
+export interface IBCallsResp {
+  data: IBClientCallRes[];
+  pagination: {
+    total: number;
+    totalPages: number;
+    page: number;
+    limit: number;
+  };
+}
+
 export interface IBClientCallRes {
   key: number;
   fecha_creacion: string;

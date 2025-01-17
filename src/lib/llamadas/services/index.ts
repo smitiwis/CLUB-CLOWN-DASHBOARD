@@ -2,16 +2,24 @@ import { getUserId } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
 import { format } from "@formkit/tempo";
 import { IBClientCallRes, RESULTADO_CALL, TIPO_CALL } from "../definitions";
+import { IPagination } from "@/lib/definitions";
 
-export async function fetchLlamadas() {
+export async function fetchLlamadas(pagination: IPagination) {
+  const { page, limit } = pagination;
+
   try {
-    const userId = await getUserId();
-    if (!userId) return new Error("Usuario desconocido");
+    const id_usuario = await getUserId();
+    if (!id_usuario) return new Error("Usuario desconocido");
 
+    // Calcular la paginación
+    const skip = (page - 1) * limit;
+    const take = limit;
+
+    const total = await prisma.cliente_llamada.count({ where: { id_usuario } });
     const llamadas = await prisma.cliente_llamada.findMany({
-      where: {
-        id_usuario: userId,
-      },
+      where: { id_usuario },
+      skip,
+      take,
       select: {
         id_cliente_llamada: true,
         estado: true,
@@ -39,7 +47,17 @@ export async function fetchLlamadas() {
       };
     });
 
-    return callsList;
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data: callsList,
+      pagination: {
+        total,
+        totalPages,
+        page,
+        limit,
+      },
+    };
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Error al obtener leads .");

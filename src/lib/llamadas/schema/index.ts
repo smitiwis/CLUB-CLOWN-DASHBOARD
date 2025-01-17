@@ -14,8 +14,8 @@ export const schemaClientLlamada = yup.object().shape({
   resultado: yup
     .string()
     .oneOf(
-      ["1", "2", "3", "4", "5", "6"],
-      "El tipo debe ser uno de los valores permitidos: 1, 2, 3, 4, 5"
+      ["1", "2", "3", "4", "5", "6", "7"],
+      "El tipo debe ser uno de los valores permitidos: 1, 2, 3, 4, 5, 6, 7"
     )
     .required("El tipo es requerido"),
     fecha_agendada: yup
