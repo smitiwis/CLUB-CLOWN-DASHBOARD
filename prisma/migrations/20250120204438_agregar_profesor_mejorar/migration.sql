@@ -25,7 +25,7 @@ CREATE TABLE "usuario" (
     "correo" VARCHAR(60) NOT NULL,
     "password" VARCHAR(100) NOT NULL,
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "fecha_actualizacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_actualizacion" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "usuario_pkey" PRIMARY KEY ("id_usuario")
 );
@@ -36,7 +36,7 @@ CREATE TABLE "cliente" (
     "id_usuario" TEXT NOT NULL,
     "telefono" VARCHAR(9) NOT NULL,
     "tipo_documento" VARCHAR(1) NOT NULL DEFAULT '',
-    "nro_documento" VARCHAR(15) NOT NULL,
+    "nro_documento" VARCHAR(15),
     "nombre_apo" VARCHAR(25) NOT NULL,
     "nombre" VARCHAR(50) NOT NULL,
     "apellido" VARCHAR(50) NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE "cliente" (
     "grupo" VARCHAR(1) NOT NULL,
     "estado" VARCHAR(1) NOT NULL DEFAULT '3',
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "fecha_actualizacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_actualizacion" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "cliente_pkey" PRIMARY KEY ("id_cliente")
 );
@@ -64,9 +64,38 @@ CREATE TABLE "cliente_llamada" (
     "fecha_agendada" TIMESTAMP(3),
     "estado_agenda" VARCHAR(1) DEFAULT '',
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "fecha_actualizacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_actualizacion" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "cliente_llamada_pkey" PRIMARY KEY ("id_cliente_llamada")
+);
+
+-- CreateTable
+CREATE TABLE "taller" (
+    "id_taller" TEXT NOT NULL,
+    "id_profesor" TEXT NOT NULL,
+    "nombre" VARCHAR(50) NOT NULL,
+    "dias" VARCHAR(50)[],
+    "hora" VARCHAR(20) NOT NULL,
+    "precio" DOUBLE PRECISION NOT NULL,
+    "cant_clases" INTEGER NOT NULL DEFAULT 4,
+    "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_actualizacion" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "taller_pkey" PRIMARY KEY ("id_taller")
+);
+
+-- CreateTable
+CREATE TABLE "profesor" (
+    "id_profesor" TEXT NOT NULL,
+    "nombre" VARCHAR(50) NOT NULL,
+    "apellidos" VARCHAR(50) NOT NULL,
+    "email" VARCHAR(100) NOT NULL,
+    "telefono" VARCHAR(15),
+    "especialidad" VARCHAR(100),
+    "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_actualizacion" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "profesor_pkey" PRIMARY KEY ("id_profesor")
 );
 
 -- CreateIndex
@@ -93,6 +122,12 @@ CREATE INDEX "cliente_telefono_idx" ON "cliente"("telefono");
 -- CreateIndex
 CREATE INDEX "cliente_llamada_id_cliente_id_usuario_idx" ON "cliente_llamada"("id_cliente", "id_usuario");
 
+-- CreateIndex
+CREATE INDEX "taller_id_profesor_idx" ON "taller"("id_profesor");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "profesor_email_key" ON "profesor"("email");
+
 -- AddForeignKey
 ALTER TABLE "usuario" ADD CONSTRAINT "usuario_id_rol_fkey" FOREIGN KEY ("id_rol") REFERENCES "rol"("id_rol") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -104,3 +139,6 @@ ALTER TABLE "cliente_llamada" ADD CONSTRAINT "cliente_llamada_id_cliente_fkey" F
 
 -- AddForeignKey
 ALTER TABLE "cliente_llamada" ADD CONSTRAINT "cliente_llamada_id_usuario_fkey" FOREIGN KEY ("id_usuario") REFERENCES "usuario"("id_usuario") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "taller" ADD CONSTRAINT "taller_id_profesor_fkey" FOREIGN KEY ("id_profesor") REFERENCES "profesor"("id_profesor") ON DELETE RESTRICT ON UPDATE CASCADE;

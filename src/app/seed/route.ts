@@ -93,6 +93,53 @@ const seedUsuarios = async () => {
   console.log("Seed completado.");
 };
 
+const seedProfesores = async () => {
+  console.log("Conectando a la base de datos...");
+
+  // Datos iniciales
+  const profesores = [
+    {
+      nombre: "Erick",
+      apellidos: "Zar",
+      email:"erick@gmail.com",
+      telefono: "912345678",
+      especialidad: "Clown",
+      estado: "1",
+    },
+    {
+      nombre: "Juan Manuel",
+      apellidos: "Gonzales",
+      email:"Juan@gmail.com",
+      telefono: "914567890",
+      especialidad: "Teatro",
+      estado: "0",
+    },
+    {
+      nombre: "Nathaly",
+      apellidos: "Fernandez",
+      email:"Nathaly@gmail.com",
+      telefono: "916789012",
+      especialidad: "Origen",
+      estado: "1",
+    },
+    {
+      nombre: "Andrea",
+      apellidos: "Garcia",
+      email:"Andrea@gmail.com",
+      telefono: "964567890",
+      especialidad: "Comedia",
+      estado: "1",
+    },
+  ];
+
+  // Inserción de profesores
+  for (const profesor of profesores) {
+    await prisma.profesor.create({ data: profesor });
+  }
+
+  console.log("Seed PROFESOR completado.");
+}
+
 
 const seedRoles = async () => {
   console.log("Conectando a la base de datos...");
@@ -124,9 +171,10 @@ const seedRoles = async () => {
 export async function GET() {
   try {
     // Llamar a la función que inserta los usuarios
-    await seedRoles();
-    await seedUsuarios();
+    // await seedRoles();
+    // await seedUsuarios();
     // await seedClientes();
+    await seedProfesores();
 
     // Responder con un mensaje de éxito
     return NextResponse.json({

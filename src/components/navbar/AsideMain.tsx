@@ -22,6 +22,7 @@ const AsideMain = () => {
     },
 
     { id: "llamadas", label: "Llamadas", href: "/dashboard/llamadas" },
+    { id: "talleres", label: "Talleres", href: "/dashboard/talleres" },
     {
       id: "inscripciones",
       label: "Inscripciones",

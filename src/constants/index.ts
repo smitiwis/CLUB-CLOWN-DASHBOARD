@@ -63,6 +63,11 @@ export const STATUS_USER = [
   { key: "0", label: "Inactivo" },
 ];
 
+export const STATUS_MAIN = [
+  { key: "1", label: "Activo" },
+  { key: "0", label: "Inactivo" },
+];
+
 export const STATUS_CLIENT = [{ key: 1, label: "Negro" }];
 
 export const GROUPS_CLIENT = [
@@ -93,4 +98,71 @@ export const ESTADO_LLAMADA_AGENDA = [
   { key: "1", label: "Pendiente" },
   { key: "2", label: "Atendido" },
   { key: "3", label: "Sin atender" },
+];
+
+export const DIAS_TALLERES = [
+  { key: "1", label: "Lunes" },
+  { key: "2", label: "Martes" },
+  { key: "3", label: "Miercoles" },
+  { key: "4", label: "Jueves" },
+  { key: "5", label: "Viernes" },
+  { key: "6", label: "Sabado" },
+  { key: "7", label: "Domingo" },
+];
+
+export const HORAS_CLASES = [
+  { key: "1", label: "08:00 AM" },
+  { key: "2", label: "08:30 AM" },
+  { key: "3", label: "09:00 AM" },
+  { key: "4", label: "09:30 AM" },
+  { key: "5", label: "10:00 AM" },
+  { key: "6", label: "10:30 AM" },
+  { key: "7", label: "11:00 AM" },
+  { key: "8", label: "11:30 AM" },
+  { key: "9", label: "12:00 PM" },
+  { key: "10", label: "12:30 PM" },
+  { key: "11", label: "01:00 PM" },
+  { key: "12", label: "01:30 PM" },
+  { key: "13", label: "02:00 PM" },
+  { key: "14", label: "02:30 PM" },
+  { key: "15", label: "03:00 PM" },
+  { key: "16", label: "03:30 PM" },
+  { key: "17", label: "04:00 PM" },
+  { key: "18", label: "04:30 PM" },
+  { key: "19", label: "05:00 PM" },
+  { key: "20", label: "05:30 PM" },
+  { key: "21", label: "06:00 PM" },
+  { key: "22", label: "06:30 PM" },
+  { key: "23", label: "07:00 PM" },
+  { key: "24", label: "07:30 PM" },
+  { key: "25", label: "08:00 PM" },
+  { key: "26", label: "08:30 PM" },
+  { key: "27", label: "09:00 PM" },
+  { key: "28", label: "09:30 PM" },
+];
+
+export const CANTIDAD_CLASES = [
+  { key: "1", label: "1" },
+  { key: "2", label: "2" },
+  { key: "3", label: "3" },
+  { key: "4", label: "4" },
+  { key: "5", label: "5" },
+  { key: "6", label: "6" },
+  { key: "7", label: "7" },
+  { key: "8", label: "8" },
+  { key: "9", label: "9" },
+  { key: "10", label: "10" },
+  { key: "11", label: "11" },
+  { key: "12", label: "12" },
+  { key: "13", label: "13" },
+  { key: "14", label: "14" },
+  { key: "15", label: "15" },
+  { key: "16", label: "16" },
+];
+
+export const PROFESOR_CLASES = [
+  { key: "1", label: "Profesor 1" },
+  { key: "2", label: "Profesor 2" },
+  { key: "3", label: "Profesor 3" },
+  { key: "4", label: "Profesor 4" },
 ];
