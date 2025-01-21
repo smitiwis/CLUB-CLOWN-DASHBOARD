@@ -1,23 +1,27 @@
-import { prisma } from "@/lib/prisma";
-import { Button } from "@nextui-org/react";
-import Link from "next/link";
+import { fetchTalleres } from "@/lib/talleres/services";
 import React from "react";
+import TalleresList from "./components/TalleresList";
 
-const Page = async() => {
+const Page = async () => {
+  const pagination = { page: 1, limit: 10 };
+  const talleresData = await fetchTalleres(pagination);
 
-  const talleres = await prisma.taller.findMany();
-  console.log(talleres); 
-
+  if (talleresData instanceof Error) {
+    console.error("Error al cargar las llamadas");
+    return <div>Error al cargar las llamadas</div>;
+  }
+ 
   return (
     <>
-      <Button
+      {/* <Button
         as={Link}
         href="/dashboard/talleres/crear"
         color="primary"
         endContent={<i className="icon-plus" />}
       >
         Nuevo Horario
-      </Button>
+      </Button> */}
+      <TalleresList talleresData={talleresData} />
     </>
   );
 };

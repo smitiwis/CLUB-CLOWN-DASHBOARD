@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+const diasValidos = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"] as const;
 
 export const formTallerSchema = Yup.object().shape({
   id_profesor: Yup.string().required("Debes escoger un profesor"),
@@ -13,23 +14,13 @@ export const formTallerSchema = Yup.object().shape({
   //   .required("Los días son obligatorios"),
 
   dias: Yup.array()
-    .of(
-      Yup.string()
-        .oneOf(
-          [
-            "Lunes",
-            "Martes",
-            "Miércoles",
-            "Jueves",
-            "Viernes",
-            "Sábado",
-            "Domingo",
-          ],
-        )
-        .required("Cada día debe ser válido")
-    )
-    .min(1, "Debe seleccionar al menos un día")
-    .required("Los días son obligatorios"),
+  .of(
+    Yup.string()
+      .oneOf(diasValidos, "El día debe ser válido") // Restringe los valores a los días válidos
+      .required("Cada día es obligatorio")
+  )
+  .min(1, "Debe seleccionar al menos un día")
+  .required("El campo días es obligatorio"),
 
   horaInit: Yup.string().required("La hora inicial es obligatoria"),
 

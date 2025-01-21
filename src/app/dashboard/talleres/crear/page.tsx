@@ -18,7 +18,7 @@ const Page = async () => {
     label: profesor.nombre + " " + profesor.apellidos,
   }));
 
-  return <FormCreateTaller profesoresOptions = {profesoresOptions}/>;
+  return <FormCreateTaller profesoresOptions = {profesoresOptions}/>
 };
 
 export default Page;
