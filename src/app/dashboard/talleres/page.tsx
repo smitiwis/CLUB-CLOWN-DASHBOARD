@@ -1,8 +1,13 @@
+import { prisma } from "@/lib/prisma";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import React from "react";
 
-const Page = () => {
+const Page = async() => {
+
+  const talleres = await prisma.taller.findMany();
+  console.log(talleres); 
+
   return (
     <>
       <Button

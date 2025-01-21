@@ -8,7 +8,7 @@ interface Props {
 
 const RootLayout: FC<Props> = ({ children }) => {
   return (
-    <div className="grid grid-cols-[256px,1fr] grid-rows-1 h-screen">
+    <div className="grid grid-cols-[256px,1fr] grid-rows-1 h-screen" aria-hidden="false">
       <AsideMain />
       <div className="grid grid-cols-1 grid-rows-[70px,1fr] h-full overflow-y-auto">
         <HeaderMain />

@@ -95,6 +95,7 @@ export async function createUsuario(
     // CREAR USUARIO
     await prisma.usuario.create({ data });
   } catch (error) {
+    console.error("error", error);
     if (error instanceof Error) {
       return { message: error.message };
     } else if (typeof error === "object") {

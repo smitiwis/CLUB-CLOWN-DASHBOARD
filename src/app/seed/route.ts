@@ -171,9 +171,8 @@ const seedRoles = async () => {
 export async function GET() {
   try {
     // Llamar a la función que inserta los usuarios
-    // await seedRoles();
-    // await seedUsuarios();
-    // await seedClientes();
+    await seedRoles();
+    await seedUsuarios();
     await seedProfesores();
 
     // Responder con un mensaje de éxito

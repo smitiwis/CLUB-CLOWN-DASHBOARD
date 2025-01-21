@@ -78,6 +78,7 @@ CREATE TABLE "taller" (
     "hora" VARCHAR(20) NOT NULL,
     "precio" DOUBLE PRECISION NOT NULL,
     "cant_clases" INTEGER NOT NULL DEFAULT 4,
+    "estado" VARCHAR(1) NOT NULL DEFAULT '1',
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "fecha_actualizacion" TIMESTAMP(3) NOT NULL,
 
@@ -92,6 +93,7 @@ CREATE TABLE "profesor" (
     "email" VARCHAR(100) NOT NULL,
     "telefono" VARCHAR(15),
     "especialidad" VARCHAR(100),
+    "estado" VARCHAR(1) NOT NULL DEFAULT '1',
     "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "fecha_actualizacion" TIMESTAMP(3) NOT NULL,
 
