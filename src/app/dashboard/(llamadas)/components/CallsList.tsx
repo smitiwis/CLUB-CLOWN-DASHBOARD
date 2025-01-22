@@ -17,7 +17,6 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  Tooltip,
 } from "@nextui-org/react";
 import axios from "axios";
 import Link from "next/link";
@@ -109,37 +108,35 @@ const CallsList: FC<Props> = ({ callsData }) => {
       case "actions":
         return (
           <div className="relative flex items-center gap-x-2">
-            <Tooltip content="Detalles" color="success">
-              <Button
-                isIconOnly
-                color="success"
-                variant="light"
-                size="sm"
-                onPress={() =>
-                  router.push(
-                    `/dashboard/llamada/detalle/${item.id_cliente_llamada}`
-                  )
-                }
-              >
-                <IconEye />
-              </Button>
-            </Tooltip>
+            <Button
+              isIconOnly
+              color="success"
+              variant="light"
+              size="sm"
+              onPress={() =>
+                router.push(
+                  `/dashboard/llamada/detalle/${item.id_cliente_llamada}`
+                )
+              }
+            >
+              <IconEye />
+            </Button>
 
-            <Tooltip content="Editar" color="default">
-              <Button
-                isIconOnly
-                color="success"
-                variant="light"
-                size="sm"
-                onPress={() =>
-                  router.push(
-                    `/dashboard/llamada/editar/${item.id_cliente_llamada}`
-                  )
-                }
-              >
+            <Button
+              isIconOnly
+              color="success"
+              variant="light"
+              size="sm"
+              onPress={() =>
+                router.push(
+                  `/dashboard/llamada/editar/${item.id_cliente_llamada}`
+                )
+              }
+            >
+              <span className="transform rotate-[30deg]">
                 <IconEdit />
-              </Button>
-            </Tooltip>
+              </span>
+            </Button>
           </div>
         );
       default:

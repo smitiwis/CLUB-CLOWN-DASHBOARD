@@ -1,4 +1,4 @@
-import { IDias } from "@/app/dashboard/talleres/definitions";
+import { IDias } from "@/app/dashboard/talleres/(resources)/definitions";
 
 export type IStateTaller = {
   message?: string;

@@ -1,4 +1,4 @@
-import { IDias } from "@/app/dashboard/talleres/definitions";
+import { IDias } from "@/app/dashboard/talleres/(resources)/definitions";
 import { IPagination } from "@/lib/definitions";
 import { getUserId } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";

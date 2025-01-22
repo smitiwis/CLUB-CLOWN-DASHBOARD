@@ -1,6 +1,6 @@
 import { fetchTalleres } from "@/lib/talleres/services";
 import React from "react";
-import TalleresList from "./components/TalleresList";
+import TalleresList from "./(resources)/components/TalleresList";
 
 const Page = async () => {
   const pagination = { page: 1, limit: 10 };

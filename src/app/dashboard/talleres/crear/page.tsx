@@ -1,5 +1,5 @@
 import { fetchProfesores } from "@/lib/profesores/services";
-import FormCreateTaller from "../components/FormCreateTaller";
+import FormCreateTaller from "../(resources)/components/FormCreateTaller";
 
 const Page = async () => {
   const paginacion = { page: 1, limit: 20 };
