@@ -1,9 +1,7 @@
+import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
-console.log("connected to db");
 
 const seedUsuarios = async () => {
   console.log("Conectando a la base de datos...");
@@ -146,23 +144,23 @@ const seedRoles = async () => {
 
   // Datos iniciales
   const roles = [
-    {
-      nombre: "Admin",
-      estado: "1",
-    },
-    {
-      nombre: "Comercial",
-      estado: "1",
-    },
-    {
-      nombre: "Marketing",
-      estado: "0",
-    },
+    { nombre: "admin", estado: "1" },
+    { nombre: "comercial", estado: "1" },
+    { nombre: "marketing", estado: "1" },
   ];
-
-  // Inserción de roles
+  
   for (const rol of roles) {
-    await prisma.rol.create({ data: rol });
+    // Verifica si el rol ya existe
+    const existingRol = await prisma.rol.findUnique({
+      where: { nombre: rol.nombre },
+    });
+  
+    // Inserta el rol solo si no existe
+    if (!existingRol) {
+      await prisma.rol.create({ data: rol });
+    } else {
+      console.log(`El rol '${rol.nombre}' ya existe. No se insertará.`);
+    }
   }
 
   console.log("Seed ROL completado.");
@@ -180,7 +178,7 @@ export async function GET() {
       message: "Datos iniciales insertados exitosamente.",
     });
   } catch (error: unknown) {
-    console.log(error);
+    console.log("=== ERROR === ", error);
     // Usar 'unknown' en lugar de 'any'
     // Verificar si el error tiene la propiedad 'message'
     if (error instanceof Error) {

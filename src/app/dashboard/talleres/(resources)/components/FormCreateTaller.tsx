@@ -16,9 +16,9 @@ import {
   HORAS_CLASES,
   STATUS_MAIN,
 } from "@/constants";
-import useFormCrearTaller from "../../hooks/useFormCrearTaller";
 import { IDias } from "../definitions";
 import { IStateTaller } from "@/lib/talleres/definicions";
+import useFormCrearTaller from "../hooks/useFormCrearTaller";
 
 type Props = {
   profesoresOptions: { key: string; label: string }[];
