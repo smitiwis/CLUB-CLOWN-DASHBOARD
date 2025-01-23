@@ -42,13 +42,13 @@ const AsideMain = () => {
                 className="flex flex-col gap-y-3 items-center text-2xl font-bold text-center text-white mb-8"
                 href="/dashboard"
               >
-                <Image
+                {/* <Image
                   className="rounded-full shadow-md shadow-slate-700"
                   src="/images/logo.jpg"
                   alt="Logo"
                   width={100}
                   height={100}
-                />
+                /> */}
                 Dashboard
               </Link>
               <Divider className="mb-6"/>

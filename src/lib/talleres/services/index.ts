@@ -3,6 +3,7 @@ import { IPagination } from "@/lib/definitions";
 import { getUserId } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { IBTalleresOptions } from "../definicions";
 
 export async function fetchTalleres(pagination: IPagination) {
   const { page, limit } = pagination;
@@ -20,7 +21,7 @@ export async function fetchTalleres(pagination: IPagination) {
     const talleresList = await prisma.taller.findMany({
       skip,
       take,
-      orderBy:{ fecha_creacion: "desc" },
+      orderBy: { fecha_creacion: "desc" },
       select: {
         id_taller: true,
         nombre: true,
@@ -63,7 +64,43 @@ export async function fetchTalleres(pagination: IPagination) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Error al obtener talleres .");
-  }finally {
+  } finally {
+    await prisma.$disconnect(); // Asegurarse de desconectar la base de datos
+  }
+}
+
+export async function fetchTalleresOptions() {
+  try {
+    const id_usuario = await getUserId();
+    if (!id_usuario) return new Error("Usuario desconocido");
+
+    const talleres = await prisma.taller.findMany({
+      where: { estado: "1" },
+      select: {
+        id_taller: true,
+        nombre: true,
+        dias: true,
+        hora: true,
+        precio: true,
+        cant_clases: true,
+        profesor: {
+          select: {
+            id_profesor: true,
+            nombre: true,
+            apellidos: true,
+          },
+        },
+      },
+    });
+
+    if (!talleres.length) {
+      throw new Error("No se encontraron leads.");
+    }
+    return talleres as IBTalleresOptions[];
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Error al obtener talleres options .");
+  } finally {
     await prisma.$disconnect(); // Asegurarse de desconectar la base de datos
   }
 }

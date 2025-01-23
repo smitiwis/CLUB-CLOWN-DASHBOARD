@@ -67,6 +67,13 @@ export interface IBClientsResp {
   page: number;
   limit: number;
 }
+export interface IBClientOptions {
+  nombre: string;
+  apellido: string;
+  telefono: string;
+  id_cliente: string;
+  origen: string;
+}
 export interface IBClients {
   id_cliente: string;
   telefono: string;

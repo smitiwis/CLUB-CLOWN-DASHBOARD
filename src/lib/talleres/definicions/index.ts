@@ -2,14 +2,7 @@ import { IDias } from "@/app/dashboard/talleres/(resources)/definitions";
 
 export type IStateTaller = {
   message?: string;
-  field?:
-    | "id_profesor"
-    | "nombre"
-    | "dias"
-    | "hora"
-    | "precio"
-    | "cant_clases"
-    | "estado";
+  field?: IDias;
   status?: number;
 } | null;
 
@@ -47,4 +40,18 @@ export interface IBTallerDataResp {
     page: number;
     limit: number;
   };
+}
+
+export interface IBTalleresOptions {
+  nombre: string;
+  profesor: {
+    nombre: string;
+    id_profesor: string;
+    apellidos: string;
+  };
+  id_taller: string;
+  dias: IDias[];
+  hora: string;
+  precio: number;
+  cant_clases: number;
 }

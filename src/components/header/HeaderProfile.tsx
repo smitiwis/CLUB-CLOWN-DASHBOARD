@@ -28,7 +28,11 @@ const HeaderProfile: FC<IUserProfile> = ({ user }) => {
       <Dropdown placement="bottom-end" backdrop="blur">
         <DropdownTrigger>
           <div className="flex items-center gap-x-4">
-            <Badge color="danger" placement="top-left" content={callsPending || ""}>
+            <Badge
+              color="danger"
+              placement="top-left"
+              content={callsPending || ""}
+            >
               <User
                 as="button"
                 avatarProps={{ isBordered: true }}
@@ -40,8 +44,8 @@ const HeaderProfile: FC<IUserProfile> = ({ user }) => {
           </div>
         </DropdownTrigger>
         <DropdownMenu aria-label="Profile Actions" variant="flat">
-          <DropdownItem key="settings">Mi perfil</DropdownItem>
-          <DropdownItem key="settings">
+          <DropdownItem key="Mi perfil">Mi perfil</DropdownItem>
+          <DropdownItem key="Pendientes">
             <div className="flex items-center ga-x-2">
               <span>Llamadas pendiente</span>
               <Chip size="lg" color="danger" variant="light">
@@ -49,7 +53,11 @@ const HeaderProfile: FC<IUserProfile> = ({ user }) => {
               </Chip>
             </div>
           </DropdownItem>
-          <DropdownItem key="logout" color="danger" onPress={() => signOut()}>
+          <DropdownItem
+            key="Cerrar sesion"
+            color="danger"
+            onPress={() => signOut()}
+          >
             Cerrar sesión
           </DropdownItem>
         </DropdownMenu>

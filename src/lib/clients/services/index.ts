@@ -116,6 +116,34 @@ export async function fetchClients(pagination: IPagination) {
   }
 }
 
+export async function fetchClientsOptions() {
+  try {
+    const id_usuario = await getUserId();
+    if (!id_usuario) return new Error("Usuario desconocido");
+
+    const clientes = await prisma.cliente.findMany({
+      where: { id_usuario },
+      select: {
+        id_cliente: true,
+        telefono: true,
+        nombre: true,
+        apellido: true,
+        origen: true,
+      },
+    });
+
+    if (!clientes.length) {
+      throw new Error("No se encontraron leads.");
+    }
+    return clientes;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Error al obtener clientes options .");
+  } finally {
+    await prisma.$disconnect(); // Asegurarse de desconectar la base de datos
+  }
+}
+
 export async function fetchDetailsClient(id_cliente: string) {
   const id_usuario = await getUserId();
   if (!id_usuario) throw new Error("Usuario desconocido");

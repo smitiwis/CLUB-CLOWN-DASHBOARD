@@ -138,7 +138,6 @@ const seedProfesores = async () => {
   console.log("Seed PROFESOR completado.");
 }
 
-
 const seedRoles = async () => {
   console.log("Conectando a la base de datos...");
 
@@ -166,12 +165,58 @@ const seedRoles = async () => {
   console.log("Seed ROL completado.");
 };
 
+const seedPromociones = async () => {
+  console.log("Conectando a la base de datos...");
+
+  // Datos iniciales
+  const promociones = [
+    {
+      nombre: "Paga por clase",
+      detalles: "Paga S/25 por clase",
+      descuento: 100,
+      estado: "1",
+    },
+    {
+      nombre: "Promo verano 2025",
+      detalles: "Promoción verano",
+      descuento: 50,
+      estado: "1",
+    },
+    {
+      nombre: "Promo 2",
+      detalles: "Cierre de mes",
+      descuento: 80,
+      estado: "1",
+    },
+    {
+      nombre: "Promo 3",
+      detalles: "Promoción 3",
+      descuento: 40,
+      estado: "1",
+    },
+    {
+      nombre: "Promo 4",
+      detalles: "Promoción amistades",
+      descuento: 0,
+      estado: "0",
+    },
+  ];
+
+  // Inserción de promociones
+  for (const promocion of promociones) {
+    await prisma.taller_promocion.create({ data: promocion });
+  }
+
+  console.log("Seed PROMOCION completado.");
+}
+
 export async function GET() {
   try {
     // Llamar a la función que inserta los usuarios
     await seedRoles();
     await seedUsuarios();
     await seedProfesores();
+    await seedPromociones();
 
     // Responder con un mensaje de éxito
     return NextResponse.json({

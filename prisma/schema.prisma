@@ -74,6 +74,7 @@ model cliente {
 
   usuario         usuario           @relation(fields: [id_usuario], references: [id_usuario])
   cliente_llamada cliente_llamada[]
+  taller_cliente  taller_cliente[]
 
   @@index([telefono])
 }
@@ -116,7 +117,8 @@ model taller {
   fecha_actualizacion DateTime @updatedAt
 
   // Relación con profesor
-  profesor profesor @relation(fields: [id_profesor], references: [id_profesor])
+  profesor       profesor         @relation(fields: [id_profesor], references: [id_profesor])
+  taller_cliente taller_cliente[]
 
   @@index([id_profesor]) // Índice para facilitar las consultas
 }
@@ -135,4 +137,60 @@ model profesor {
 
   // Relación con talleres
   talleres taller[] // Un profesor puede enseñar múltiples talleres
+}
+
+// ================== INSCRIPCIONES ==================
+model taller_cliente {
+  id_taller_cliente   String @id @default(uuid())
+  id_cliente          String
+  id_taller           String
+  id_taller_promocion String
+  estado_pago         String @default("0") @db.VarChar(1) // 0: pendiente | 1: pagado
+  precio_venta        Float
+
+  fecha_inscripcion   DateTime @default(now())
+  fecha_creacion      DateTime @default(now())
+  fecha_actualizacion DateTime @updatedAt
+
+  // Relaciones
+  cliente              cliente                @relation(fields: [id_cliente], references: [id_cliente])
+  taller               taller                 @relation(fields: [id_taller], references: [id_taller])
+  taller_promocion     taller_promocion       @relation(fields: [id_taller_promocion], references: [id_taller_promocion])
+  taller_cliente_pagos taller_cliente_pagos[]
+
+  @@unique([id_cliente, id_taller]) // Clave única para evitar duplicados
+}
+
+// ================== TALLER PROMOCION ==================
+model taller_promocion {
+  id_taller_promocion String @id @default(uuid())
+  nombre              String @db.VarChar(50)
+  descuento           Float
+  detalles            String @db.Text
+  estado              String @default("1") @db.VarChar(1) // 1: activo, 0: inactivo
+
+  fecha_creacion      DateTime @default(now())
+  fecha_actualizacion DateTime @updatedAt
+
+  // Relaciones
+  talleres_clientes taller_cliente[]
+}
+
+// ================== CLIENTE PAGOS ==================
+model taller_cliente_pagos {
+  id_taller_cliente_pago String   @id @default(uuid())
+  id_taller_cliente      String
+  monto                  Float
+  img_boucher            String   @db.Text
+  tipo_pago              String   @db.VarChar(20) // "efectivo", "tarjeta", "transferencia"
+  fecha_pago             DateTime
+
+  fecha_creacion      DateTime @default(now())
+  fecha_actualizacion DateTime @updatedAt
+
+  // Relaciones
+  taller_cliente taller_cliente @relation(fields: [id_taller_cliente], references: [id_taller_cliente])
+
+  // Índices
+  @@index([id_taller_cliente])
 }
