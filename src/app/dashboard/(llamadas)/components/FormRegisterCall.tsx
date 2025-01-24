@@ -216,7 +216,7 @@ const FormRegisterCall: FC<Props> = (props) => {
                     className="mb-4"
                     label="Fin de la llamada"
                     items={RESULTADO_LLAMADAS}
-                    defaultSelectedKeys={["2"]}
+                    defaultSelectedKeys={["1"]}
                     size="lg"
                     isInvalid={!!errors.resultado}
                     errorMessage={errors.resultado?.message}

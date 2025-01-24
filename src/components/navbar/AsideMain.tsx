@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
+// import Image from "next/image";
 import { Divider } from "@nextui-org/react";
 
 const AsideMain = () => {
