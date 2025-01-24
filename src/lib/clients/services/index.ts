@@ -132,9 +132,6 @@ export async function fetchClientsOptions() {
       },
     });
 
-    if (!clientes.length) {
-      throw new Error("No se encontraron leads.");
-    }
     return clientes;
   } catch (err) {
     console.error("Database Error:", err);

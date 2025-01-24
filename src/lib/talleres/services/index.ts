@@ -2,7 +2,6 @@ import { IDias } from "@/app/dashboard/talleres/(resources)/definitions";
 import { IPagination } from "@/lib/definitions";
 import { getUserId } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
 import { IBTalleresOptions } from "../definicions";
 
 export async function fetchTalleres(pagination: IPagination) {
@@ -39,10 +38,6 @@ export async function fetchTalleres(pagination: IPagination) {
         },
       },
     });
-
-    if (!talleresList.length) {
-      redirect("/dashboard/talleres/crear");
-    }
 
     const talleres = talleresList.map((taller, i) => ({
       ...taller,
@@ -93,9 +88,6 @@ export async function fetchTalleresOptions() {
       },
     });
 
-    if (!talleres.length) {
-      throw new Error("No se encontraron leads.");
-    }
     return talleres as IBTalleresOptions[];
   } catch (err) {
     console.error("Database Error:", err);

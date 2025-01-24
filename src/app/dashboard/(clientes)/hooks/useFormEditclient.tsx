@@ -31,12 +31,21 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
     setError,
     watch,
     setValue,
-    reset,
     clearErrors,
   } = useForm<IFClient>({
     defaultValues: {
       fecha_agendada: undefined,
-      nro_documento: "",
+      telefono: client.telefono || "",
+      origen: client.origen || "",
+      tipo_documento: client.tipo_documento || "",
+      nro_documento: client.nro_documento || "",
+      nombre: client.nombre || "",
+      apellido: client.apellido || "",
+      edad: client.edad || "",
+      grupo: client.grupo || "",
+      direccion: client.direccion || "",
+      nro_direccion: client.nro_direccion || "",
+      estado: client.estado,
     },
     resolver: yupResolver<IFClient>(schemaClient),
   });
@@ -85,14 +94,16 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
   }, [watch("edad")]);
 
   useEffect(() => {
-    setValue("nombre", "");
-    setValue("apellido", "");
-    setValue("nro_documento", "");
+    if (watch("tipo_documento") === "") {
+      setValue("nombre", "");
+      setValue("apellido", "");
+      setValue("nro_documento", "");
 
-    setHasDataByDocument(false);
-    setDocumentNumber("");
-    
-    clearErrors("nro_documento");
+      setHasDataByDocument(false);
+      setDocumentNumber("");
+
+      clearErrors("nro_documento");
+    }
   }, [watch("tipo_documento")]);
 
   useEffect(() => {
@@ -130,8 +141,13 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
   }, [watch("nro_documento")]);
 
   useEffect(() => {
-    reset(client);
-  }, []);
+    const tipoDocumento = watch("tipo_documento");
+    const nroDocumento = watch("nro_documento");
+
+    if (tipoDocumento && nroDocumento) {
+      setHasDataByDocument(true);
+    }
+  }, [watch("tipo_documento"), watch("nro_documento")]);
 
   return {
     register,

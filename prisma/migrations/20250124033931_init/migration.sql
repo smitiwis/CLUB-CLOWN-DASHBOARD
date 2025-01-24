@@ -100,6 +100,48 @@ CREATE TABLE "profesor" (
     CONSTRAINT "profesor_pkey" PRIMARY KEY ("id_profesor")
 );
 
+-- CreateTable
+CREATE TABLE "taller_cliente" (
+    "id_taller_cliente" TEXT NOT NULL,
+    "id_cliente" TEXT NOT NULL,
+    "id_taller" TEXT NOT NULL,
+    "id_taller_promocion" TEXT NOT NULL,
+    "estado_pago" VARCHAR(1) NOT NULL DEFAULT '0',
+    "precio_venta" DOUBLE PRECISION NOT NULL,
+    "fecha_inscripcion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_actualizacion" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "taller_cliente_pkey" PRIMARY KEY ("id_taller_cliente")
+);
+
+-- CreateTable
+CREATE TABLE "taller_promocion" (
+    "id_taller_promocion" TEXT NOT NULL,
+    "nombre" VARCHAR(50) NOT NULL,
+    "descuento" DOUBLE PRECISION NOT NULL,
+    "detalles" TEXT NOT NULL,
+    "estado" VARCHAR(1) NOT NULL DEFAULT '1',
+    "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_actualizacion" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "taller_promocion_pkey" PRIMARY KEY ("id_taller_promocion")
+);
+
+-- CreateTable
+CREATE TABLE "taller_cliente_pagos" (
+    "id_taller_cliente_pago" TEXT NOT NULL,
+    "id_taller_cliente" TEXT NOT NULL,
+    "monto" DOUBLE PRECISION NOT NULL,
+    "img_boucher" TEXT NOT NULL,
+    "tipo_pago" VARCHAR(20) NOT NULL,
+    "fecha_pago" TIMESTAMP(3) NOT NULL,
+    "fecha_creacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fecha_actualizacion" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "taller_cliente_pagos_pkey" PRIMARY KEY ("id_taller_cliente_pago")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "rol_nombre_key" ON "rol"("nombre");
 
@@ -130,6 +172,12 @@ CREATE INDEX "taller_id_profesor_idx" ON "taller"("id_profesor");
 -- CreateIndex
 CREATE UNIQUE INDEX "profesor_email_key" ON "profesor"("email");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "taller_cliente_id_cliente_id_taller_key" ON "taller_cliente"("id_cliente", "id_taller");
+
+-- CreateIndex
+CREATE INDEX "taller_cliente_pagos_id_taller_cliente_idx" ON "taller_cliente_pagos"("id_taller_cliente");
+
 -- AddForeignKey
 ALTER TABLE "usuario" ADD CONSTRAINT "usuario_id_rol_fkey" FOREIGN KEY ("id_rol") REFERENCES "rol"("id_rol") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -144,3 +192,15 @@ ALTER TABLE "cliente_llamada" ADD CONSTRAINT "cliente_llamada_id_usuario_fkey" F
 
 -- AddForeignKey
 ALTER TABLE "taller" ADD CONSTRAINT "taller_id_profesor_fkey" FOREIGN KEY ("id_profesor") REFERENCES "profesor"("id_profesor") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "taller_cliente" ADD CONSTRAINT "taller_cliente_id_cliente_fkey" FOREIGN KEY ("id_cliente") REFERENCES "cliente"("id_cliente") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "taller_cliente" ADD CONSTRAINT "taller_cliente_id_taller_fkey" FOREIGN KEY ("id_taller") REFERENCES "taller"("id_taller") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "taller_cliente" ADD CONSTRAINT "taller_cliente_id_taller_promocion_fkey" FOREIGN KEY ("id_taller_promocion") REFERENCES "taller_promocion"("id_taller_promocion") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "taller_cliente_pagos" ADD CONSTRAINT "taller_cliente_pagos_id_taller_cliente_fkey" FOREIGN KEY ("id_taller_cliente") REFERENCES "taller_cliente"("id_taller_cliente") ON DELETE RESTRICT ON UPDATE CASCADE;
