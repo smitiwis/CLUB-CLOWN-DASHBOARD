@@ -17,6 +17,8 @@ import {
 } from "@nextui-org/react";
 import React, { FC } from "react";
 import useFormInscribirCliente from "../hooks/useFormInscribirCliente";
+import { ESTATO_PAGO } from "@/constants";
+import { getColorByStatus } from "@/lib/helpers";
 
 type Props = {
   clientOptions: IBClientOptions[];
@@ -32,7 +34,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
     handleSubmit,
     errors,
     onSubmit,
-    // loading,
+    loading,
     // state,
     setValue,
     // setError,
@@ -249,7 +251,9 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
             />
             <Select
               {...register("metodo_pago")}
-              isDisabled={!watch("monto") || parseInt(watch("monto") || "0") < 25}
+              isDisabled={
+                !watch("monto") || parseInt(watch("monto") || "0") < 25
+              }
               label="Método de pago"
               items={[
                 { key: "efect", label: "Efectivo" },
@@ -273,7 +277,9 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
             </Select>
             <Input
               {...register("baucher")}
-              isDisabled={!watch("monto") || parseInt(watch("monto") || "0") < 25}
+              isDisabled={
+                !watch("monto") || parseInt(watch("monto") || "0") < 25
+              }
               startContent={<i className="icon-picture-o" />}
               label="Baucher de pago"
               size="lg"
@@ -284,22 +290,12 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
             <Select
               {...register("estado_inscripcion")}
               isDisabled
-              color={
-                watch("estado_inscripcion") === "sin_pago"
-                  ? "warning"
-                  : watch("estado_inscripcion") === "pago_pend"
-                  ? "primary"
-                  : "success"
-              }
+              color={getColorByStatus(watch("estado_inscripcion"))}
               selectedKeys={[watch("estado_inscripcion")]}
-              defaultSelectedKeys={["sin_pago"]}
+              defaultSelectedKeys={[ESTATO_PAGO[0].key]}
               label="Estado de pago"
               value={[watch("estado_inscripcion")]}
-              items={[
-                { key: "sin_pago", label: "Proceso" },
-                { key: "pago_pend", label: "Pendiente" },
-                { key: "pago_compl", label: "Completo" },
-              ]}
+              items={ESTATO_PAGO}
               variant="flat"
               size="lg"
               isInvalid={!!errors.estado_inscripcion}
@@ -317,7 +313,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
         </div>
 
         <Button
-          // isLoading={loading}
+          isLoading={loading}
           className="w-full"
           color="primary"
           type="submit"

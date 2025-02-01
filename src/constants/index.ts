@@ -50,11 +50,12 @@ export const ORIGENES_CLIENTS = [
 
 export const COLORES: IColors[] = [
   { label: "No interesados", key: "1", code: "#101010" }, // Gris oscuro para lista negra
-  { label: "No responde, deja en visto", key: "6", code: "#FF6F61" }, // Rojo coral vibrante
-  { label: "Interesados", key: "2", code: "#FFF700" }, // Amarillo más intenso
-  { label: "No hay contacto", key: "3", code: "#FFFFFF" }, // Blanco puro
-  { label: "Seguimiento", key: "4", code: "#BF5EFF" }, // Lila vibrante
-  { label: "Pago Realizado", key: "5", code: "#69e76f" }, // Verde brillante y llamativo
+  { label: "No responde, deja en visto", key: "2", code: "#FF6F61" }, // Rojo coral vibrante
+  { label: "Interesados", key: "3", code: "#FFF700" }, // Amarillo más intenso
+  { label: "No hay contacto", key: "4", code: "#FFFFFF" }, // Blanco puro
+  { label: "Seguimiento", key: "5", code: "#BF5EFF" }, // Lila vibrante
+  { label: "Pago Realizado", key: "6", code: "#69e76f" }, // Verde brillante y llamativo
+  { label: "Inscrito sin pago", key: "7", code: "#00605c" }, // Azul fuerte y vivo
   { label: "Más adelante, Otras sedes", key: "7", code: "#5DA9FF" }, // Lavanda fuerte y vivo
 ];
 
@@ -158,4 +159,21 @@ export const CANTIDAD_CLASES = [
   { key: "14", label: "14" },
   { key: "15", label: "15" },
   { key: "16", label: "16" },
+];
+
+export const ESTATO_PAGO: {
+  key: string;
+  label: string;
+  color:
+    | "success"
+    | "default"
+    | "primary"
+    | "secondary"
+    | "warning"
+    | "danger"
+    | undefined;
+}[] = [
+  { key: "sin_pago", label: "Proceso", color: "warning" },
+  { key: "pago_pend", label: "Pendiente", color: "primary" },
+  { key: "pago_compl", label: "Completo", color: "success" },
 ];

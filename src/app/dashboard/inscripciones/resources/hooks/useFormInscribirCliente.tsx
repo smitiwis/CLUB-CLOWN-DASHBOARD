@@ -1,13 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { IF_Inscripcion, schemaInscripcion } from "../schemas";
-import { useEffect, useState } from "react";
+import {
+  IF_Inscripcion,
+  IF_InscripcionReq,
+  IStateInscription,
+  schemaInscripcion,
+} from "../schemas";
+import { useActionState, useEffect, useState, useTransition } from "react";
 import { IBClientOptions } from "@/lib/clients/definitions";
 import { IBTalleresOptions } from "@/lib/talleres/definicions";
 import { IBPromoOptions } from "@/lib/promociones/definitions";
+import { crearInscripcion } from "@/lib/inscripciones/actions";
 
 const useFormInscribirCliente = () => {
+  const [loading, startTransaction] = useTransition();
+
+  const [state, formAction] = useActionState<
+    IStateInscription,
+    IF_InscripcionReq
+  >(crearInscripcion, null);
+
   const [selectedIdClient, setSelectedIdClient] = useState<IBClientOptions>();
   const [selectedTaller, setSelectedTaller] = useState<IBTalleresOptions>();
   const [selectedPromocion, setSelectedPromocion] = useState<IBPromoOptions>();
@@ -29,20 +42,26 @@ const useFormInscribirCliente = () => {
   });
 
   const onSubmit = (formData: IF_Inscripcion) => {
-    console.log({
-      id_cliente: selectedIdClient?.id_cliente,
-      id_taller: selectedTaller?.id_taller,
-      id_taller_promocion: selectedPromocion?.id_taller_promocion,
-      precio_venta: formData.precio_venta,
-      pago: formData.monto
-        ? {
-            monto: formData.monto,
-            metodo_pago: formData.metodo_pago,
-            baucher: formData.baucher,
-            estado: formData.estado_inscripcion,
-          }
-        : null,
-    });
+    const { monto, metodo_pago, baucher } = formData;
+    if (selectedIdClient && selectedTaller && selectedPromocion) {
+      const body = {
+        id_cliente: selectedIdClient.id_cliente,
+        id_taller: selectedTaller.id_taller,
+        id_taller_promocion: selectedPromocion.id_taller_promocion,
+        precio_venta: formData.precio_venta,
+        pago:
+          monto && metodo_pago && baucher
+            ? {
+                monto: monto,
+                metodo_pago: metodo_pago,
+                baucher: baucher,
+                estado: formData.estado_inscripcion,
+              }
+            : null,
+      };
+      console.log("BODY: ", body);
+      startTransaction(() => formAction(body));
+    }
   };
 
   useEffect(() => {
@@ -124,11 +143,10 @@ const useFormInscribirCliente = () => {
     onSubmit,
     errors,
     clearErrors,
-    // setErrors,
     setValue,
     watch,
-    // loading,
-    // state,
+    loading,
+    state,
     selectedIdClient,
     setSelectedIdClient,
     selectedTaller,

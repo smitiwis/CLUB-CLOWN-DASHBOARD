@@ -8,6 +8,11 @@ import { IBTallerDataResp, IBTallerResp } from "@/lib/talleres/definicions";
 import {
   Button,
   Chip,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Pagination,
   Select,
   SelectItem,
@@ -18,6 +23,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
+  useDisclosure,
 } from "@nextui-org/react";
 import axios from "axios";
 import Link from "next/link";
@@ -30,6 +36,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import InscritosList from "./InscritosList";
 
 type Props = {
   talleresData: IBTallerDataResp;
@@ -37,6 +44,11 @@ type Props = {
 
 const TalleresList: FC<Props> = ({ talleresData }) => {
   const router = useRouter();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [tallerId, setTallerId] = useState("");
+  const [tallerName, setTallerName] = useState("");
+
   const columns = [
     {
       key: "nombre",
@@ -45,6 +57,10 @@ const TalleresList: FC<Props> = ({ talleresData }) => {
     {
       key: "profesor",
       label: "PROFESOR",
+    },
+    {
+      key: "inscritos",
+      label: "INSCRITOS",
     },
     {
       key: "dias",
@@ -60,7 +76,7 @@ const TalleresList: FC<Props> = ({ talleresData }) => {
     },
     {
       key: "cant_clases",
-      label: "DURACION",
+      label: "SESIONES",
     },
     {
       key: "estado",
@@ -81,9 +97,26 @@ const TalleresList: FC<Props> = ({ talleresData }) => {
           </div>
         );
 
+      case "inscritos":
+        return (
+          <Button
+            size="sm"
+            type="button"
+            color="success"
+            variant="ghost"
+            onPress={() => {
+              onOpen();
+              setTallerId(item.id_taller);
+              setTallerName(item.nombre);
+            }}
+          >
+            Inscritos
+          </Button>
+        );
+
       case "dias":
         return (
-          <div className="flex gap-x-2">
+          <div className="flex gap-x-1">
             {item.dias.map((dia) => (
               <Chip
                 color="success"
@@ -92,17 +125,17 @@ const TalleresList: FC<Props> = ({ talleresData }) => {
                 key={dia}
                 className="text-small"
               >
-                {dia}
+                <span className="text-xs">{dia}</span>
               </Chip>
             ))}
           </div>
         );
 
       case "precio":
-        return <div>S/. {String(cellValue)}</div>;
+        return <div>S/ {item.precio.toFixed(2)}</div>;
 
       case "cant_clases":
-        return <div>{String(cellValue)} sesiones</div>;
+        return <div className="text-center">{String(cellValue)}</div>;
 
       case "estado":
         const isActive = parseInt(item.estado);
@@ -254,32 +287,67 @@ const TalleresList: FC<Props> = ({ talleresData }) => {
   }, [page]);
 
   return (
-    <Table
-      topContent={topContent}
-      aria-label="Tabla de llamadas"
-      selectionMode="none"
-      bottomContent={bottomContent}
-      bottomContentPlacement="outside"
-    >
-      <TableHeader columns={columns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
-      </TableHeader>
-
-      <TableBody
-        items={data || []}
-        loadingContent={<Spinner />}
-        loadingState={loadingState}
-        emptyContent={"No hay registros para mostrar"}
+    <>
+      <Table
+        topContent={topContent}
+        aria-label="Tabla de llamadas"
+        selectionMode="none"
+        bottomContent={bottomContent}
+        bottomContentPlacement="outside"
       >
-        {(item) => (
-          <TableRow key={item.key}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key}>{column.label}</TableColumn>
+          )}
+        </TableHeader>
+
+        <TableBody
+          items={data || []}
+          loadingContent={<Spinner />}
+          loadingState={loadingState}
+          emptyContent={"No hay registros para mostrar"}
+        >
+          {(item) => (
+            <TableRow key={item.key}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      <Modal
+        scrollBehavior="inside"
+        backdrop="blur"
+        isOpen={isOpen}
+        size="5xl"
+        onClose={onClose}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1">
+                  Nombre: {tallerName.toLocaleUpperCase()}
+                  <span className="text-sm">Lista de inscritos</span>
+                </div>
+              </ModalHeader>
+              <ModalBody>
+                <InscritosList tallerId={tallerId} />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" variant="light" onPress={onClose}>
+                  Cerrar
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Aceptar
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 

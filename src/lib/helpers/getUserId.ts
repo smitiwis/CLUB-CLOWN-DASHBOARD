@@ -1,6 +1,7 @@
 import {
   COLORES,
   DOCUMENTS,
+  ESTATO_PAGO,
   GROUPS_CLIENT,
   ORIGENES_CLIENTS,
   RESULTADO_LLAMADAS,
@@ -46,4 +47,14 @@ export const getResultLlamada = (tipo: string) => {
 
 export function toCapitalize(s: string) {
   return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
+}
+
+
+export function getColorByStatus(status: string) {
+  return ESTATO_PAGO.find(({ key }) => key === status)?.color || undefined;
+}
+
+
+export function getLabelByStatus(status: string) {
+  return ESTATO_PAGO.find(({ key }) => key === status)?.label || "";
 }
