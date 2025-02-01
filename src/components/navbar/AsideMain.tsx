@@ -5,6 +5,7 @@ import React from "react";
 import { usePathname } from "next/navigation";
 // import Image from "next/image";
 import { Divider } from "@nextui-org/react";
+import Image from "next/image";
 
 const AsideMain = () => {
   const pathname = usePathname();
