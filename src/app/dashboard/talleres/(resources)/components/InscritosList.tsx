@@ -39,12 +39,8 @@ const InscritosList: FC<Props> = memo(({ tallerId }) => {
       label: "#",
     },
     {
-      key: "nombre",
-      label: "NOMBRE",
-    },
-    {
-      key: "apellido",
-      label: "APELLIDO",
+      key: "nombre y apellido",
+      label: "NOMBRE y APELLIDO",
     },
     {
       key: "telefono",
@@ -75,14 +71,24 @@ const InscritosList: FC<Props> = memo(({ tallerId }) => {
       case "lista":
         return <div>{item.key}</div>;
 
-      case "nombre":
-        return <div>{item.cliente.nombre}</div>;
-
-      case "apellido":
-        return <div>{item.cliente.apellido}</div>;
+      case "nombre y apellido":
+        return (
+          <Tooltip
+            closeDelay={0}
+            content={`Asesor: ${item.usuario.nombre}`}
+            delay={0}
+            size="sm"
+            color="success"
+            placement="right-start"
+          >
+            <Chip color="primary" variant="light" size="sm">
+              {item.nombre} {item.apellido}
+            </Chip>
+          </Tooltip>
+        );
 
       case "telefono":
-        return <div>{item.cliente.telefono}</div>;
+        return <div>{item.telefono}</div>;
 
       case "estado":
         return (
@@ -109,12 +115,13 @@ const InscritosList: FC<Props> = memo(({ tallerId }) => {
               color="secondary"
               placement="right-end"
               size="sm"
-              content={<div className="text-xs">{format(item.fecha_inscripcion, "h:mm a", "es")}</div>}
+              content={
+                <div className="text-xs">
+                  {format(item.fecha_inscripcion, "h:mm a", "es")}
+                </div>
+              }
             >
-              <Chip
-                variant="faded"
-                size="sm"
-              >
+              <Chip variant="faded" size="sm">
                 {format(item.fecha_inscripcion, "dddd, D MMMM", "es")}
               </Chip>
             </Tooltip>

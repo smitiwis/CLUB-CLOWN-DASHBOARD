@@ -1,4 +1,11 @@
-export type IDias = "Lunes" | "Martes" | "Miércoles" | "Jueves" | "Viernes" | "Sábado" | "Domingo";
+export type IDias =
+  | "Lunes"
+  | "Martes"
+  | "Miércoles"
+  | "Jueves"
+  | "Viernes"
+  | "Sábado"
+  | "Domingo";
 
 export interface IFormTaller {
   id_profesor: string;
@@ -12,28 +19,23 @@ export interface IFormTaller {
   estado: "0" | "1"; // "1" para activo, "0" para inactivo
 }
 
-
-interface IFPago {
-  monto: number;
-  fecha_pago: Date;
-}
-
-interface IFCliente {
-  id_cliente: string;
-  nombre: string;
-  apellido: string;
-  telefono: string;
-  edad: string;
-}
-
 export interface IFInscripcion {
-  key: number;
-  pagoTotal: number;
+  apellido: string;
+  edad: string;
   estado_pago: string;
-  cliente: IFCliente;
-  taller_cliente_pagos: IFPago[];
+  id_cliente: string;
+  key: number;
+  nombre: string;
+  pagoTotal: number;
+  telefono: string;
   precio_venta: number;
   fecha_inscripcion: Date;
+  usuario: {
+    nombre: string;
+    apellido: string;
+    correo: string;
+    id_usuario: string;
+  };
 }
 export interface IRespInscritos {
   inscritos: IFInscripcion[];

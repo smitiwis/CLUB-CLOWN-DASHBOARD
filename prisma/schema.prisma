@@ -147,6 +147,8 @@ model taller_cliente {
   id_taller_promocion String
   estado_pago         String @default("pago_pend") // sin_pago | pago_pend | pago_compl
   precio_venta        Float
+  // GREGAR OBSERVACIONES --> Los alumnos aveces se retiran por motivos personales
+  // AGREGAR ESTADO DE INSCRIPCION --> Puede ser retirado, activo,
 
   fecha_inscripcion   DateTime @default(now())
   fecha_creacion      DateTime @default(now())
