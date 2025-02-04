@@ -4,6 +4,7 @@ import { IBClientOptions } from "@/lib/clients/definitions";
 import { IBPromoOptions } from "@/lib/promociones/definitions";
 import { IBTalleresOptions } from "@/lib/talleres/definicions";
 import {
+  Alert,
   Autocomplete,
   AutocompleteItem,
   Avatar,
@@ -36,9 +37,8 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
     errors,
     onSubmit,
     loading,
-    // state,
+    stateForm,
     setValue,
-    // setError,
     // clearErrors,
     watch,
 
@@ -49,6 +49,16 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
 
   return (
     <>
+      {!!stateForm && (
+        <div className="w-full flex items-center my-3">
+          <Alert
+            color="warning"
+            title={`CUIDADO!`}
+            description={stateForm?.message}
+          />
+        </div>
+      )}
+
       <Form className="flex flex-col gap-y-4" onSubmit={handleSubmit(onSubmit)}>
         <Select
           {...register("estado_inscripcion")}

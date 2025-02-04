@@ -5,6 +5,7 @@ import { IBInscripcion, IBInscripcionResponse } from "../definitions";
 import { useRouter } from "next/navigation";
 import {
   Avatar,
+  Badge,
   Button,
   Chip,
   Input,
@@ -37,7 +38,6 @@ type Props = {
   inscripcionesResp: IBInscripcionResponse;
 };
 const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
-  console.log("inscripcionesResp", inscripcionesResp);
   const router = useRouter();
   const rows = inscripcionesResp.data;
 
@@ -75,14 +75,13 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
       key: "estadoPago",
       label: "PAGO",
     },
-
-    {
-      key: "promocion",
-      label: "PROMOCIÓN",
-    },
     {
       key: "taller",
       label: "TALLER",
+    },
+    {
+      key: "promocion",
+      label: "PROMOCIÓN",
     },
     {
       key: "observacion",
@@ -98,10 +97,35 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
 
     switch (columnKey) {
       case "nombre":
+        if (item.asesorRegistro.id === item.asesorInscripcion.id) {
+          return (
+            <Chip avatar={<Avatar />} variant="flat" size="sm">
+              {formatearNombre(item.nombre, 25)}
+            </Chip>
+          );
+        }
         return (
-          <Chip avatar={<Avatar />} variant="flat" size="sm">
-            {formatearNombre(item.nombre, 25)}
-          </Chip>
+          <Tooltip
+            color="danger"
+            content={
+              <div className="text-tiny flex flex-col gap-y-1">
+                <span>Cliente de: {item.asesorRegistro.nombre}</span>
+                <span>Inscrito por: {item.asesorInscripcion.nombre}</span>
+              </div>
+            }
+            showArrow
+          >
+            <Badge
+              color="danger"
+              size="sm"
+              placement="top-left"
+              content={<IconEye size={18} color="white" />}
+            >
+              <Chip avatar={<Avatar />} variant="flat" size="sm">
+                {formatearNombre(item.nombre, 25)}
+              </Chip>
+            </Badge>
+          </Tooltip>
         );
 
       case "telefono":
@@ -117,7 +141,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
           <Chip
             className="flex items-center"
             variant="flat"
-            size="md"
+            size="sm"
             color={isActive ? "success" : "danger"}
           >
             {isActive ? "Activo" : "Inactivo"}
@@ -162,8 +186,18 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
         );
 
       case "promocion":
-        return item.promocion?.nombre || "-";
-
+        // return item.promocion?.nombre || "-";
+        return (
+          <Tooltip
+            content={`Dscto: S/${item.promocion?.descuento.toFixed(2)}`}
+            showArrow
+            color="warning"
+            placement="right-end"
+            size="sm"
+          >
+            <Chip variant="light">{item.promocion?.nombre}</Chip>
+          </Tooltip>
+        );
       case "taller":
         return (
           <Tooltip
@@ -171,8 +205,9 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
             showArrow
             color="success"
             placement="right-end"
+            size="sm"
           >
-            <Chip variant="light">{item.taller?.nombre || "-"}</Chip>
+            <Chip variant="light">{item.taller?.nombre}</Chip>
           </Tooltip>
         );
 

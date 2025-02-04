@@ -48,7 +48,8 @@ model usuario {
   cliente         cliente[]
   cliente_llamada cliente_llamada[]
 
-  rol rol @relation(fields: [id_rol], references: [id_rol])
+  rol            rol              @relation(fields: [id_rol], references: [id_rol])
+  taller_cliente taller_cliente[]
 }
 
 // ================== CLIENTE O LEADS ==================
@@ -145,10 +146,11 @@ model taller_cliente {
   id_cliente          String
   id_taller           String
   id_taller_promocion String
+  id_usuario          String 
   estado_pago         String @default("pago_pend") // sin_pago | pago_pend | pago_compl
   precio_venta        Float
   observacion         String @default("") @db.Text
-  estado              String @default("1") @db.VarChar(1) // 0: retirado, 1: activo
+  estado              String @default("1") @db.VarChar(1) // 0: retirado, 1: activo | 2: finalizado
 
   fecha_inscripcion   DateTime @default(now())
   fecha_creacion      DateTime @default(now())
@@ -158,6 +160,7 @@ model taller_cliente {
   cliente              cliente                @relation(fields: [id_cliente], references: [id_cliente])
   taller               taller                 @relation(fields: [id_taller], references: [id_taller])
   taller_promocion     taller_promocion       @relation(fields: [id_taller_promocion], references: [id_taller_promocion])
+  usuario              usuario                @relation(fields: [id_usuario], references: [id_usuario]) // Relación con el asesor que inscribió
   taller_cliente_pagos taller_cliente_pagos[]
 
   @@unique([id_cliente, id_taller]) // Clave única para evitar duplicados

@@ -25,6 +25,7 @@ const useFormInscribirCliente = () => {
   const [selectedIdClient, setSelectedIdClient] = useState<IBClientOptions>();
   const [selectedTaller, setSelectedTaller] = useState<IBTalleresOptions>();
   const [selectedPromocion, setSelectedPromocion] = useState<IBPromoOptions>();
+  const [stateForm, setStateForm] = useState<IStateInscription>(state);
 
   const {
     register,
@@ -95,6 +96,7 @@ const useFormInscribirCliente = () => {
 
   useEffect(() => {
     const idCliente = watch("id_cliente");
+    setStateForm(null);
     if (idCliente) {
       clearErrors("id_cliente");
     }
@@ -143,16 +145,23 @@ const useFormInscribirCliente = () => {
     }
   }, [watch("monto")]);
 
+  useEffect(() => {
+    if (state) {
+      setStateForm(state);
+    }
+  }, [state]);
+
   return {
     register,
     handleSubmit,
     onSubmit,
     errors,
+    setError,
     clearErrors,
     setValue,
     watch,
     loading,
-    state,
+    stateForm,
     selectedIdClient,
     setSelectedIdClient,
     selectedTaller,

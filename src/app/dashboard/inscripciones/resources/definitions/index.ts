@@ -50,10 +50,18 @@ export interface IBInscripcion {
   precioVenta: number;
   observacion: string;
   estado: string;
-  
+
   taller: Taller;
   promocion: Promocion | null;
   pagos: Pago[];
+  asesorRegistro: {
+    id: string;
+    nombre: string;
+  };
+  asesorInscripcion: {
+    id: string;
+    nombre: string;
+  };
 }
 
 export interface IBInscripcionResponse {

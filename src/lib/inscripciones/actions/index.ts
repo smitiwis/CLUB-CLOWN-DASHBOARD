@@ -21,20 +21,30 @@ export async function crearInscripcion(
     if (!userId) return null;
 
     const estadoPago = formData.pago ? formData.pago.estado : "sin_pago";
-    // Crear la inscripcion
-    console.log("formData", {
-      id_cliente: formData.id_cliente,
-      id_taller: formData.id_taller,
-      id_taller_promocion: formData.id_taller_promocion,
-      estado_pago: estadoPago,
-      precio_venta: parseFloat(formData.precio_venta),
-      observacion: formData.observacion,
+
+    // validar que el cliente no este inscrito en el taller
+    const inscrito = await prisma.taller_cliente.findFirst({
+      where: {
+        id_cliente: formData.id_cliente,
+        id_taller: formData.id_taller,
+      },
     });
+
+    if (inscrito) {
+      throw {
+        message: "El cliente ya se encuentra inscrito en este taller",
+        status: 400,
+        field: "id_cliente",
+      }
+    }
+
+    // Crear la inscripcion
     const inscripcion = await prisma.taller_cliente.create({
       data: {
         id_cliente: formData.id_cliente,
         id_taller: formData.id_taller,
         id_taller_promocion: formData.id_taller_promocion,
+        id_usuario: userId,
         estado_pago: estadoPago,
         precio_venta: parseFloat(formData.precio_venta),
         observacion: formData.observacion,

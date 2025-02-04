@@ -45,8 +45,18 @@ export async function fetchInscripciones(
             apellido: true,
             nombre_apo: true,
             telefono: true,
+
+            // Asesor que registró al cliente
+            usuario: {
+              select: {
+                id_usuario: true,
+                nombre: true,
+                apellido: true,
+              },
+            },
           },
         },
+
         taller: {
           select: {
             nombre: true,
@@ -63,6 +73,7 @@ export async function fetchInscripciones(
             },
           },
         },
+
         taller_promocion: {
           select: {
             id_taller_promocion: true,
@@ -70,6 +81,7 @@ export async function fetchInscripciones(
             descuento: true,
           },
         },
+
         taller_cliente_pagos: {
           select: {
             id_taller_cliente_pago: true,
@@ -78,6 +90,15 @@ export async function fetchInscripciones(
             img_boucher: true,
             fecha_pago: true,
             nro_transaccion: true,
+          },
+        },
+
+        // Asesor que inscribió al cliente en el taller a un taller
+        usuario: {
+          select: {
+            id_usuario: true,
+            nombre: true,
+            apellido: true,
           },
         },
       },
@@ -116,6 +137,18 @@ export async function fetchInscripciones(
         fecha: pago.fecha_pago,
         nroTransaccion: pago.nro_transaccion,
       })),
+
+      // Asesor que registró al cliente
+      asesorRegistro: {
+        id: item.cliente.usuario.id_usuario,
+        nombre:
+          `${item.cliente.usuario.nombre} ${item.cliente.usuario.apellido}`.trim(),
+      },
+      // Asesor que inscribió al cliente al taller
+      asesorInscripcion: {
+        id: item.usuario.id_usuario,
+        nombre: `${item.usuario.nombre} ${item.usuario.apellido}`.trim(),
+      },
     }));
 
     const totalPages = Math.ceil(total / limit);
