@@ -42,7 +42,11 @@ export async function registrarPago(
     // Validar que el nuevo pago no exceda el saldo pendiente
     const nuevoMonto = parseFloat(monto);
     if (nuevoMonto > saldoPendiente) {
-      throw new Error(`El monto del pago excede el saldo pendiente. Saldo pendiente: ${saldoPendiente}`);
+      throw {
+        message: `El monto ingresado debe ser menor o igual al S/${saldoPendiente.toFixed(2)}.`,
+        status: 400,
+        field: "monto",
+      };
     }
 
     // Iniciar una transacción para asegurar la consistencia de los datos

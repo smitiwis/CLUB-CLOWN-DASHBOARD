@@ -1,12 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-
-import IconEdit from "@/components/icons/IconEdit";
-import IconEye from "@/components/icons/IconEye";
-import { REGEX } from "@/constants/regex";
-import { formatearNombre } from "@/lib/helpers";
-import { IBPago, IBPagoResp } from "@/lib/pagos/definicions";
-import { format } from "@formkit/tempo";
+import React, { FC, Key, useCallback, useMemo, useState } from "react";
+import { IBInscripcion, IBInscripcionResponse } from "../definitions";
+import { useRouter } from "next/navigation";
 import {
   Avatar,
   Button,
@@ -24,26 +20,26 @@ import {
   TableRow,
   Tooltip,
 } from "@nextui-org/react";
-import axios from "axios";
-import debounce from "debounce";
+import IconEye from "@/components/icons/IconEye";
+import IconEdit from "@/components/icons/IconEdit";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, {
-  FC,
-  Key,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { REGEX } from "@/constants/regex";
+import debounce from "debounce";
+import axios from "axios";
+import {
+  formatearNombre,
+  formatPhoneNumber,
+  getColorByStatus,
+  getLabelByStatus,
+} from "@/lib/helpers";
 
 type Props = {
-  pagosResp: IBPagoResp;
+  inscripcionesResp: IBInscripcionResponse;
 };
-
-const PagosList: FC<Props> = ({ pagosResp }) => {
+const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
+  console.log("inscripcionesResp", inscripcionesResp);
   const router = useRouter();
-  const rows = pagosResp.data;
+  const rows = inscripcionesResp.data;
 
   const columns = [
     {
@@ -51,109 +47,132 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
       label: "#",
     },
     {
-      key: "monto",
-      label: "MONTO",
-    },
-    {
-      key: "metodo_pago",
-      label: "METODO",
-    },
-    {
-      key: "img_boucher",
-      label: "COMPROBANTE",
-    },
-    {
-      key: "cliente",
-      label: "CLIENTE",
+      key: "nombre",
+      label: "NOMBRE Y APELL",
     },
     {
       key: "telefono",
       label: "TELÉFONO",
     },
     {
-      key: "fecha_pago",
-      label: "FECHA",
+      key: "estado",
+      label: "ESTADO",
+    },
+
+    {
+      key: "precioVenta",
+      label: "PRECIO VENTA",
+    },
+    {
+      key: "pagos",
+      label: "PAGO TOTAL",
+    },
+    {
+      key: "restante",
+      label: "RESTANTE",
+    },
+    {
+      key: "estadoPago",
+      label: "PAGO",
+    },
+
+    {
+      key: "promocion",
+      label: "PROMOCIÓN",
     },
     {
       key: "taller",
       label: "TALLER",
     },
+    {
+      key: "observacion",
+      label: "OBSERVACIONES",
+    },
 
     { key: "actions", label: "ACTIONS" },
   ];
 
-  const renderCell = useCallback((item: IBPago, columnKey: Key) => {
-    const cellValue = item[columnKey as keyof IBPago];
+  const renderCell = useCallback((item: IBInscripcion, columnKey: Key) => {
+    const cellValue = item[columnKey as keyof IBInscripcion];
+    const totalPagos = item.pagos.reduce((acc, pago) => acc + pago.monto, 0);
 
     switch (columnKey) {
-      case "cliente":
+      case "nombre":
         return (
           <Chip avatar={<Avatar />} variant="flat" size="sm">
-            {formatearNombre(
-              `${item.cliente.nombre} ${item.cliente.apellido}`,
-              15
-            )}
+            {formatearNombre(item.nombre, 25)}
           </Chip>
         );
 
       case "telefono":
-        return <div>{item.cliente.telefono}</div>;
-
-      case "monto":
-        return <div>S/{item.monto.toFixed(2)}</div>;
-
-      case "img_boucher":
         return (
-          <Button
-            color="success"
-            className="rounded-none border border-success border-t-0 border-x-0 px-1"
-            variant="light"
-            size="sm"
-            onPress={() => {
-              console.log("Ver imagen");
-            }}
-          >
-            Ver Boucher
-          </Button>
-        );
-
-      case "fecha_pago":
-        return (
-          <div>
-            {format(new Date(item.fecha_pago), "D MMM YYYY, h:mm A", "es")}
+          <div className="flex items-center gap-x-2">
+            {formatPhoneNumber(item.telefono)}
           </div>
         );
+
+      case "estado":
+        const isActive = parseInt(item.estado);
+        return (
+          <Chip
+            className="flex items-center"
+            variant="flat"
+            size="md"
+            color={isActive ? "success" : "danger"}
+          >
+            {isActive ? "Activo" : "Inactivo"}
+          </Chip>
+        );
+
+      case "precioVenta":
+        return (
+          <div className="flex justify-end items-center gap-x-2 mr-3">
+            S/{item.precioVenta.toFixed(2)}
+          </div>
+        );
+
+      case "pagos":
+        return (
+          <div className="flex justify-end items-center gap-x-2 mr-3">
+            S/{totalPagos.toFixed(2)}
+          </div>
+        );
+
+      case "restante":
+        const restante = item.precioVenta - totalPagos;
+
+        return (
+          <div className="flex justify-end items-center gap-x-2 mr-3">
+            S/{restante.toFixed(2)}
+          </div>
+        );
+
+      case "estadoPago":
+        return (
+          <Chip
+            variant="faded"
+            size="sm"
+            color={getColorByStatus(item.estadoPago)}
+            onClick={() => console.log("PRESS")}
+            className="cursor-pointer"
+            startContent={<IconEye size={18} color={"white"} />}
+          >
+            {getLabelByStatus(item.estadoPago)}
+          </Chip>
+        );
+
+      case "promocion":
+        return item.promocion?.nombre || "-";
 
       case "taller":
         return (
           <Tooltip
-            color="foreground"
+            content={`Precio: S/${item.taller.precio.toFixed(2)}`}
             showArrow
-            content={
-              <div className="flex flex-col gap-y-1">
-                <div className="text-tiny flex items-center gap-x-1">
-                  <span className="font-bold">Días: </span>
-                  {item.taller.dias.map((dia, index) => (
-                    <Chip
-                      color="secondary"
-                      key={index}
-                      variant="bordered"
-                      size="sm"
-                    >
-                      {dia}
-                    </Chip>
-                  ))}
-                </div>
-                <div className="text-tiny flex items-center gap-x-1">
-                  <span className="font-sansbold">Hora: </span>
-                  <span>{item.taller.hora}</span>
-                </div>
-              </div>
-            }
+            color="success"
+            placement="right-end"
           >
-            <Chip color="primary" variant="bordered">
-              <span>{item.taller.nombre}</span>
-            </Chip>
+            <Chip variant="light">{item.taller?.nombre || "-"}</Chip>
           </Tooltip>
         );
 
@@ -165,11 +184,7 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
               color="success"
               variant="light"
               size="sm"
-              onPress={() =>
-                router.push(
-                  `/dashboard/pago/detalle/${item.id_taller_cliente_pago}`
-                )
-              }
+              onPress={() => router.push(`/dashboard/pago/detalle/${item.id}`)}
             >
               <IconEye />
             </Button>
@@ -179,11 +194,7 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
               color="success"
               variant="light"
               size="sm"
-              onPress={() =>
-                router.push(
-                  `/dashboard/pago/editar/${item.id_taller_cliente_pago}`
-                )
-              }
+              onPress={() => router.push(`/dashboard/pago/editar/${item.id}`)}
             >
               <span className="transform rotate-[30deg]">
                 <IconEdit />
@@ -198,28 +209,15 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
     }
   }, []);
 
-  // ======== TABLA Y PAGINACION =========
-  const [data, setData] = useState(rows); // Usamos la lista inicial
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [pagination, setPagination] = useState(pagosResp.pagination);
-
-  const limit = pagination.limit;
-
-  const pages = React.useMemo(() => {
-    return data?.length ? Math.ceil(data.length / limit) : 0;
-  }, [data?.length, limit]);
-
-  const loadingState = isLoading ? "loading" : "idle";
-
   const fetchPageData = async (text?: string, init?: boolean) => {
     setIsLoading(true);
     try {
-      const base = `/api/pago/list?page=${init ? "1" : page}&limit=${limit}`;
+      const base = `/api/inscrito/list?page=${
+        init ? "1" : page
+      }&limit=${limit}`;
       const path = `${base}${text ? `&phoneNumber=${text}` : ""}`;
 
-      const response = await axios.get<IBPagoResp>(path);
+      const response = await axios.get<IBInscripcionResponse>(path);
       setData(response.data.data);
       setPagination(response.data.pagination);
     } catch (error) {
@@ -229,13 +227,24 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
     }
   };
 
+  // ======== TABLA Y PAGINACION =========
+  const [data, setData] = useState(rows); // Usamos la lista inicial
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [pagination, setPagination] = useState(inscripcionesResp.pagination);
+  const limit = pagination.limit;
+
+  const pages = React.useMemo(() => {
+    return data?.length ? Math.ceil(data.length / limit) : 0;
+  }, [data?.length, limit]);
+
   // ======== FILTROS =========
   const [errorPhone, setErrorPhone] = useState(false);
   const [filterPhone, setFilterPhone] = useState("");
 
   const onSearchChange = useCallback(
     debounce((text: string) => {
-      console.log("Buscando por telefono:", text);
       if (!REGEX.PHONE.test(text)) setErrorPhone(true);
       if (!text) setErrorPhone(false);
 
@@ -245,6 +254,8 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
     }, 1000),
     []
   );
+
+  const loadingState = isLoading ? "loading" : "idle";
 
   const onClear = React.useCallback(() => {
     setPage(1);
@@ -271,12 +282,12 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
           />
           <Button
             as={Link}
-            href="/dashboard/pagos/registrar"
+            href="/dashboard/inscripciones/registrar"
             color="primary"
             endContent={<i className="icon-plus" />}
             size="lg"
           >
-            Registrar Pago
+            INSCRIBIR ALUMNO
           </Button>
         </div>
         <div className="flex justify-between items-end my-2">
@@ -312,7 +323,7 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
 
   const bottomContent = useMemo(() => {
     if (pagination.totalPages === 1 || !data.length) return null;
-    
+
     return (
       <div className="flex w-full justify-center">
         <Pagination
@@ -327,14 +338,6 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
       </div>
     );
   }, [pages, pagination]);
-
-  useEffect(() => {
-    if (page === 1) {
-      return setData(pagosResp.data);
-    }
-    fetchPageData();
-  }, [page]);
-
   return (
     <Table
       topContent={topContent}
@@ -364,4 +367,4 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
   );
 };
 
-export default PagosList;
+export default InscritoList;

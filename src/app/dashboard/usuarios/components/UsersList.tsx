@@ -27,6 +27,7 @@ import IconEdit from "@/components/icons/IconEdit";
 import { useRouter } from "next/navigation";
 import useDeleteUser from "../hooks/useDeleteUser";
 import { DOCUMENTS } from "@/constants";
+import { formatPhoneNumber } from "@/lib/helpers";
 
 type Props = {
   userList: IUsuarioRes[];
@@ -84,9 +85,8 @@ const UsersList: FC<Props> = ({ userList }) => {
     const cellValue = item[columnKey as keyof IUsuarioTable];
 
     switch (columnKey) {
-
       case "tipo_documento":
-        return DOCUMENTS.find(({key}) => key === cellValue)?.label || "-";
+        return DOCUMENTS.find(({ key }) => key === cellValue)?.label || "-";
 
       case "estado":
         const isActive = parseInt(item.estado);
@@ -98,6 +98,13 @@ const UsersList: FC<Props> = ({ userList }) => {
           >
             {isActive ? "Activo" : "Inactivo"}
           </Chip>
+        );
+
+      case "telefono":
+        return (
+          <div className="flex items-center gap-x-2">
+            {formatPhoneNumber(item.telefono)}
+          </div>
         );
 
       case "fecha_ingreso":

@@ -14,6 +14,7 @@ import {
   Input,
   Select,
   SelectItem,
+  Textarea,
 } from "@nextui-org/react";
 import React, { FC } from "react";
 import useFormInscribirCliente from "../hooks/useFormInscribirCliente";
@@ -48,7 +49,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
 
   return (
     <>
-      <Form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+      <Form className="flex flex-col gap-y-4" onSubmit={handleSubmit(onSubmit)}>
         <Select
           {...register("estado_inscripcion")}
           isDisabled
@@ -322,6 +323,18 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               errorMessage={errors.nro_transaccion?.message}
             />
           </div>
+        </div>
+        <div className="w-full mb-4">
+          <Textarea
+            {...register("observacion")}
+            className="w-full"
+            isClearable
+            label="Observacion"
+            placeholder="Describa una observacion de la inscripción"
+            size="lg"
+            isInvalid={!!errors.observacion}
+            errorMessage={errors.observacion?.message}
+          />
         </div>
 
         <Button

@@ -27,6 +27,7 @@ import {
   Select,
   SelectedItems,
   SelectItem,
+  Avatar,
 } from "@nextui-org/react";
 import {
   IBClients,
@@ -48,6 +49,7 @@ import axios from "axios";
 import Link from "next/link";
 import debounce from "debounce";
 import { REGEX } from "@/constants/regex";
+import { formatearNombre, formatPhoneNumber } from "@/lib/helpers";
 
 type Props = {
   clientsResp: IBClientsResp;
@@ -102,10 +104,6 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
     {
       key: "nombre",
       label: "NOMBRE",
-    },
-    {
-      key: "apellido",
-      label: "APELLIDO",
     },
     {
       key: "edad",
@@ -171,6 +169,23 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
               />
             </Tooltip>
           </Badge>
+        );
+
+      case "telefono":
+        return (
+          <div className="flex flex-col">
+            <span className="text-small">
+              {formatPhoneNumber(item.telefono)}
+            </span>
+          </div>
+        );
+
+      case "nombre":
+        const nameComplete = `${item.nombre} ${item.apellido}`;
+        return (
+          <Chip avatar={<Avatar />} variant="flat" size="sm">
+            {formatearNombre(nameComplete, 25)}
+          </Chip>
         );
 
       case "estadoAgenda":

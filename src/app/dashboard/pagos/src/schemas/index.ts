@@ -5,11 +5,8 @@ export const schemaPago = yup.object().shape({
   monto: yup
     .string()
     .required("El monto es obligatorio.") // Campo requerido
-    .transform((value) => (value === "" ? null : value)) // Transforma un string vacío en null
-    .matches(/^\d*\.?\d+$/, "El monto debe ser un número positivo.") // Asegura que solo contenga números positivos
-    .test("min-value", "El monto no puede ser menor a 25.", (value) => {
-      if (parseFloat(value || "0") >= 25) return true;
-    }),
+    .matches(/^\d*\.?\d+$/, "El monto debe ser un número positivo."), // Asegura que solo contenga números positivos
+
   metodo_pago: yup.string().required("El método de pago es obligatorio."),
   baucher: yup.string().required("El baucher es obligatorio."),
   nro_transaccion: yup

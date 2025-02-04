@@ -60,6 +60,9 @@ export async function fetchPagos(
       where,
       skip,
       take,
+      orderBy: {
+        fecha_pago: "desc",
+      },
       select: {
         id_taller_cliente_pago: true,
         monto: true,

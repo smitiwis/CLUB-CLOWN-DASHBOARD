@@ -6,8 +6,8 @@ export function formatearNombre(
   const partes = nombreCompleto.split(" ");
 
   // Si hay al menos dos partes, tomar el primer nombre y el primer apellido
-  if (partes.length >= 2) {
-    const nombreFormateado = `${partes[0]} ${partes[1]}`;
+  if (partes.length >= 3) {
+    const nombreFormateado = `${partes[0]} ${partes[1]} ${partes[2]}`;
 
     // Si el nombre formateado excede la longitud máxima, truncarlo
     if (nombreFormateado.length > longitudMaxima) {

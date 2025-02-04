@@ -19,18 +19,18 @@ export const schemaInscripcion = yup.object().shape({
   estado_inscripcion: yup
     .string()
     .required("El estado de la inscripción es obligatorio."),
-  nro_transaccion: yup
-    .string()
-    .when("monto", {
-      is: (monto: number) => monto >= 25,
-      then: (schema) =>
-        schema
-          .required("El nro de transacción es obligatorio.")
-          .matches(
-            REGEX.NO_CHARACTERS_SPECIAL,
-            "El numero de transaccion debe ser alfanumerico"
-          ),
-    }),
+
+  observacion: yup.string(),
+  nro_transaccion: yup.string().when("monto", {
+    is: (monto: number) => monto >= 25,
+    then: (schema) =>
+      schema
+        .required("El nro de transacción es obligatorio.")
+        .matches(
+          REGEX.NO_CHARACTERS_SPECIAL,
+          "El numero de transaccion debe ser alfanumerico"
+        ),
+  }),
 });
 
 export interface IF_Inscripcion {
@@ -42,6 +42,7 @@ export interface IF_Inscripcion {
   metodo_pago?: string;
   baucher?: string;
   nro_transaccion?: string;
+  observacion?: string;
   estado_inscripcion: string;
 }
 
@@ -50,6 +51,7 @@ export interface IF_InscripcionReq {
   id_taller: string;
   id_taller_promocion: string;
   precio_venta: string;
+  observacion?: string;
   pago: {
     monto: string;
     metodo_pago: string;

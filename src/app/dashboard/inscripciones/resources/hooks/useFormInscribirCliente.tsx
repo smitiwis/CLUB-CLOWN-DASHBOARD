@@ -50,6 +50,7 @@ const useFormInscribirCliente = () => {
         id_taller: selectedTaller.id_taller,
         id_taller_promocion: selectedPromocion.id_taller_promocion,
         precio_venta: formData.precio_venta,
+        observacion: formData.observacion,
         pago:
           monto && metodo_pago && baucher && nro_transaccion
             ? {
