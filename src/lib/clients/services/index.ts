@@ -122,7 +122,6 @@ export async function fetchClientsOptions() {
     if (!id_usuario) return new Error("Usuario desconocido");
 
     const clientes = await prisma.cliente.findMany({
-      where: { id_usuario },
       select: {
         id_cliente: true,
         telefono: true,
@@ -133,6 +132,72 @@ export async function fetchClientsOptions() {
     });
 
     return clientes;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Error al obtener clientes options .");
+  } finally {
+    await prisma.$disconnect(); // Asegurarse de desconectar la base de datos
+  }
+}
+
+export async function fetchInscritosOptions() {
+  try {
+    const id_usuario = await getUserId();
+    if (!id_usuario) return new Error("Usuario desconocido");
+
+    const clientes = await prisma.taller_cliente.findMany({
+      where: {
+        estado_pago: {
+          not: "pago_compl",
+        },
+        estado: "1",
+      },
+      select: {
+        id_taller_cliente: true,
+        precio_venta: true,
+        estado_pago: true,
+
+        cliente: {
+          select: {
+            nombre: true,
+            apellido: true,
+            telefono: true,
+          },
+        },
+        taller: {
+          select: {
+            nombre: true,
+            precio: true,
+          },
+        },
+        taller_cliente_pagos: {
+          select: {
+            monto: true,
+          },
+        },
+      },
+    });
+
+    // Procesar los datos para calcular el total pagado y el saldo pendiente
+    const resultados = clientes.map((cliente) => {
+      const totalPagado = cliente.taller_cliente_pagos.reduce(
+        (acc, pago) => acc + pago.monto,
+        0
+      );
+      const saldoPendiente = cliente.precio_venta - totalPagado;
+
+      return {
+        id_cliente: cliente.id_taller_cliente,
+        nombre: cliente.cliente.nombre,
+        apellido: cliente.cliente.apellido,
+        telefono: cliente.cliente.telefono,
+        taller: cliente.taller.nombre,
+        totalPagado,
+        saldoPendiente,
+      };
+    });
+
+    return resultados;
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Error al obtener clientes options .");

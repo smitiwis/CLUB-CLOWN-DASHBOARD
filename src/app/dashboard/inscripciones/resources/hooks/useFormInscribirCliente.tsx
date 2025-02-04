@@ -12,6 +12,7 @@ import { IBClientOptions } from "@/lib/clients/definitions";
 import { IBTalleresOptions } from "@/lib/talleres/definicions";
 import { IBPromoOptions } from "@/lib/promociones/definitions";
 import { crearInscripcion } from "@/lib/inscripciones/actions";
+import { REGEX } from "@/constants/regex";
 
 const useFormInscribirCliente = () => {
   const [loading, startTransaction] = useTransition();
@@ -42,7 +43,7 @@ const useFormInscribirCliente = () => {
   });
 
   const onSubmit = (formData: IF_Inscripcion) => {
-    const { monto, metodo_pago, baucher } = formData;
+    const { monto, metodo_pago, baucher, nro_transaccion } = formData;
     if (selectedIdClient && selectedTaller && selectedPromocion) {
       const body = {
         id_cliente: selectedIdClient.id_cliente,
@@ -50,16 +51,16 @@ const useFormInscribirCliente = () => {
         id_taller_promocion: selectedPromocion.id_taller_promocion,
         precio_venta: formData.precio_venta,
         pago:
-          monto && metodo_pago && baucher
+          monto && metodo_pago && baucher && nro_transaccion
             ? {
+                estado: formData.estado_inscripcion,
                 monto: monto,
                 metodo_pago: metodo_pago,
                 baucher: baucher,
-                estado: formData.estado_inscripcion,
+                nro_transaccion: nro_transaccion,
               }
             : null,
       };
-      console.log("BODY: ", body);
       startTransaction(() => formAction(body));
     }
   };
@@ -99,11 +100,15 @@ const useFormInscribirCliente = () => {
   }, [watch("id_cliente")]);
 
   useEffect(() => {
+    const getMonto = watch("monto");
+    let message = "";
+
+    if (getMonto && !REGEX.NUMERIC.test(getMonto)) {
+      message = "El monto debe ser un numero";
+      return setError("monto", { message });
+    }
     const montoPago = parseFloat(watch("monto") || "0");
     const precioVenta = parseFloat(watch("precio_venta"));
-    console.log("montoPago", montoPago);
-    console.log("precioVenta", precioVenta);
-    let message = "";
 
     if (montoPago) {
       if (montoPago < 0) {

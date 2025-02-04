@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import axios from "axios";
-import { getColorByStatus, getLabelByStatus } from "@/lib/helpers";
+import { formatearNombre, getColorByStatus, getLabelByStatus } from "@/lib/helpers";
 import { format } from "@formkit/tempo";
 
 type Props = {
@@ -66,7 +66,7 @@ const InscritosList: FC<Props> = memo(({ tallerId }) => {
 
   const renderCell = useCallback((item: IFInscripcion, columnKey: Key) => {
     const cellValue = item[columnKey as keyof IFInscripcion];
-
+    
     switch (columnKey) {
       case "lista":
         return <div>{item.key}</div>;
@@ -82,7 +82,7 @@ const InscritosList: FC<Props> = memo(({ tallerId }) => {
             placement="right-start"
           >
             <Chip color="primary" variant="light" size="sm">
-              {item.nombre} {item.apellido}
+              {formatearNombre(`${item.nombre} ${item.apellido}`, 15)}
             </Chip>
           </Tooltip>
         );

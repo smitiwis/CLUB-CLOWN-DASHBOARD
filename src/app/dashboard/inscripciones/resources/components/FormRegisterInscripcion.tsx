@@ -17,8 +17,8 @@ import {
 } from "@nextui-org/react";
 import React, { FC } from "react";
 import useFormInscribirCliente from "../hooks/useFormInscribirCliente";
-import { ESTATO_PAGO } from "@/constants";
-import { getColorByStatus } from "@/lib/helpers";
+import { ESTATO_INSCRIPCION, METODOS_PAGO } from "@/constants";
+import { getColorByStatus, getLabelByStatus } from "@/lib/helpers";
 
 type Props = {
   clientOptions: IBClientOptions[];
@@ -49,6 +49,29 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
   return (
     <>
       <Form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+        <Select
+          {...register("estado_inscripcion")}
+          isDisabled
+          className="opacity-0 obsolute transform scale-0 hidden"
+          color={getColorByStatus(watch("estado_inscripcion"))}
+          selectedKeys={[watch("estado_inscripcion")]}
+          defaultSelectedKeys={[ESTATO_INSCRIPCION[0].key]}
+          label="Estado de inscripción"
+          value={[watch("estado_inscripcion")]}
+          items={ESTATO_INSCRIPCION}
+          variant="flat"
+          size="lg"
+          isInvalid={!!errors.estado_inscripcion}
+          errorMessage={errors.estado_inscripcion?.message}
+        >
+          {(document) => (
+            <SelectItem key={document.key} textValue={document.label}>
+              <div className="flex flex-col">
+                <span className="text-small">{document.label}</span>
+              </div>
+            </SelectItem>
+          )}
+        </Select>
         <div className="flex gap-4 w-full">
           <div className="flex flex-col flex-1 gap-4">
             <Autocomplete
@@ -244,7 +267,15 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               label="Monto a pagar"
               min={0}
               max={watch("precio_venta")}
-              type="number"
+              endContent={
+                <Chip
+                  size="sm"
+                  variant="bordered"
+                  color={getColorByStatus(watch("estado_inscripcion"))}
+                >
+                  {getLabelByStatus(watch("estado_inscripcion"))}
+                </Chip>
+              }
               size="lg"
               isInvalid={!!errors.monto}
               errorMessage={errors.monto?.message}
@@ -255,14 +286,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
                 !watch("monto") || parseInt(watch("monto") || "0") < 25
               }
               label="Método de pago"
-              items={[
-                { key: "efect", label: "Efectivo" },
-                { key: "yape", label: "Yape" },
-                { key: "plin", label: "Plin" },
-                { key: "transf", label: "Transferencia" },
-                { key: "tarjeta", label: "Tarjeta" },
-                { key: "otro", label: "Otro" },
-              ]}
+              items={METODOS_PAGO}
               size="lg"
               isInvalid={!!errors.metodo_pago}
               errorMessage={errors.metodo_pago?.message}
@@ -287,28 +311,16 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               isInvalid={!!errors.baucher}
               errorMessage={errors.baucher?.message}
             />
-            <Select
-              {...register("estado_inscripcion")}
-              isDisabled
-              color={getColorByStatus(watch("estado_inscripcion"))}
-              selectedKeys={[watch("estado_inscripcion")]}
-              defaultSelectedKeys={[ESTATO_PAGO[0].key]}
-              label="Estado de pago"
-              value={[watch("estado_inscripcion")]}
-              items={ESTATO_PAGO}
-              variant="flat"
+            <Input
+              {...register("nro_transaccion")}
+              isDisabled={
+                !watch("monto") || parseInt(watch("monto") || "0") < 25
+              }
+              label="Nro de transacción"
               size="lg"
-              isInvalid={!!errors.estado_inscripcion}
-              errorMessage={errors.estado_inscripcion?.message}
-            >
-              {(document) => (
-                <SelectItem key={document.key} textValue={document.label}>
-                  <div className="flex flex-col">
-                    <span className="text-small">{document.label}</span>
-                  </div>
-                </SelectItem>
-              )}
-            </Select>
+              isInvalid={!!errors.nro_transaccion}
+              errorMessage={errors.nro_transaccion?.message}
+            />
           </div>
         </div>
 

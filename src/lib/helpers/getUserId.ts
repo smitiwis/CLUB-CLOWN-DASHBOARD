@@ -1,7 +1,7 @@
 import {
   COLORES,
   DOCUMENTS,
-  ESTATO_PAGO,
+  ESTATO_INSCRIPCION,
   GROUPS_CLIENT,
   ORIGENES_CLIENTS,
   RESULTADO_LLAMADAS,
@@ -51,10 +51,10 @@ export function toCapitalize(s: string) {
 
 
 export function getColorByStatus(status: string) {
-  return ESTATO_PAGO.find(({ key }) => key === status)?.color || undefined;
+  return ESTATO_INSCRIPCION.find(({ key }) => key === status)?.color || undefined;
 }
 
 
 export function getLabelByStatus(status: string) {
-  return ESTATO_PAGO.find(({ key }) => key === status)?.label || "";
+  return ESTATO_INSCRIPCION.find(({ key }) => key === status)?.label || "";
 }

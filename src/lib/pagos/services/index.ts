@@ -10,7 +10,7 @@ function getWhereClause(rol: string, id_usuario: string, telefonoCliente?: strin
     taller_cliente?: {
       cliente?: {
         id_usuario?: string;
-        telefono?: string;
+        telefono?: { contains: string};
       };
     };
   } = {};
@@ -27,7 +27,7 @@ function getWhereClause(rol: string, id_usuario: string, telefonoCliente?: strin
     whereClause.taller_cliente = {
       cliente: {
         ...(whereClause.taller_cliente?.cliente || {}),
-        telefono: telefonoCliente,
+        telefono:  { contains: telefonoCliente },
       },
     };
   }

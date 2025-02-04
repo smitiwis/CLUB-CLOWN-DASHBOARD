@@ -271,9 +271,10 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
           />
           <Button
             as={Link}
-            href="/dashboard/pago/registrar"
+            href="/dashboard/pagos/registrar"
             color="primary"
             endContent={<i className="icon-plus" />}
+            size="lg"
           >
             Registrar Pago
           </Button>

@@ -14,7 +14,6 @@ export async function crearInscripcion(
   formData: IF_InscripcionReq
 ) {
   try {
-    console.log("DATA: ", formData);
     // Validate form using Zod
 
     // VALIDAR SI EXISTE EL USERID
@@ -32,7 +31,6 @@ export async function crearInscripcion(
         precio_venta: parseFloat(formData.precio_venta),
       },
     });
-    console.log("=========" ,inscripcion);
 
     if (inscripcion) {
       // actualizar estado del cliente
@@ -40,13 +38,13 @@ export async function crearInscripcion(
         where: { id_cliente: formData.id_cliente },
         data: {
           estado:
-            formData.pago && parseInt(formData.pago.monto) > 25 ? "6" : "7",
+            formData.pago && parseInt(formData.pago.monto) > 25 ? "6" : "7", // cambiamos el color de estado del cliente
         },
       });
 
       if (formData.pago) {
-        // Crear el pago
-        const { monto, metodo_pago, baucher } = formData.pago;
+        // Crear el pago 1er pago
+        const { monto, metodo_pago, baucher, nro_transaccion } = formData.pago;
 
         await prisma.taller_cliente_pagos.create({
           data: {
@@ -54,12 +52,12 @@ export async function crearInscripcion(
             monto: parseFloat(monto),
             metodo_pago: metodo_pago,
             img_boucher: baucher,
+            nro_transaccion: nro_transaccion,
             fecha_pago: new Date(),
           },
         });
       }
     }
-
   } catch (error) {
     console.error("Error:", error);
     if (error instanceof Error) {

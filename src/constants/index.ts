@@ -161,7 +161,7 @@ export const CANTIDAD_CLASES = [
   { key: "16", label: "16" },
 ];
 
-export const ESTATO_PAGO: {
+export const ESTATO_INSCRIPCION: {
   key: string;
   label: string;
   color:
@@ -177,3 +177,13 @@ export const ESTATO_PAGO: {
   { key: "pago_pend", label: "Pendiente", color: "primary" },
   { key: "pago_compl", label: "Completo", color: "success" },
 ];
+
+
+export const METODOS_PAGO = [
+  { key: "efect", label: "Efectivo" },
+  { key: "yape", label: "Yape" },
+  { key: "plin", label: "Plin" },
+  { key: "transf", label: "Transferencia" },
+  { key: "tarjeta", label: "Tarjeta" },
+  { key: "otro", label: "Otro" },
+]
