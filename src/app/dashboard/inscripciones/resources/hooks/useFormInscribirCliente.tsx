@@ -104,7 +104,8 @@ const useFormInscribirCliente = () => {
         }
       }
     } catch (error) {
-      // Revertir la subida de la imagen en caso falle algo
+      // Revertir la subida de la imagen en caso falle 
+      
       console.error("error", error);
       if (uploadResult && uploadResult.public_id) {
         await axios.post(
