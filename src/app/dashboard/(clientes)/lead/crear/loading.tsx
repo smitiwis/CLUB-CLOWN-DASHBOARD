@@ -5,7 +5,9 @@ const Loading = () => {
   return (
     <>
       <h1>Carngando ....</h1>
-      <Spinner />
+       <div className="flex justify-center items-center w-full h-full">
+      <Spinner size="lg"/>
+    </div>
     </>
   )
 }

@@ -33,11 +33,12 @@ interface Promocion {
   descuento: number;
 }
 
-interface Pago {
+export interface Pago {
   id: string;
   monto: number;
   metodo: string;
   fecha: Date;
+  imgBoucher: string;
   nroTransaccion: string;
 }
 

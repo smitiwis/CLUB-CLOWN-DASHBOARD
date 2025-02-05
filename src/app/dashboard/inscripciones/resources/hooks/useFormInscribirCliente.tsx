@@ -52,6 +52,7 @@ const useFormInscribirCliente = () => {
   const onSubmit = async (formData: IF_Inscripcion) => {
     // SI TODOS LOS CAMPOS ESTAN BIEN ENTONCES SUBIMOS LA IMAGE
     let uploadResult: IUploadResult | null = null;
+    
     try {
       if (fileBaucher) {
         setLoading(true);
@@ -98,14 +99,11 @@ const useFormInscribirCliente = () => {
                     }
                   : null,
             };
-
             startTransaction(() => formAction(body));
           }
         }
       }
     } catch (error) {
-      // Revertir la subida de la imagen en caso falle 
-      
       console.error("error", error);
       if (uploadResult && uploadResult.public_id) {
         await axios.post(

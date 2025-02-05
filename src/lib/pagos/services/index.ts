@@ -102,7 +102,7 @@ export async function fetchPagos(
       metodo_pago: pago.metodo_pago,
       fecha_pago: pago.fecha_pago,
       estado_pago: pago.taller_cliente.estado_pago,
-      img_boucher: pago.img_boucher,
+      img_boucher: `${process.env.CLOUDINARY_IMAGE}${pago.img_boucher}`,
       cliente: {
         nombre: pago.taller_cliente.cliente.nombre,
         apellido: pago.taller_cliente.cliente.apellido,

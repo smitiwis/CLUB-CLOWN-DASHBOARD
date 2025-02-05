@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { FC, Key, useCallback, useMemo, useState } from "react";
-import { IBInscripcion, IBInscripcionResponse } from "../definitions";
+import { IBInscripcion, IBInscripcionResponse, Pago } from "../definitions";
 import { useRouter } from "next/navigation";
 import {
   Avatar,
@@ -9,6 +9,11 @@ import {
   Button,
   Chip,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Pagination,
   Select,
   SelectItem,
@@ -20,6 +25,7 @@ import {
   TableHeader,
   TableRow,
   Tooltip,
+  useDisclosure,
 } from "@nextui-org/react";
 import IconEye from "@/components/icons/IconEye";
 import IconEdit from "@/components/icons/IconEdit";
@@ -33,11 +39,15 @@ import {
   getColorByStatus,
   getLabelByStatus,
 } from "@/lib/helpers";
+import Image from "next/image";
+import { format } from "@formkit/tempo";
 
 type Props = {
   inscripcionesResp: IBInscripcionResponse;
 };
 const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [bouchers, setBouchers] = useState<Pago[]>([]);
   const router = useRouter();
   const rows = inscripcionesResp.data;
 
@@ -58,7 +68,6 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
       key: "estado",
       label: "ESTADO",
     },
-
     {
       key: "precioVenta",
       label: "PRECIO VENTA",
@@ -73,7 +82,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
     },
     {
       key: "estadoPago",
-      label: "PAGO",
+      label: "PAGOS",
     },
     {
       key: "taller",
@@ -177,7 +186,10 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
             variant="faded"
             size="sm"
             color={getColorByStatus(item.estadoPago)}
-            onClick={() => console.log("PRESS")}
+            onClick={() => {
+              setBouchers(item.pagos);
+              onOpen();
+            }}
             className="cursor-pointer"
             startContent={<IconEye size={18} color={"white"} />}
           >
@@ -374,31 +386,74 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
     );
   }, [pages, pagination]);
   return (
-    <Table
-      topContent={topContent}
-      aria-label="Tabla de pagos"
-      bottomContent={bottomContent}
-      bottomContentPlacement="outside"
-    >
-      <TableHeader columns={columns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
-      </TableHeader>
-
-      <TableBody
-        items={data || []}
-        loadingContent={<Spinner />}
-        loadingState={loadingState}
-        emptyContent={"No hay registros para mostrar"}
+    <>
+      <Table
+        topContent={topContent}
+        aria-label="Tabla de pagos"
+        bottomContent={bottomContent}
+        bottomContentPlacement="outside"
       >
-        {(item) => (
-          <TableRow key={item.key}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key}>{column.label}</TableColumn>
+          )}
+        </TableHeader>
+
+        <TableBody
+          items={data || []}
+          loadingContent={<Spinner />}
+          loadingState={loadingState}
+          emptyContent={"No hay registros para mostrar"}
+        >
+          {(item) => (
+            <TableRow key={item.key}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="2xl">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="text-center flex flex-col gap-1">
+                COMPROBANTES DE PAGO
+              </ModalHeader>
+              <ModalBody>
+                <div className="flex justify-center gap-x-2">
+                  {bouchers.map((boucher, i) => (
+                    <div key={i} className="flex flex-col items-center gap-y-2">
+                      <span className="text-small">
+                        {format(boucher.fecha, "D MMM YYYY, h:mm A", "es")}
+                      </span>
+                      <Image
+                        className="h-full rounded-md"
+                        src={boucher.imgBoucher}
+                        alt={"boucher" + i}
+                        width={150}
+                        height={200}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <div className="flex justify-center gap-x-2 w-full">
+                  <Button color="primary" variant="light" onPress={onClose}>
+                    Cerrar
+                  </Button>
+                  <Button color="primary" onPress={onClose}>
+                    Aceptar
+                  </Button>
+                </div>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 

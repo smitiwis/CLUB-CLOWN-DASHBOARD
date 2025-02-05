@@ -8,7 +8,6 @@ const Page = async () => {
   if (response instanceof Error) {
     return <div>Error fetching inscritos</div>;
   }
-
   return <InscritoList inscripcionesResp={response} />;
 };
 

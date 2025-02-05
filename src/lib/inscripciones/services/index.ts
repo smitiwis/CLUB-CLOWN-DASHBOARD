@@ -136,6 +136,7 @@ export async function fetchInscripciones(
         metodo: pago.metodo_pago,
         fecha: pago.fecha_pago,
         nroTransaccion: pago.nro_transaccion,
+        imgBoucher: `${process.env.CLOUDINARY_IMAGE}${pago.img_boucher}`,
       })),
 
       // Asesor que registró al cliente

@@ -4,7 +4,7 @@
 import IconEdit from "@/components/icons/IconEdit";
 import IconEye from "@/components/icons/IconEye";
 import { REGEX } from "@/constants/regex";
-import { formatearNombre } from "@/lib/helpers";
+import { formatearNombre, formatPhoneNumber } from "@/lib/helpers";
 import { IBPago, IBPagoResp } from "@/lib/pagos/definicions";
 import { format } from "@formkit/tempo";
 import {
@@ -12,6 +12,11 @@ import {
   Button,
   Chip,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Pagination,
   Select,
   SelectItem,
@@ -23,9 +28,11 @@ import {
   TableHeader,
   TableRow,
   Tooltip,
+  useDisclosure,
 } from "@nextui-org/react";
 import axios from "axios";
 import debounce from "debounce";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, {
@@ -42,6 +49,8 @@ type Props = {
 };
 
 const PagosList: FC<Props> = ({ pagosResp }) => {
+  const [boucher, setBoucher] = useState("");
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
   const rows = pagosResp.data;
 
@@ -97,7 +106,11 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
         );
 
       case "telefono":
-        return <div>{item.cliente.telefono}</div>;
+        return (
+          <div className="flex items-center gap-x-2">
+            {formatPhoneNumber(item.cliente.telefono)}
+          </div>
+        );
 
       case "monto":
         return <div>S/{item.monto.toFixed(2)}</div>;
@@ -110,7 +123,8 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
             variant="light"
             size="sm"
             onPress={() => {
-              console.log("Ver imagen");
+              setBoucher(item.img_boucher);
+              onOpen();
             }}
           >
             Ver Boucher
@@ -312,7 +326,7 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
 
   const bottomContent = useMemo(() => {
     if (pagination.totalPages === 1 || !data.length) return null;
-    
+
     return (
       <div className="flex w-full justify-center">
         <Pagination
@@ -336,31 +350,67 @@ const PagosList: FC<Props> = ({ pagosResp }) => {
   }, [page]);
 
   return (
-    <Table
-      topContent={topContent}
-      aria-label="Tabla de pagos"
-      bottomContent={bottomContent}
-      bottomContentPlacement="outside"
-    >
-      <TableHeader columns={columns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
-      </TableHeader>
-
-      <TableBody
-        items={data || []}
-        loadingContent={<Spinner />}
-        loadingState={loadingState}
-        emptyContent={"No hay registros para mostrar"}
+    <>
+      <Table
+        topContent={topContent}
+        aria-label="Tabla de pagos"
+        bottomContent={bottomContent}
+        bottomContentPlacement="outside"
       >
-        {(item) => (
-          <TableRow key={item.key}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key}>{column.label}</TableColumn>
+          )}
+        </TableHeader>
+
+        <TableBody
+          items={data || []}
+          loadingContent={<Spinner />}
+          loadingState={loadingState}
+          emptyContent={"No hay registros para mostrar"}
+        >
+          {(item) => (
+            <TableRow key={item.key}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="sm">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="text-center flex flex-col gap-1">
+                COMPROBANTE DE PAGO
+              </ModalHeader>
+              <ModalBody>
+                <div className="flex justify-center gap-x-2">
+                  <Image
+                    className="h-full rounded-md"
+                    src={boucher}
+                    alt={"boucher"}
+                    width={160}
+                    height={220}
+                  />
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <div className="flex justify-center gap-x-2 w-full">
+                  <Button color="primary" variant="light" onPress={onClose}>
+                    Cerrar
+                  </Button>
+                  <Button color="primary" onPress={onClose}>
+                    Aceptar
+                  </Button>
+                </div>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 

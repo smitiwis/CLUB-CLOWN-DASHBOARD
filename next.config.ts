@@ -4,20 +4,14 @@ const nextConfig: NextConfig = {
   /* config options here */
   // PARA CONSULTAR AIS EXTERNAS
   images: {
-    remotePatterns:[
+    remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'https://dniruc.apisperu.com',
+        hostname: 'res.cloudinary.com',
         port: '',
-        pathname: '/*',
+        search: '',
       },
-      {
-        protocol: 'https',
-        hostname: 'https://res.cloudinary.com',
-        port: '',
-        pathname: '/*',
-      }
-    ]
+    ],
   },
 };
 

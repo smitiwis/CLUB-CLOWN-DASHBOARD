@@ -3,7 +3,9 @@ import React from 'react'
 
 const Loading = () => {
   return (
-    <Spinner />
+     <div className="flex justify-center items-center w-full h-full">
+      <Spinner size="lg"/>
+    </div>
   )
 }
 
