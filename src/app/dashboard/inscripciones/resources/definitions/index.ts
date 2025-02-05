@@ -68,3 +68,9 @@ export interface IBInscripcionResponse {
   data: IBInscripcion[];
   pagination: IPaginationResp;
 }
+
+
+export interface IUploadResult {
+  secure_url: string;
+  public_id: string;
+}

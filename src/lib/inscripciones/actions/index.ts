@@ -35,7 +35,7 @@ export async function crearInscripcion(
         message: "El cliente ya se encuentra inscrito en este taller",
         status: 400,
         field: "id_cliente",
-      }
+      };
     }
 
     // Crear la inscripcion

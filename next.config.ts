@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
         hostname: 'https://dniruc.apisperu.com',
         port: '',
         pathname: '/*',
+      },
+      {
+        protocol: 'https',
+        hostname: 'https://res.cloudinary.com',
+        port: '',
+        pathname: '/*',
       }
     ]
   },

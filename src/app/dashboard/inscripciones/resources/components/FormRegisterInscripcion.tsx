@@ -12,12 +12,13 @@ import {
   Button,
   Chip,
   Form,
+  Image,
   Input,
   Select,
   SelectItem,
   Textarea,
 } from "@nextui-org/react";
-import React, { FC } from "react";
+import React, { ChangeEvent, FC } from "react";
 import useFormInscribirCliente from "../hooks/useFormInscribirCliente";
 import { ESTATO_INSCRIPCION, METODOS_PAGO } from "@/constants";
 import { getColorByStatus, getLabelByStatus } from "@/lib/helpers";
@@ -39,13 +40,30 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
     loading,
     stateForm,
     setValue,
-    // clearErrors,
     watch,
 
+    setFileBaucher,
     setSelectedIdClient,
     setSelectedTaller,
     setSelectedPromocion,
+
+    setPreviewUrl,
+    previewUrl,
   } = useFormInscribirCliente();
+
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file: File | undefined = event.target.files?.[0];
+    if (file) {
+      setFileBaucher(file);
+
+      // Generar una URL de vista previa
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <>
@@ -319,6 +337,8 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               label="Baucher de pago"
               size="lg"
               type="file"
+              accept="image/*"
+              onChange={handleFileChange}
               isInvalid={!!errors.baucher}
               errorMessage={errors.baucher?.message}
             />
@@ -333,6 +353,18 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               errorMessage={errors.nro_transaccion?.message}
             />
           </div>
+
+          {previewUrl && (
+            <div className="flex  flex-col  gap-4">
+              <Image
+                isZoomed
+                alt="boucher"
+                src={previewUrl}
+                className="max-w-full object-cover"
+                width={200}
+              />
+            </div>
+          )}
         </div>
         <div className="w-full mb-4">
           <Textarea
