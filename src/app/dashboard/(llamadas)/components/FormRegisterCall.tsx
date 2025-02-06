@@ -164,7 +164,7 @@ const FormRegisterCall: FC<Props> = (props) => {
                   items={COLORES}
                   selectedKeys={
                     clientSelected
-                      ? [String(getKeyColor(clientSelected.estado))]
+                      ? [String(getKeyColor(watch("estado")))]
                       : []
                   }
                   size="lg"
