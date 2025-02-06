@@ -15,6 +15,7 @@ import {
 import React, { useEffect, useState } from "react";
 import useFormCreateClient from "../hooks/useFormCreateClient";
 import {
+  CATEGORIA_CLIENT,
   COLORES,
   DOCUMENTS,
   GROUPS_CLIENT,
@@ -172,8 +173,6 @@ const FormcreateClient = () => {
               isInvalid={!!errors.nombre}
               errorMessage={errors.nombre?.message}
             />
-          </div>
-          <div className="flex flex-col flex-1">
             <Input
               {...register("apellido")}
               className="mb-4"
@@ -184,6 +183,8 @@ const FormcreateClient = () => {
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}
             />
+          </div>
+          <div className="flex flex-col flex-1">
             <Input
               {...register("edad")}
               className="mb-4"
@@ -208,6 +209,19 @@ const FormcreateClient = () => {
               errorMessage={errors.grupo?.message}
             >
               {GROUPS_CLIENT.map(({ key, label }) => (
+                <SelectItem key={key}>{label}</SelectItem>
+              ))}
+            </Select>
+            <Select
+              {...register("categoria")}
+              className="mb-4"
+              label="Elige una Categoria"
+              items={CATEGORIA_CLIENT}
+              size="lg"
+              isInvalid={!!errors.categoria}
+              errorMessage={errors.categoria?.message}
+            >
+              {CATEGORIA_CLIENT.map(({ key, label }) => (
                 <SelectItem key={key}>{label}</SelectItem>
               ))}
             </Select>

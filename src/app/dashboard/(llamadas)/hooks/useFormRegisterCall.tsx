@@ -28,7 +28,7 @@ const useFormRegisterCall = () => {
     clearErrors,
   } = useForm<IFormClientCall>({
     defaultValues: {
-      estado: "3",
+      estado: "4",
       observacion: "",
       tipo: "2",
       resultado: "2",
@@ -76,6 +76,12 @@ const useFormRegisterCall = () => {
     }
     // setValue("fecha_agendada", new Date());
   }, [watch("fecha_agendada"), watch("resultado")]);
+
+  useEffect(() => {
+    if (clientSelected) {
+      setValue("estado", String(clientSelected.estado));
+    }
+  }, [clientSelected]);
 
   return {
     register,

@@ -3,6 +3,7 @@ export type TTypeDocumento = "" | "1" | "2" | "3" | "4" | "5";
 export type TOrigen = "1" | "2" | "3" | "4" | "5" | "6" | "7";
 export type IGrupo_Client = "" | "1" | "2" | "3";
 export type IEstado_agenda = "" | "1" | "2";
+export type ICategoria = "1" | "2" | "3";
 
 export type IFClient = {
   telefono: string;
@@ -17,6 +18,7 @@ export type IFClient = {
   nro_direccion: string; // Número de dirección
   origen: TOrigen; // Valor predeterminado "3"
   grupo: IGrupo_Client;
+  categoria: ICategoria;
   estado: string;
 
   fecha_agendada?: Date | null | undefined; // Opcional o null
@@ -82,6 +84,7 @@ export interface IBClients {
   apellido: string;
   edad: string;
   grupo: IGrupo_Client;
+  categoria: ICategoria;
   estado: string;
 
   tipo_documento: TTypeDocumento;

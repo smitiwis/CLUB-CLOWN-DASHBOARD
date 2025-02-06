@@ -393,7 +393,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
               onSearchChange({ text: value, status: filterStatus });
             }}
           />
-          <div className="flex gap-3 w-full sm:max-w-[30%]">
+          <div className="flex gap-3 w-full sm:max-w-[50%]">
             <Select
               size="lg"
               items={COLORES}

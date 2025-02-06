@@ -56,7 +56,7 @@ export const COLORES: IColors[] = [
   { label: "Seguimiento", key: "5", code: "#BF5EFF" }, // Lila vibrante
   { label: "Pago Realizado", key: "6", code: "#69e76f" }, // Verde brillante y llamativo
   { label: "Inscrito sin pago", key: "7", code: "#00605c" }, // Azul fuerte y vivo
-  { label: "Más adelante, Otras sedes", key: "7", code: "#5DA9FF" }, // Lavanda fuerte y vivo
+  { label: "Más adelante, Otras sedes", key: "8", code: "#5DA9FF" }, // Lavanda fuerte y vivo
 ];
 
 export const STATUS_USER = [
@@ -75,6 +75,11 @@ export const GROUPS_CLIENT = [
   { key: "1", label: "Niño" },
   { key: "2", label: "Adolescente" },
   { key: "3", label: "Adulto" },
+];
+export const CATEGORIA_CLIENT = [
+  { key: "1", label: "Clown Regular" },
+  { key: "2", label: "Clown Para Parejas" },
+  { key: "3", label: "Clown Full Day" },
 ];
 
 export const TIPO_LLAMADAS = [

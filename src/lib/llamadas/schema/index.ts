@@ -21,7 +21,7 @@ export const schemaClientLlamada = yup.object().shape({
     fecha_agendada: yup
     .date()
     .when("resultado", (resultado, schema) => {
-      if (resultado[0] === "5") {
+      if (resultado[0] === "7") {
         return schema.min(
           new Date(),
           "La fecha debe ser mayor a la fecha actual"

@@ -14,6 +14,7 @@ import {
 } from "@nextui-org/react";
 import React, { FC, useEffect, useState } from "react";
 import {
+  CATEGORIA_CLIENT,
   COLORES,
   DOCUMENTS,
   GROUPS_CLIENT,
@@ -153,7 +154,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
                   </SelectItem>
                 )}
               </Select>
-    
+
               <Input
                 {...register("nro_documento")}
                 endContent={loadingInfo && <Spinner />}
@@ -194,8 +195,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               isInvalid={!!errors.nombre}
               errorMessage={errors.nombre?.message}
             />
-          </div>
-          <div className="flex flex-col flex-1">
+
             <Input
               {...register("apellido")}
               className="mb-4"
@@ -206,6 +206,8 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}
             />
+          </div>
+          <div className="flex flex-col flex-1">
             <Input
               {...register("edad")}
               className="mb-4"
@@ -231,6 +233,24 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               errorMessage={errors.grupo?.message}
             >
               {GROUPS_CLIENT.map(({ key, label }) => (
+                <SelectItem key={key}>{label}</SelectItem>
+              ))}
+            </Select>
+            <Select
+              {...register("categoria")}
+              className="mb-4"
+              label="Elige una Categoria"
+              items={CATEGORIA_CLIENT}
+              selectedKeys={
+                watch().categoria ?
+                  CATEGORIA_CLIENT[parseInt(String(watch().categoria)) - 1].key
+                  : ""
+              }
+              size="lg"
+              isInvalid={!!errors.categoria}
+              errorMessage={errors.categoria?.message}
+            >
+              {CATEGORIA_CLIENT.map(({ key, label }) => (
                 <SelectItem key={key}>{label}</SelectItem>
               ))}
             </Select>

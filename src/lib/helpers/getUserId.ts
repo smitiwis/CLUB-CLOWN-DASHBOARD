@@ -25,6 +25,10 @@ export const getLabelColor = (estado: string) => {
   return COLORES.find(({ key }) => key === estado)?.label || "";
 };
 
+export const getKeyColor = (estado: string) => {
+  return COLORES.find(({ key }) => parseInt(key) === parseInt(estado))?.key || "";
+};
+
 export const getGrupoCliente = (grupo: string) => {
   return GROUPS_CLIENT.find(({ key }) => key === grupo)?.label || "";
 };

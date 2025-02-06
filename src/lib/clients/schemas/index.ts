@@ -70,6 +70,11 @@ export const schemaClient = yup.object().shape({
     .string()
     .oneOf(["", "1", "2", "3"], "El grupo debe ser '1', '2' o '3'.")
     .default(""),
+  categoria: yup
+    .string()
+    .required("La categoría es obligatoria.")
+    .oneOf(["1", "2", "3"], "La categoría elegida es incorrecta.")
+    .default("1"), // Valor predeterminado "1"
 
   estado: yup.string().default(""),
 

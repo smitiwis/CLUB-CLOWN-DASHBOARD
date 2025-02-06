@@ -38,7 +38,7 @@ import {
 } from "@/constants";
 import InfoValue from "./InfoValue";
 import FormEditClient from "../../(clientes)/components/FormEditLead";
-import { getColor, getGrupoCliente, getLabelColor } from "@/lib/helpers";
+import { getColor, getGrupoCliente, getKeyColor, getLabelColor } from "@/lib/helpers";
 import { IBClients } from "@/lib/clients/definitions";
 import { convertToPrismaDate } from "@/lib/helpers/dateTime";
 
@@ -162,7 +162,11 @@ const FormRegisterCall: FC<Props> = (props) => {
                   className="mb-4"
                   label="Estado"
                   items={COLORES}
-                  defaultSelectedKeys={[COLORES[3].key]}
+                  selectedKeys={
+                    clientSelected
+                      ? [String(getKeyColor(clientSelected.estado))]
+                      : []
+                  }
                   size="lg"
                   isInvalid={!!errors.estado}
                   errorMessage={errors.estado?.message}

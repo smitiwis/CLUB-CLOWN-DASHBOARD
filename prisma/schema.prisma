@@ -67,7 +67,8 @@ model cliente {
   direccion      String  @db.VarChar(100)
   nro_direccion  String  @db.VarChar(10)
   origen         String  @default("3") @db.VarChar(1)
-  grupo          String  @db.VarChar(1)
+  grupo          String  @db.VarChar(1) // 1: niños, 2: jóvenes, 3: adultos
+  categoria      String  @default("1") @db.VarChar(1) // 1: "clown regular", 2: "clown para parejas", 3: "full day clown"
   estado         String  @default("3") @db.VarChar(1)
 
   fecha_creacion      DateTime @default(now())

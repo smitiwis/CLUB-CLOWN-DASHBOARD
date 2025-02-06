@@ -43,6 +43,7 @@ const useFormEditClient = (client: IClientRes, redirect: boolean) => {
       apellido: client.apellido || "",
       edad: client.edad || "",
       grupo: client.grupo || "",
+      categoria: client.categoria || "",
       direccion: client.direccion || "",
       nro_direccion: client.nro_direccion || "",
       estado: client.estado,

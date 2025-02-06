@@ -46,6 +46,7 @@ export async function createClient(
         nro_direccion: formData.nro_direccion,
         origen: formData.origen,
         grupo: formData.grupo,
+        categoria: formData.categoria,
         estado: formData.estado,
       },
     });
@@ -91,6 +92,7 @@ export async function editClient(
         nro_direccion: formData.nro_direccion,
         origen: formData.origen,
         grupo: formData.grupo,
+        categoria: formData.categoria,
         estado: formData.estado,
       },
       select: {
