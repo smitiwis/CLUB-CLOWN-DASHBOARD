@@ -10,20 +10,8 @@ const Page = async () => {
     console.error("Error al cargar las llamadas");
     return <div>Error al cargar las llamadas</div>;
   }
- 
-  return (
-    <>
-      {/* <Button
-        as={Link}
-        href="/dashboard/talleres/crear"
-        color="primary"
-        endContent={<i className="icon-plus" />}
-      >
-        Nuevo Horario
-      </Button> */}
-      <TalleresList talleresData={talleresData} />
-    </>
-  );
+
+  return <TalleresList talleresData={talleresData} />;
 };
 
 export default Page;

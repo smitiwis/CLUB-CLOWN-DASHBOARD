@@ -30,7 +30,7 @@ const AsideMain = () => {
       href: "/dashboard/inscripciones",
     },
     { id: "pagos", label: "Pagos", href: "/dashboard/pagos" },
-    { id: "asistencias", label: "Asistencias", href: "/dashboard/asistencias" },
+    { id: "asistencia", label: "Asistencia", href: "/dashboard/asistencia" },
   ];
 
   return (

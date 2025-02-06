@@ -12,8 +12,6 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get("file") as Blob;
 
-    console.log("file ?=================", file);
-
     if (!file) {
       return NextResponse.json(
         { message: "No se proporcionó ningún archivo" },

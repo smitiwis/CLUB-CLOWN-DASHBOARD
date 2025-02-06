@@ -146,7 +146,7 @@ model taller_cliente {
   id_cliente          String
   id_taller           String
   id_taller_promocion String
-  id_usuario          String 
+  id_usuario          String
   estado_pago         String @default("pago_pend") // sin_pago | pago_pend | pago_compl
   precio_venta        Float
   observacion         String @default("") @db.Text
@@ -162,6 +162,7 @@ model taller_cliente {
   taller_promocion     taller_promocion       @relation(fields: [id_taller_promocion], references: [id_taller_promocion])
   usuario              usuario                @relation(fields: [id_usuario], references: [id_usuario]) // Relación con el asesor que inscribió
   taller_cliente_pagos taller_cliente_pagos[]
+  taller_asistencia    taller_asistencia[]
 
   @@unique([id_cliente, id_taller]) // Clave única para evitar duplicados
 }
@@ -191,6 +192,24 @@ model taller_cliente_pagos {
   metodo_pago     String   @db.VarChar(20)
   nro_transaccion String   @default("") @db.VarChar(25)
   fecha_pago      DateTime
+
+  fecha_creacion      DateTime @default(now())
+  fecha_actualizacion DateTime @updatedAt
+
+  // Relaciones
+  taller_cliente taller_cliente @relation(fields: [id_taller_cliente], references: [id_taller_cliente])
+
+  // Índices
+  @@index([id_taller_cliente])
+}
+
+// ================== INSCRITOS ASISTENCIA ==================
+
+model taller_asistencia {
+  id_asistencia     String   @id @default(uuid())
+  id_taller_cliente String
+  fecha_asistencia  DateTime @default(now())
+  estado            String   @default("1") @db.VarChar(1) // 1: asistió, 0: falta
 
   fecha_creacion      DateTime @default(now())
   fecha_actualizacion DateTime @updatedAt

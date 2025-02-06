@@ -12,7 +12,7 @@ const RootLayout: FC<Props> = ({ children }) => {
       <AsideMain />
       <div className="grid grid-cols-1 grid-rows-[70px,1fr] h-full overflow-y-auto">
         <HeaderMain />
-        <main className="p-6 flex-1 bg-gray-900">{children}</main>
+        <main className="p-6 flex-1 bg-gray-800">{children}</main>
       </div>
     </div>
   );
