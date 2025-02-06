@@ -126,6 +126,7 @@ export async function editUsuario(
       estado,
       correo,
       password,
+      id_rol,
     } = validatedUsuario;
 
     // VALIDAR POR CORREO
@@ -176,6 +177,7 @@ export async function editUsuario(
       nro_direccion,
       estado,
       correo,
+      id_rol,
     };
 
     if (password) {

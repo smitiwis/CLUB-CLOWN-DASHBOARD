@@ -24,6 +24,7 @@ const useFormEditUser = (usuario: IUsuarioByIdRes) => {
     formState: { errors },
     setError,
     reset,
+    watch,
   } = useForm({
     resolver: yupResolver<IUsuarioForm>(schemaUsuarioEdit),
   });
@@ -35,7 +36,7 @@ const useFormEditUser = (usuario: IUsuarioByIdRes) => {
 
   useEffect(() => {
     if (!!usuario) {
-      reset(usuario);
+      reset({...usuario, id_rol: usuario.rol.id_rol});
     }
   }, []);
 
@@ -45,6 +46,7 @@ const useFormEditUser = (usuario: IUsuarioByIdRes) => {
     errors,
     setError,
     onSubmit,
+    watch,
     loading, // LO QUE DEMORA EN CREAR EL USUARIO
     state, // ESTADO DE LA TRANSACCION O CREACION DEL USUARIO
   };

@@ -22,8 +22,16 @@ type Props = {
 };
 
 const FormEditUser: FC<Props> = ({ usuario, roles }) => {
-  const { register, handleSubmit, errors, onSubmit, loading, state, setError } =
-    useFormEditUser(usuario);
+  const {
+    register,
+    handleSubmit,
+    errors,
+    onSubmit,
+    loading,
+    state,
+    setError,
+    watch,
+  } = useFormEditUser(usuario);
 
   const [isVisible, setIsVisible] = useState(false);
   const [showPass, setShowPass] = useState(false);
@@ -125,12 +133,14 @@ const FormEditUser: FC<Props> = ({ usuario, roles }) => {
                 errorMessage={errors.nro_direccion?.message}
               />
             </div>
-
             <Select
               {...register("id_rol")}
               className="mb-4"
               label="Rol"
               size="lg"
+              items={roles}
+              defaultSelectedKeys={[watch("id_rol")]}
+              selectedKeys={[watch("id_rol")]}
               isInvalid={!!errors.id_rol}
               errorMessage={errors.id_rol?.message}
             >

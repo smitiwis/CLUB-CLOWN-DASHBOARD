@@ -48,6 +48,10 @@ export interface IUsuarioRes  {
 
 export interface IUsuarioByIdRes extends IUsuario {
   id_usuario: string;
+  rol: {
+    id_rol: string;
+    nombre: string;
+  }
 }
 
 export interface IUsuarioReq extends IUsuarioForm {
