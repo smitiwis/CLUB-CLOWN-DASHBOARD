@@ -42,7 +42,7 @@ const seedUsuarios = async () => {
       nombre: "Ester",
       apellido: "Carhuamaca Chancasanampa",
       telefono: "954232400",
-      fecha_ingreso: new Date("2025-01-06"),
+      fecha_ingreso: "2024-12-15",
       direccion: "Jr. Los Real ",
       nro_direccion: "963",
       estado: "1", // Puede ser "activo" o "inactivo"
@@ -236,10 +236,10 @@ const seedAsistencia = async () => {
 export async function GET() {
   try {
     // Llamar a la función que inserta los usuarios
-    // await seedRoles();
-    // await seedUsuarios();
-    // await seedProfesores();
-    // await seedPromociones();
+    await seedRoles();
+    await seedUsuarios();
+    await seedProfesores();
+    await seedPromociones();
 
     await seedAsistencia();
 
