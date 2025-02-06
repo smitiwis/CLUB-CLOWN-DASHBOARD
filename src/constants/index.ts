@@ -90,13 +90,13 @@ export const TIPO_LLAMADAS = [
 ];
 
 export const RESULTADO_LLAMADAS = [
+  { key: "7", label: "Agendar llamada" },
   { key: "1", label: "No contesta" },
   { key: "2", label: "Llamada cortada" },
   { key: "3", label: "Desinteresado" },
   { key: "4", label: "Interesado" },
   { key: "5", label: "Para otros lugares" },
   { key: "6", label: "Venta" },
-  { key: "7", label: "Agendar llamada" },
   { key: "8", label: "Otros" },
 ];
 
