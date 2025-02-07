@@ -602,13 +602,13 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
                         hideIcon
                         variant="flat"
                         color="warning"
-                        title="CUIDADO"
+                        title=""
                         description="No se peude eliminar un cliente inscrito o con llamadas registradas."
                       />
                     </ModalBody>
                   )}
                 <ModalFooter className="flex justify-center gap-2">
-                  <Button color="danger" variant="light" onPress={onClose}>
+                  <Button color="primary" variant="bordered" onPress={onClose}>
                     Cancelar
                   </Button>
                   <Button
