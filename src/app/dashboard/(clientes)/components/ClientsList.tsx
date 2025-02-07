@@ -195,7 +195,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
         const nameComplete = `${item.nombre} ${item.apellido}`;
         return (
           <Chip avatar={<Avatar />} variant="flat" size="sm">
-            {nameComplete.length >= 1 ? formatearNombre(nameComplete, 25) : "?"}
+            {formatearNombre(nameComplete, 25)}
           </Chip>
         );
 
@@ -554,8 +554,12 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
           {(onClose) => {
             const handleDeleteClient = async () => {
               try {
-                if (clientSelected && clientSelected.nro_llamadas === 0) {
-                  setLoadingDelete(true);
+                setLoadingDelete(true);
+                if (
+                  clientSelected &&
+                  clientSelected.nro_llamadas === 0 &&
+                  !["6", "7"].includes(clientSelected.estado)
+                ) {
                   const path = `/api/cliente/${clientSelected.id_cliente}/delete`;
                   const fetchDelete = await axios.delete(path);
 
@@ -572,24 +576,33 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
                 } else onClose();
               } catch (error) {
                 console.error("Error al eliminar el cliente", error);
+              } finally {
+                setLoadingDelete(false);
+                onClose();
               }
             };
 
             return (
               <>
                 <ModalHeader className="flex justify-center gap-1">
-                  ¿Seguro que deseas elimnarlo?
+                  {clientSelected &&
+                  (clientSelected.nro_llamadas >= 1 ||
+                    ["6", "7"].includes(clientSelected.estado))
+                    ? "¿Seguro que deseas elimnarlo?"
+                    : "NO SE PEUDE ELIMINAR"}
                 </ModalHeader>
-                {clientSelected && clientSelected.nro_llamadas >= 1 && (
-                  <ModalBody>
-                    <Alert
-                      variant="flat"
-                      color="warning"
-                      title="CUIDADO"
-                      description="No se peude eliminar un cliente con llamadas registradas."
-                    />
-                  </ModalBody>
-                )}
+                {clientSelected &&
+                  (clientSelected.nro_llamadas >= 1 ||
+                    ["6", "7"].includes(clientSelected.estado)) && (
+                    <ModalBody>
+                      <Alert
+                        variant="flat"
+                        color="warning"
+                        title="CUIDADO"
+                        description="No se peude eliminar un cliente inscrito o con llamadas registradas."
+                      />
+                    </ModalBody>
+                  )}
                 <ModalFooter className="flex justify-center gap-2">
                   <Button color="danger" variant="light" onPress={onClose}>
                     Cancelar
@@ -599,7 +612,9 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
                     color="primary"
                     onPress={handleDeleteClient}
                   >
-                    {clientSelected && clientSelected.nro_llamadas >= 1
+                    {clientSelected &&
+                    (clientSelected.nro_llamadas >= 1 ||
+                      ["6", "7"].includes(clientSelected.estado))
                       ? "ACEPTAR"
                       : "CONFIRMAR"}
                   </Button>
