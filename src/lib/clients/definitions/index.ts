@@ -104,6 +104,7 @@ export interface IBClients {
 
 // ERRORES
 export type IStateCliente = {
+  data?: {id_cliente: string};
   message?: string;
   field?:
     | "telefono"

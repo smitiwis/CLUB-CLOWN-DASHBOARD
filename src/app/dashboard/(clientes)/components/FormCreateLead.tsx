@@ -24,8 +24,10 @@ import {
   ORIGENES_CLIENTS,
 } from "@/constants";
 import { IStateCliente } from "@/lib/clients/definitions";
+import { useRouter } from "next/navigation";
 
 const FormcreateClient = () => {
+  const router = useRouter();
   const [showApod, setShowApod] = useState(false);
 
   const {
@@ -45,11 +47,14 @@ const FormcreateClient = () => {
   const [statusForm, setStatusForm] = useState<IStateCliente>(state);
 
   useEffect(() => {
+    if (state && state.status === 200) {
+      router.push(`/dashboard/llamar/${state.data?.id_cliente}/registrar`);
+    }
+
     if (state && state.field) {
       const { field, message } = state;
       setStatusForm(state);
       setError(field, { message });
-
       setTimeout(() => {
         setStatusForm(null);
       }, 3000);
@@ -64,7 +69,7 @@ const FormcreateClient = () => {
 
   return (
     <>
-      {!!statusForm && (
+      {!!statusForm && statusForm.status !== 200 && (
         <div className="w-full flex items-center my-3">
           <Alert
             color="warning"
@@ -73,6 +78,7 @@ const FormcreateClient = () => {
           />
         </div>
       )}
+    
       <Form onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full flex gap-4">
           <div className="flex flex-col flex-1">
