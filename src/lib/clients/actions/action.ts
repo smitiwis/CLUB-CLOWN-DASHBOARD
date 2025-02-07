@@ -32,7 +32,7 @@ export async function createClient(
         field: "telefono",
       };
     }
-    const newClient = await prisma.cliente.create({
+    await prisma.cliente.create({
       data: {
         id_usuario: userId,
         telefono: formData.telefono,
@@ -50,13 +50,7 @@ export async function createClient(
         estado: formData.estado,
       },
     });
-    if (newClient) {
-      throw{
-        data: { id_cliente: newClient.id_cliente },
-        message: "Cliente creado con éxito",
-        status: 200,
-      }
-    }
+
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error:", error.message);

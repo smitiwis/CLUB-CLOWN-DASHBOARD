@@ -558,7 +558,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
                 if (
                   clientSelected &&
                   clientSelected.nro_llamadas === 0 &&
-                  !["6", "7"].includes(clientSelected.estado)
+                  clientSelected.estado === "4"
                 ) {
                   const path = `/api/cliente/${clientSelected.id_cliente}/delete`;
                   const fetchDelete = await axios.delete(path);
@@ -586,16 +586,17 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
               <>
                 <ModalHeader className="flex justify-center gap-1">
                   {clientSelected &&
-                  (clientSelected.nro_llamadas >= 1 ||
-                    ["6", "7"].includes(clientSelected.estado))
+                  (clientSelected.nro_llamadas === 0 ||
+                    clientSelected.estado === "4")
                     ? "¿Seguro que deseas elimnarlo?"
                     : "NO SE PEUDE ELIMINAR"}
                 </ModalHeader>
                 {clientSelected &&
                   (clientSelected.nro_llamadas >= 1 ||
-                    ["6", "7"].includes(clientSelected.estado)) && (
+                    clientSelected.estado !== "4") && (
                     <ModalBody>
                       <Alert
+                        hideIcon
                         variant="flat"
                         color="warning"
                         title="CUIDADO"
@@ -614,7 +615,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
                   >
                     {clientSelected &&
                     (clientSelected.nro_llamadas >= 1 ||
-                      ["6", "7"].includes(clientSelected.estado))
+                      clientSelected.estado !== "4")
                       ? "ACEPTAR"
                       : "CONFIRMAR"}
                   </Button>

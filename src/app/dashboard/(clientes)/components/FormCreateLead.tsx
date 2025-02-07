@@ -24,10 +24,8 @@ import {
   ORIGENES_CLIENTS,
 } from "@/constants";
 import { IStateCliente } from "@/lib/clients/definitions";
-import { useRouter } from "next/navigation";
 
 const FormcreateClient = () => {
-  const router = useRouter();
   const [showApod, setShowApod] = useState(false);
 
   const {
@@ -47,9 +45,6 @@ const FormcreateClient = () => {
   const [statusForm, setStatusForm] = useState<IStateCliente>(state);
 
   useEffect(() => {
-    if (state && state.status === 200) {
-      router.push(`/dashboard/llamar/${state.data?.id_cliente}/registrar`);
-    }
 
     if (state && state.field) {
       const { field, message } = state;

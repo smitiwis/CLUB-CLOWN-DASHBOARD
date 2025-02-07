@@ -66,16 +66,6 @@ export async function createClientLlamada(
       where: { id_cliente: formData.id_cliente },
       data: { estado: formData.estado },
     });
-
-    if (clienteLlamada) {
-      throw {
-        message: "Llamada creada con éxito",
-        status: 200,
-      }
-    }
-
-    
-
   } catch (error) {
     if (error instanceof Error) {
       return { message: error.message };

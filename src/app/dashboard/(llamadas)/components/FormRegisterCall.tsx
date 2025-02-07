@@ -41,14 +41,12 @@ import FormEditClient from "../../(clientes)/components/FormEditLead";
 import { getColor, getGrupoCliente, getKeyColor, getLabelColor } from "@/lib/helpers";
 import { IBClients } from "@/lib/clients/definitions";
 import { convertToPrismaDate } from "@/lib/helpers/dateTime";
-import { useRouter } from "next/navigation";
 
 type Props = {
   clientOptions: IBClients[];
 };
 
 const FormRegisterCall: FC<Props> = (props) => {
-  const router  = useRouter();
   const [clientOptions, setClientOptions] = useState(props.clientOptions);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -82,11 +80,6 @@ const FormRegisterCall: FC<Props> = (props) => {
       if (currentClient) setClientSelected(currentClient);
     }
   }, [selectedIdClient]);
-
-  if (state && state.status === 200) {
-    router.push("/dashboard/leads");
-  }
-
 
   return (
     <>
