@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
-    const phoneNumber = searchParams.get("phoneNumber") || ""; // Número de celular (opcional)
+    const phoneNumber = (searchParams.get("phoneNumber") || "").replace(/\s+/g, "").trim(); // Número de celular (opcional)
     const status = searchParams.get("status") || ""; // Estado (opcional)
 
     const id_usuario = await getUserId();

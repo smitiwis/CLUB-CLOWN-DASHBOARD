@@ -343,13 +343,13 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
     init?: boolean;
   }) => {
     setIsLoading(true);
-    const text = filter?.text || "";
+    const text = (filter?.text || "").replace(/\s+/g, "").trim();
     const status = filter?.status || "";
     const init = filter?.init || false;
 
     try {
       const base = `/api/cliente/list?page=${init ? "1" : page}&limit=${limit}`;
-      const path = `${base}${text ? `&phoneNumber=${text.replace(/\s+/g, "")}` : ""}${
+      const path = `${base}${text ? `&phoneNumber=${text}` : ""}${
         status ? `&status=${status}` : ""
       }`;
 
