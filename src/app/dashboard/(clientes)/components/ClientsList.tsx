@@ -349,7 +349,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
 
     try {
       const base = `/api/cliente/list?page=${init ? "1" : page}&limit=${limit}`;
-      const path = `${base}${text ? `&phoneNumber=${text}` : ""}${
+      const path = `${base}${text ? `&phoneNumber=${text.replace(/\s+/g, "")}` : ""}${
         status ? `&status=${status}` : ""
       }`;
 
@@ -384,12 +384,13 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
 
   const onSearchChange = useCallback(
     debounce((filter: { text: string; status: string }) => {
-      if (!REGEX.PHONE.test(filter.text)) setErrorPhone(true);
-      if (!filter.text) setErrorPhone(false);
+      const textSinEspacios = filter.text.replace(/\s+/g, "");
+      if (!REGEX.PHONE.test(textSinEspacios)) setErrorPhone(true);
+      if (!textSinEspacios) setErrorPhone(false);
 
-      if (pagination.total > pagination.limit) {
+      // if (pagination.total > pagination.limit) {
         fetchPageData({ ...filter, init: true });
-      }
+      // }
     }, 1000),
     []
   );
@@ -397,6 +398,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
   const onClear = React.useCallback(() => {
     setPage(1);
   }, []);
+
 
   const topContent = useMemo(() => {
     return (
@@ -411,8 +413,9 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
             onClear={onClear}
             isInvalid={errorPhone}
             errorMessage={errorPhone ? "Ingrese un número válido" : ""}
+            value={filterPhone}
             onValueChange={(value) => {
-              setFilterPhone(value);
+              setFilterPhone(value.replace(/\s+/g, ""));
               setErrorPhone(false);
               onSearchChange({ text: value, status: filterStatus });
             }}
