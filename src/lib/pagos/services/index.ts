@@ -8,7 +8,6 @@ function getWhereClause(telefonoCliente?: string) {
   const whereClause: {
     taller_cliente?: {
       cliente?: {
-        id_usuario?: string;
         telefono?: { contains: string };
       };
     };
@@ -17,7 +16,6 @@ function getWhereClause(telefonoCliente?: string) {
   if (telefonoCliente) {
     whereClause.taller_cliente = {
       cliente: {
-        ...(whereClause.taller_cliente?.cliente || {}),
         telefono: { contains: telefonoCliente },
       },
     };
