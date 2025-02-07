@@ -4,30 +4,21 @@ import { getUserId } from "@/lib/helpers";
 import { IPagination } from "@/lib/definitions";
 import { fetchProfileById } from "@/lib/usuarios/services";
 
-
-function getWhereClause(rol: string, id_usuario: string, telefonoCliente?: string) {
+function getWhereClause(telefonoCliente?: string) {
   const whereClause: {
     taller_cliente?: {
       cliente?: {
         id_usuario?: string;
-        telefono?: { contains: string};
+        telefono?: { contains: string };
       };
     };
   } = {};
-
-  if (rol !== "admin") {
-    whereClause.taller_cliente = {
-      cliente: {
-        id_usuario: id_usuario,
-      },
-    };
-  }
 
   if (telefonoCliente) {
     whereClause.taller_cliente = {
       cliente: {
         ...(whereClause.taller_cliente?.cliente || {}),
-        telefono:  { contains: telefonoCliente },
+        telefono: { contains: telefonoCliente },
       },
     };
   }
@@ -48,7 +39,7 @@ export async function fetchPagos(
     const { rol } = await fetchProfileById(id_usuario);
     if (!rol) return new Error("Error al obtener rol");
 
-    const where = getWhereClause(rol.nombre, id_usuario, phoneNumber);
+    const where = getWhereClause(phoneNumber);
 
     // Calcular la paginación
     const skip = (page - 1) * limit;
