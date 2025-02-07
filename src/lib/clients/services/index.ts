@@ -59,6 +59,7 @@ export async function fetchClients(pagination: IPagination) {
       where: { id_usuario },
       skip: (page - 1) * limit,
       take: limit,
+      orderBy:{fecha_creacion: 'desc'},
       select: {
         id_cliente: true,
         telefono: true,
