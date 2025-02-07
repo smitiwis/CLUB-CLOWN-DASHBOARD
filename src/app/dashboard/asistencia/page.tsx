@@ -18,7 +18,7 @@ const Page = async () => {
 
   return (
     <div>
-      <h1 className="text-lg mt-4 mb-3  w-[fit-content] border-b-1 border-gray-400">
+      <h1 className="mx-auto text-lg mt-5 mb-8 w-[fit-content] border-b-1 border-gray-400">
         LISTA DE TALLER PARA SISTENCIA
       </h1>
       <div className="w-full flex flex-wrap gap-4">

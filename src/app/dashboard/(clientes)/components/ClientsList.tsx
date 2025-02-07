@@ -28,6 +28,13 @@ import {
   SelectedItems,
   SelectItem,
   Avatar,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  useDisclosure,
+  ModalBody,
+  Alert,
 } from "@nextui-org/react";
 import {
   IBClients,
@@ -50,13 +57,17 @@ import Link from "next/link";
 import debounce from "debounce";
 import { REGEX } from "@/constants/regex";
 import { formatearNombre, formatPhoneNumber } from "@/lib/helpers";
+import IconTrash from "@/components/icons/IconTrash";
 
 type Props = {
   clientsResp: IBClientsResp;
 };
 
 const ClientsList: FC<Props> = ({ clientsResp }) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
+  const [clientSelected, setClientSelected] = useState<IRowClientTable>();
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
   const adapteRows = (clients: IBClients[]) => {
     return clients.map((lead, i) => {
@@ -184,7 +195,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
         const nameComplete = `${item.nombre} ${item.apellido}`;
         return (
           <Chip avatar={<Avatar />} variant="flat" size="sm">
-            {formatearNombre(nameComplete, 25)}
+            {nameComplete.length >= 1 ? formatearNombre(nameComplete, 25) : "?"}
           </Chip>
         );
 
@@ -292,6 +303,19 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
               <span className="transform rotate-[35deg]">
                 <IconEdit />
               </span>
+            </Button>
+
+            <Button
+              isIconOnly
+              color="danger"
+              variant="light"
+              size="sm"
+              onPress={() => {
+                setClientSelected(item);
+                onOpen();
+              }}
+            >
+              <IconTrash />
             </Button>
           </div>
         );
@@ -524,6 +548,67 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
           )}
         </TableBody>
       </Table>
+
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => {
+            const handleDeleteClient = async () => {
+              try {
+                if (clientSelected && clientSelected.nro_llamadas === 0) {
+                  setLoadingDelete(true);
+                  const path = `/api/cliente/${clientSelected.id_cliente}/delete`;
+                  const fetchDelete = await axios.delete(path);
+
+                  if (fetchDelete.status !== 200) return;
+                  setLoadingDelete(false);
+                  onClose();
+
+                  // ACTUALIZAR DATA
+                  fetchPageData({
+                    text: filterPhone,
+                    status: filterStatus,
+                    init: true,
+                  });
+                } else onClose();
+              } catch (error) {
+                console.error("Error al eliminar el cliente", error);
+              }
+            };
+
+            return (
+              <>
+                <ModalHeader className="flex justify-center gap-1">
+                  ¿Seguro que deseas elimnarlo?
+                </ModalHeader>
+                {clientSelected && clientSelected.nro_llamadas >= 1 && (
+                  <ModalBody>
+                    <Alert
+                      variant="flat"
+                      color="warning"
+                      title="CUIDADO"
+                      description="No se peude eliminar un cliente con llamadas registradas."
+                    />
+                  </ModalBody>
+                )}
+                <ModalFooter className="flex justify-center gap-2">
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Cancelar
+                  </Button>
+                  <Button
+                    isLoading={loadingDelete}
+                    color="primary"
+                    onPress={handleDeleteClient}
+                  >
+                    {clientSelected && clientSelected.nro_llamadas >= 1
+                      ? "ACEPTAR"
+                      : "CONFIRMAR"}
+                  </Button>
+                </ModalFooter>
+              </>
+            );
+          }}
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

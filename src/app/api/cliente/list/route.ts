@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
       where,
       skip,
       take,
+      orderBy: { fecha_creacion: "desc" },
       select: {
         id_cliente: true,
         telefono: true,
@@ -89,7 +90,7 @@ export async function GET(request: NextRequest) {
           totalPages,
           page,
           limit,
-        }
+        },
       },
       { status: 200 }
     );
