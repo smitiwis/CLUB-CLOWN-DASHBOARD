@@ -394,9 +394,9 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
     setIsLoading(true);
     const text = (filter?.text || "").replace(/\s+/g, "").trim();
     const status = filter?.status || "";
-    const init = filter?.init || false;
     const id_usuario = filter?.user || "";
-
+    const init = filter?.init || false;
+    
     try {
       const base = `/api/usuario/${id_usuario}/cliente/lista?page=${
         init ? "1" : page
@@ -427,7 +427,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
   const [errorPhone, setErrorPhone] = useState(false);
   const [filterPhone, setFilterPhone] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
-  const [filterUser, setFilterUser] = useState("");
+  const [filterUser, setFilterUser] = useState(myUserId);
   const [pagination, setPagination] = useState({
     page: clientsResp.page,
     limit: clientsResp.limit,
@@ -441,9 +441,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
       if (!REGEX.PHONE.test(textSinEspacios)) setErrorPhone(true);
       if (!textSinEspacios) setErrorPhone(false);
 
-      // if (pagination.total > pagination.limit) {
       fetchPageData({ ...filter, init: true });
-      // }
     }, 1000),
     []
   );
@@ -601,7 +599,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
         </div>
       </div>
     );
-  }, [filterPhone, filterStatus, onSearchChange, data.length, errorPhone]);
+  }, [filterPhone, filterStatus, filterUser, onSearchChange, data.length, errorPhone]);
 
   const bottomContent = React.useMemo(() => {
     if (pagination.totalPages === 1 || !data.length) return null;
