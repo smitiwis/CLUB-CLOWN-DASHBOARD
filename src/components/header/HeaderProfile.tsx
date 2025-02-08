@@ -1,5 +1,6 @@
 "use client";
 
+import { IUserProfile } from "@/lib/definitions";
 import {
   Badge,
   Chip,
@@ -11,14 +12,6 @@ import {
 } from "@nextui-org/react";
 import { signOut } from "next-auth/react";
 import React, { FC } from "react";
-
-interface IUserProfile {
-  user: {
-    name: string;
-    rolName: string;
-    callsPending: number;
-  };
-}
 
 const HeaderProfile: FC<IUserProfile> = ({ user }) => {
   const { name, rolName, callsPending } = user;
