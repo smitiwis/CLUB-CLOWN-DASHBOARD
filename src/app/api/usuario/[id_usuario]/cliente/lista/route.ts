@@ -42,7 +42,10 @@ export async function GET(request: NextRequest, { params }: params) {
     const skip = (page - 1) * limit;
     const take = limit;
 
-    const total = await prisma.cliente.count({ where });
+    const total = await prisma.cliente.count({ where: {
+      ...where,
+      id_usuario: id_usuario !== "all" ? id_usuario : undefined,
+    } });
     const clientes = await prisma.cliente.findMany({
       where: {
         ...where,
