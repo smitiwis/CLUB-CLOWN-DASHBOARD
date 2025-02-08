@@ -105,37 +105,55 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               isInvalid={!!errors.telefono}
               errorMessage={errors.telefono?.message}
             />
+            <div className="flex gap-x-2 mb-4">
+              <Select
+                {...register("categoria")}
+                label="Elige una Categoria"
+                items={CATEGORIA_CLIENT}
+                selectedKeys={
+                  watch().categoria
+                    ? CATEGORIA_CLIENT[parseInt(String(watch().categoria)) - 1]
+                        .key
+                    : ""
+                }
+                size="lg"
+                isInvalid={!!errors.categoria}
+                errorMessage={errors.categoria?.message}
+              >
+                {CATEGORIA_CLIENT.map(({ key, label }) => (
+                  <SelectItem key={key}>{label}</SelectItem>
+                ))}
+              </Select>
 
-            <Select
-              {...register("origen")}
-              className="mb-4"
-              label="Origen del cliente"
-              defaultSelectedKeys={[ORIGENES_CLIENTS[0].key]}
-              items={ORIGENES_CLIENTS}
-              size="lg"
-              isInvalid={!!errors.origen}
-              errorMessage={errors.origen?.message}
-              renderValue={(items: SelectedItems<IOptionSelect>) => {
-                return items.map((item) => (
-                  <div key={item.key} className="flex items-center gap-x-1">
-                    <i className={`text-lg flex ${item.data?.icon}`} />
-                    <div className="flex flex-col">
-                      <span>{item.data?.label}</span>
+              <Select
+                {...register("origen")}
+                label="Origen del cliente"
+                defaultSelectedKeys={[ORIGENES_CLIENTS[0].key]}
+                items={ORIGENES_CLIENTS}
+                size="lg"
+                isInvalid={!!errors.origen}
+                errorMessage={errors.origen?.message}
+                renderValue={(items: SelectedItems<IOptionSelect>) => {
+                  return items.map((item) => (
+                    <div key={item.key} className="flex items-center gap-x-1">
+                      <i className={`text-lg flex ${item.data?.icon}`} />
+                      <div className="flex flex-col">
+                        <span>{item.data?.label}</span>
+                      </div>
                     </div>
-                  </div>
-                ));
-              }}
-            >
-              {({ key, label, icon }) => (
-                <SelectItem key={key} textValue={label}>
-                  <div className="flex items-center gap-x-1">
-                    <i className={`text-lg flex ${icon}`} />
-                    <span className="text-small">{label}</span>
-                  </div>
-                </SelectItem>
-              )}
-            </Select>
-
+                  ));
+                }}
+              >
+                {({ key, label, icon }) => (
+                  <SelectItem key={key} textValue={label}>
+                    <div className="flex items-center gap-x-1">
+                      <i className={`text-lg flex ${icon}`} />
+                      <span className="text-small">{label}</span>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
+            </div>
             <div className="flex gap-x-3 mb-4">
               <Select
                 {...register("tipo_documento")}
@@ -195,6 +213,8 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               isInvalid={!!errors.nombre}
               errorMessage={errors.nombre?.message}
             />
+          </div>
+          <div className="flex flex-col flex-1">
 
             <Input
               {...register("apellido")}
@@ -206,8 +226,6 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
               isInvalid={!!errors.apellido}
               errorMessage={errors.apellido?.message}
             />
-          </div>
-          <div className="flex flex-col flex-1">
             <Input
               {...register("edad")}
               className="mb-4"
@@ -236,24 +254,7 @@ const FormEditClient: FC<Props> = ({ client, onUpdate, redirect = true }) => {
                 <SelectItem key={key}>{label}</SelectItem>
               ))}
             </Select>
-            <Select
-              {...register("categoria")}
-              className="mb-4"
-              label="Elige una Categoria"
-              items={CATEGORIA_CLIENT}
-              selectedKeys={
-                watch().categoria ?
-                  CATEGORIA_CLIENT[parseInt(String(watch().categoria)) - 1].key
-                  : ""
-              }
-              size="lg"
-              isInvalid={!!errors.categoria}
-              errorMessage={errors.categoria?.message}
-            >
-              {CATEGORIA_CLIENT.map(({ key, label }) => (
-                <SelectItem key={key}>{label}</SelectItem>
-              ))}
-            </Select>
+
             <div className="flex gap-x-3 mb-4">
               <Input
                 {...register("direccion")}

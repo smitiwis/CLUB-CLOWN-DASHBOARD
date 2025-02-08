@@ -398,7 +398,9 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
     const id_usuario = filter?.user || "";
 
     try {
-      const base = `/api/usuario/${id_usuario}/cliente/lista?page=${init ? "1" : page}&limit=${limit}`;
+      const base = `/api/usuario/${id_usuario}/cliente/lista?page=${
+        init ? "1" : page
+      }&limit=${limit}`;
       const path = `${base}${text ? `&phoneNumber=${text}` : ""}${
         status ? `&status=${status}` : ""
       }`;
@@ -434,13 +436,13 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
   });
 
   const onSearchChange = useCallback(
-    debounce((filter: { text: string; status: string, user:string }) => {
+    debounce((filter: { text: string; status: string; user: string }) => {
       const textSinEspacios = filter.text.replace(/\s+/g, "");
       if (!REGEX.PHONE.test(textSinEspacios)) setErrorPhone(true);
       if (!textSinEspacios) setErrorPhone(false);
 
       // if (pagination.total > pagination.limit) {
-        fetchPageData({ ...filter, init: true });
+      fetchPageData({ ...filter, init: true });
       // }
     }, 1000),
     []
@@ -467,7 +469,11 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
             onValueChange={(value) => {
               setFilterPhone(value.replace(/\s+/g, ""));
               setErrorPhone(false);
-              onSearchChange({ text: value, status: filterStatus, user: filterUser});
+              onSearchChange({
+                text: value,
+                status: filterStatus,
+                user: filterUser,
+              });
             }}
           />
           <div className="flex gap-3 flex-1">
@@ -482,7 +488,9 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
                     <div key={user.key} className="flex users-center gap-2">
                       <div className="flex flex-col">
                         <span className="text-md">{user.data?.label}</span>
-                        <span className="text-tiny text-cyan-500">{user.data?.telefono}</span>
+                        <span className="text-tiny text-cyan-500">
+                          {user.data?.telefono}
+                        </span>
                       </div>
                     </div>
                   ));
@@ -504,7 +512,9 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
                         style={{ background: user.code }}
                       />
                       <div className="flex flex-col">
-                        <span className="text-small">{formatearNombre(user.label, 20)}</span>
+                        <span className="text-small">
+                          {formatearNombre(user.label, 20)}
+                        </span>
                       </div>
                     </div>
                   </SelectItem>
@@ -552,14 +562,14 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
               </Select>
             </div>
             <Button
-                as={Link}
-                href="/dashboard/lead/crear"
-                color="primary"
-                size="lg"
-                endContent={<i className="icon-plus" />}
-              >
-                Agregar lead
-              </Button>
+              as={Link}
+              href="/dashboard/lead/crear"
+              color="primary"
+              size="lg"
+              endContent={<i className="icon-plus" />}
+            >
+              Agregar lead
+            </Button>
           </div>
         </div>
         <div className="flex justify-between items-end my-2">
