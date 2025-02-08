@@ -253,7 +253,6 @@ const FormcreateClient = () => {
             </div>
             <Select
               {...register("estado")}
-              isDisabled
               className="mb-4"
               label="Estado"
               defaultSelectedKeys={[COLORES[3].key]}
