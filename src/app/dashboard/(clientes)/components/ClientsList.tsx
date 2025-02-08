@@ -62,12 +62,15 @@ import {
   getLabelCategoryByKey,
 } from "@/lib/helpers";
 import IconTrash from "@/components/icons/IconTrash";
+import { IBUsuarioOptions } from "@/lib/usuarios/definicions";
 
 type Props = {
   clientsResp: IBClientsResp;
+  usuarios: IBUsuarioOptions[];
+  myUserId: string;
 };
 
-const ClientsList: FC<Props> = ({ clientsResp }) => {
+const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
   const [clientSelected, setClientSelected] = useState<IRowClientTable>();
@@ -386,14 +389,16 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
     text?: string;
     status?: string;
     init?: boolean;
+    user: string;
   }) => {
     setIsLoading(true);
     const text = (filter?.text || "").replace(/\s+/g, "").trim();
     const status = filter?.status || "";
     const init = filter?.init || false;
+    const id_usuario = filter?.user || "";
 
     try {
-      const base = `/api/cliente/list?page=${init ? "1" : page}&limit=${limit}`;
+      const base = `/api/usuario/${id_usuario}/cliente/lista?page=${init ? "1" : page}&limit=${limit}`;
       const path = `${base}${text ? `&phoneNumber=${text}` : ""}${
         status ? `&status=${status}` : ""
       }`;
@@ -420,6 +425,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
   const [errorPhone, setErrorPhone] = useState(false);
   const [filterPhone, setFilterPhone] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
+  const [filterUser, setFilterUser] = useState("");
   const [pagination, setPagination] = useState({
     page: clientsResp.page,
     limit: clientsResp.limit,
@@ -428,13 +434,13 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
   });
 
   const onSearchChange = useCallback(
-    debounce((filter: { text: string; status: string }) => {
+    debounce((filter: { text: string; status: string, user:string }) => {
       const textSinEspacios = filter.text.replace(/\s+/g, "");
       if (!REGEX.PHONE.test(textSinEspacios)) setErrorPhone(true);
       if (!textSinEspacios) setErrorPhone(false);
 
       // if (pagination.total > pagination.limit) {
-      fetchPageData({ ...filter, init: true });
+        fetchPageData({ ...filter, init: true });
       // }
     }, 1000),
     []
@@ -461,51 +467,91 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
             onValueChange={(value) => {
               setFilterPhone(value.replace(/\s+/g, ""));
               setErrorPhone(false);
-              onSearchChange({ text: value, status: filterStatus });
+              onSearchChange({ text: value, status: filterStatus, user: filterUser});
             }}
           />
-          <div className="flex gap-3 w-full sm:max-w-[50%]">
-            <Select
-              size="lg"
-              items={COLORES}
-              placeholder="Estado"
-              renderValue={(items: SelectedItems<IColors>) => {
-                return items.map((item) => (
-                  <div key={item.key} className="flex items-center gap-2">
-                    <div
-                      className="w-[1rem] h-[1rem] rounded-full"
-                      style={{ background: item.data?.code }}
-                    />
-                    <div className="flex flex-col">
-                      <span>{item.data?.label}</span>
+          <div className="flex gap-3 flex-1">
+            <div className="flex flex-1 gap-x-2">
+              <Select
+                size="lg"
+                items={usuarios}
+                defaultSelectedKeys={[myUserId]}
+                placeholder="Filtro por usuario"
+                renderValue={(users: SelectedItems<IBUsuarioOptions>) => {
+                  return users.map((user) => (
+                    <div key={user.key} className="flex users-center gap-2">
+                      <div className="flex flex-col">
+                        <span className="text-md">{user.data?.label}</span>
+                        <span className="text-tiny text-cyan-500">{user.data?.telefono}</span>
+                      </div>
                     </div>
-                  </div>
-                ));
-              }}
-              onChange={(items) => {
-                setFilterStatus(items.target.value);
-                onSearchChange({
-                  text: filterPhone,
-                  status: items.target.value,
-                });
-              }}
-            >
-              {(color) => (
-                <SelectItem key={color.key} textValue={color.label}>
-                  <div className="flex gap-2 items-center">
-                    <div
-                      className="w-[1rem] h-[1rem] rounded-full"
-                      style={{ background: color.code }}
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-small">{color.label}</span>
+                  ));
+                }}
+                onChange={(user) => {
+                  setFilterUser(user.target.value);
+                  onSearchChange({
+                    text: filterPhone,
+                    status: filterStatus,
+                    user: user.target.value,
+                  });
+                }}
+              >
+                {(user) => (
+                  <SelectItem key={user.key} textValue={user.label}>
+                    <div className="flex gap-2 items-center">
+                      <div
+                        className="w-[1rem] h-[1rem] rounded-full"
+                        style={{ background: user.code }}
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-small">{formatearNombre(user.label, 20)}</span>
+                      </div>
                     </div>
-                  </div>
-                </SelectItem>
-              )}
-            </Select>
-            <div>
-              <Button
+                  </SelectItem>
+                )}
+              </Select>
+              <Select
+                size="lg"
+                items={COLORES}
+                placeholder="Estado"
+                renderValue={(items: SelectedItems<IColors>) => {
+                  return items.map((item) => (
+                    <div key={item.key} className="flex items-center gap-2">
+                      <div
+                        className="w-[1rem] h-[1rem] rounded-full"
+                        style={{ background: item.data?.code }}
+                      />
+                      <div className="flex flex-col">
+                        <span>{item.data?.label}</span>
+                      </div>
+                    </div>
+                  ));
+                }}
+                onChange={(item) => {
+                  setFilterStatus(item.target.value);
+                  onSearchChange({
+                    text: filterPhone,
+                    status: item.target.value,
+                    user: filterUser,
+                  });
+                }}
+              >
+                {(color) => (
+                  <SelectItem key={color.key} textValue={color.label}>
+                    <div className="flex gap-2 items-center">
+                      <div
+                        className="w-[1rem] h-[1rem] rounded-full"
+                        style={{ background: color.code }}
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-small">{color.label}</span>
+                      </div>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
+            </div>
+            <Button
                 as={Link}
                 href="/dashboard/lead/crear"
                 color="primary"
@@ -514,7 +560,6 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
               >
                 Agregar lead
               </Button>
-            </div>
           </div>
         </div>
         <div className="flex justify-between items-end my-2">
@@ -618,6 +663,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
                   fetchPageData({
                     text: filterPhone,
                     status: filterStatus,
+                    user: filterUser,
                     init: true,
                   });
                 } else onClose();

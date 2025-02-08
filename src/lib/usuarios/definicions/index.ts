@@ -62,6 +62,13 @@ export interface IUsuarioTable extends IUsuarioRes {
   key: string;
 }
 
+export interface IBUsuarioOptions {
+  label: string;
+  code: string;
+  key: string;
+  telefono: string;
+}
+
 // ERRORES
 export type IStateUsuario = {
   message?: string;

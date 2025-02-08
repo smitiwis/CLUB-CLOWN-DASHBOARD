@@ -2,18 +2,26 @@ import { getUserId } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 
-export async function GET(request: NextRequest) {
+type params = {
+  params: Promise<{ id_usuario: string }>;
+};
+
+export async function GET(request: NextRequest, { params }: params) {
   try {
+    const id_usuario = (await params).id_usuario || await getUserId();
+
+    if (!id_usuario) {
+      return Response.json(
+        { mensaje: "ID de cliente inválido" },
+        { status: 400 }
+      );
+    }
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const phoneNumber = (searchParams.get("phoneNumber") || "").replace(/\s+/g, "").trim(); // Número de celular (opcional)
     const status = searchParams.get("status") || ""; // Estado (opcional)
 
-    const id_usuario = await getUserId();
-    if (!id_usuario) {
-      return Response.json({ mensaje: "Usuario desconocido" }, { status: 401 });
-    }
     const where: {
       id_usuario: string;
       telefono?: { contains: string };
@@ -51,6 +59,7 @@ export async function GET(request: NextRequest) {
         nro_documento: true,
         direccion: true,
         nro_direccion: true,
+        categoria: true,
         origen: true,
         cliente_llamada: {
           select: {

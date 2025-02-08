@@ -34,6 +34,34 @@ export async function fetchUsuarios() {
   }
 }
 
+export async function fetchUsuariosOptions() {
+  try {
+    const usuarios = await prisma.usuario.findMany({
+      select: {
+        id_usuario: true,
+        nombre: true,
+        apellido: true,
+        telefono: true,
+      },
+    });
+
+    const usuariosOptions = usuarios.map((usuario) => ({
+      label: `${usuario.nombre} ${usuario.apellido}`,
+      code: usuario.id_usuario,
+      key: usuario.id_usuario,
+      telefono: usuario.telefono,
+    }));
+
+    return usuariosOptions;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Error al obtener usuarios options.");
+  } finally {
+    await prisma.$disconnect(); // Asegurarse de desconectar la base de datos
+  }
+}
+
+
 export async function fetchUserById(id_usuario: string) {
   try {
     const user = await prisma.usuario.findUnique({
@@ -123,3 +151,4 @@ export async function fetchProfileById(id_usuario: string) {
     await prisma.$disconnect(); // Asegurarse de desconectar la base de datos
   }
 }
+
