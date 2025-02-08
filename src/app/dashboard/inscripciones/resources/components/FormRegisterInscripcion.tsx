@@ -176,7 +176,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               {(taller) => (
                 <AutocompleteItem
                   key={taller.id_taller}
-                  textValue={taller.nombre}
+                  textValue={taller.nombre.toLocaleUpperCase()}
                   startContent={
                     <Badge content={taller.cant_clases} color="success">
                       <Button
