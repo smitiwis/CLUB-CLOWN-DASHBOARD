@@ -8,7 +8,7 @@ type params = {
 
 export async function GET(request: NextRequest, { params }: params) {
   try {
-    const id_usuario = (await params).id_usuario || await getUserId();
+    const id_usuario = (await params).id_usuario || (await getUserId());
 
     if (!id_usuario) {
       return Response.json(
@@ -19,7 +19,9 @@ export async function GET(request: NextRequest, { params }: params) {
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
-    const phoneNumber = (searchParams.get("phoneNumber") || "").replace(/\s+/g, "").trim(); // Número de celular (opcional)
+    const phoneNumber = (searchParams.get("phoneNumber") || "")
+      .replace(/\s+/g, "")
+      .trim(); // Número de celular (opcional)
     const status = searchParams.get("status") || ""; // Estado (opcional)
 
     const where: {
@@ -33,7 +35,7 @@ export async function GET(request: NextRequest, { params }: params) {
     }
 
     if (status) {
-      where.estado = status; // Filtra por estado exacto
+      where.estado = status;
     }
 
     // Calcular la paginación
@@ -42,7 +44,10 @@ export async function GET(request: NextRequest, { params }: params) {
 
     const total = await prisma.cliente.count({ where });
     const clientes = await prisma.cliente.findMany({
-      where,
+      where: {
+        ...where,
+        id_usuario: id_usuario !== "all" ? id_usuario : undefined,
+      },
       skip,
       take,
       orderBy: { fecha_creacion: "desc" },

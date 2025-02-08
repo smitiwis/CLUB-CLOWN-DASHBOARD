@@ -10,6 +10,11 @@ const Page = async () => {
   }
   const usuarios = await fetchUsuariosOptions();
 
+  const usuariosOptions = [
+    ...usuarios,
+    { label: "Todos", code: "all", key: "all", telefono: "" },
+  ];
+
   const pagination = { page: 1, limit: 10 };
   const clientsList = await fetchClients(pagination);
 
@@ -20,7 +25,7 @@ const Page = async () => {
   return (
     <ClientsList
       clientsResp={clientsList}
-      usuarios={usuarios}
+      usuarios={usuariosOptions}
       myUserId={myUserId}
     />
   );

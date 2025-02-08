@@ -251,13 +251,6 @@ const FormcreateClient = () => {
                 errorMessage={errors.nro_direccion?.message}
               />
             </div>
-            <pre>
-              {JSON.stringify(
-                errors,
-                null,
-                2
-              )}
-            </pre>
             <Select
               {...register("estado")}
               isDisabled
