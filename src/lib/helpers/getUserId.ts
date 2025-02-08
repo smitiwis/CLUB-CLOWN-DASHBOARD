@@ -1,4 +1,5 @@
 import {
+  CATEGORIA_CLIENT,
   COLORES,
   DOCUMENTS,
   ESTATO_INSCRIPCION,
@@ -58,6 +59,9 @@ export function getColorByStatus(status: string) {
   return ESTATO_INSCRIPCION.find(({ key }) => key === status)?.color || undefined;
 }
 
+export function getLabelCategoryByKey(key: string) {
+  return CATEGORIA_CLIENT.find(({ key: k }) => k === key)?.label || "";
+}
 
 export function getLabelByStatus(status: string) {
   return ESTATO_INSCRIPCION.find(({ key }) => key === status)?.label || "";

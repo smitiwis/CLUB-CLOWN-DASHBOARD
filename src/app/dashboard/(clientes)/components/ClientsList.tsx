@@ -56,7 +56,11 @@ import axios from "axios";
 import Link from "next/link";
 import debounce from "debounce";
 import { REGEX } from "@/constants/regex";
-import { formatearNombre, formatPhoneNumber } from "@/lib/helpers";
+import {
+  formatearNombre,
+  formatPhoneNumber,
+  getLabelCategoryByKey,
+} from "@/lib/helpers";
 import IconTrash from "@/components/icons/IconTrash";
 
 type Props = {
@@ -117,6 +121,10 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
       label: "NOMBRE",
     },
     {
+      key: "Categoria",
+      label: "CATEGORIA",
+    },
+    {
       key: "edad",
       label: "EDAD",
     },
@@ -138,6 +146,12 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
     "1": "warning",
     "2": "success",
     "3": "danger",
+  };
+
+  const categoryColor: Record<string, ChipProps["color"]> = {
+    "1": "warning",
+    "2": "danger",
+    "3": "success",
   };
 
   const renderCell = useCallback((item: IRowClientTable, columnKey: Key) => {
@@ -193,12 +207,43 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
 
       case "nombre":
         const nameComplete = `${item.nombre} ${item.apellido}`;
+        if (item.nombre_apo) {
+          return (
+            <Tooltip
+              size="sm"
+              content={
+                <div className="flex flex-col gap-x-1">
+                  <b>Apoderado: </b>
+                  {item.nombre_apo}
+                </div>
+              }
+              placement="right"
+              color="warning"
+              showArrow
+            >
+              <Badge content="" color="warning" variant="shadow">
+                <Chip avatar={<Avatar />} variant="flat" size="sm">
+                  {formatearNombre(nameComplete, 25)}
+                </Chip>
+              </Badge>
+            </Tooltip>
+          );
+        }
         return (
           <Chip avatar={<Avatar />} variant="flat" size="sm">
             {formatearNombre(nameComplete, 25)}
           </Chip>
         );
-
+      case "Categoria":
+        return (
+          <Chip
+            size="sm"
+            color={categoryColor[item.categoria]}
+            variant="shadow"
+          >
+            {getLabelCategoryByKey(item.categoria)}
+          </Chip>
+        );
       case "estadoAgenda":
         const value = ESTADO_LLAMADA_AGENDA.find(
           (status) => status.key === cellValue
@@ -389,7 +434,7 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
       if (!textSinEspacios) setErrorPhone(false);
 
       // if (pagination.total > pagination.limit) {
-        fetchPageData({ ...filter, init: true });
+      fetchPageData({ ...filter, init: true });
       // }
     }, 1000),
     []
@@ -398,7 +443,6 @@ const ClientsList: FC<Props> = ({ clientsResp }) => {
   const onClear = React.useCallback(() => {
     setPage(1);
   }, []);
-
 
   const topContent = useMemo(() => {
     return (

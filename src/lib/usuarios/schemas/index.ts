@@ -57,13 +57,13 @@ export const schemaUsuario = yup.object().shape({
     .string()
     .required("Nombre es requerido.")
     .min(3, "El nombre debe tener al menos 3 caracteres.")
-    .max(20, "El nombre no puede tener más de 20 caracteres."),
+    .max(30, "El nombre no puede tener más de 20 caracteres."),
 
   apellido: yup
     .string()
     .required("Apellido es requerido.")
     .min(3, "El apellido debe tener al menos 3 caracteres.")
-    .max(20, "El apellido no puede tener más de 20 caracteres."),
+    .max(40, "El apellido no puede tener más de 20 caracteres."),
 
   telefono: yup
     .string()

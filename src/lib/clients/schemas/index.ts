@@ -1,7 +1,6 @@
 import { REGEX } from "@/constants/regex";
 import * as yup from "yup";
 
-
 export const schemaClient = yup.object().shape({
   telefono: yup
     .string()
@@ -52,9 +51,18 @@ export const schemaClient = yup.object().shape({
     })
     .default(""),
 
-  nombre_apo: yup.string().default(""), // Valor predeterminado vacío
-  nombre: yup.string().default(""),
-  apellido: yup.string().default(""),
+  nombre_apo: yup
+    .string()
+    .max(50, "El nombre del apoderado no puede tener más de 50 caracteres.")
+    .default(""), // Valor predeterminado vacío
+  nombre: yup
+    .string()
+    .max(50, "El nombre no puede tener más de 50 caracteres.")
+    .default(""),
+  apellido: yup
+    .string()
+    .max(50, "El apellido no puede tener más de 50 caracteres.")
+    .default(""),
   edad: yup.string().default(""), // Permite vacío pero no undefined
   direccion: yup.string().default(""),
   nro_direccion: yup.string().default(""),

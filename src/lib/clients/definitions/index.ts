@@ -51,6 +51,7 @@ export interface IRowClientTable {
   nro_direccion: string;
   origen: TOrigen;
   grupo: IGrupo_Client;
+  categoria: ICategoria;
   estado: string;
   nro_llamadas: number;
 

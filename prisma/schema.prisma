@@ -32,7 +32,7 @@ model usuario {
 
   tipo_documento String @default("") @db.VarChar(1)
   nro_documento  String @unique @db.VarChar(15)
-  nombre         String @db.VarChar(25)
+  nombre         String @db.VarChar(30)
   apellido       String @db.VarChar(40)
   telefono       String @unique @db.VarChar(9)
   fecha_ingreso  String @db.VarChar(10)
@@ -60,7 +60,7 @@ model cliente {
   telefono       String  @unique @db.VarChar(9)
   tipo_documento String  @default("") @db.VarChar(1)
   nro_documento  String? @unique @db.VarChar(15)
-  nombre_apo     String  @db.VarChar(25)
+  nombre_apo     String  @db.VarChar(50)
   nombre         String  @db.VarChar(50)
   apellido       String  @db.VarChar(50)
   edad           String  @db.VarChar(2)
