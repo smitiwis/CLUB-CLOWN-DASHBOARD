@@ -182,3 +182,21 @@
 .icon-heart:before {
   content: "\56";
 }
+.icon-clipboard:before {
+  content: "\57";
+}
+.icon-exclamation-triangle:before {
+  content: "\58";
+}
+.icon-filter:before {
+  content: "\59";
+}
+.icon-map-pin:before {
+  content: "\5a";
+}
+.icon-share-square-o:before {
+  content: "\30";
+}
+.icon-circle-o:before {
+  content: "\31";
+}

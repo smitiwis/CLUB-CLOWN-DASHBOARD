@@ -41,12 +41,7 @@ import {
   IBClientsResp,
   IRowClientTable,
 } from "@/lib/clients/definitions";
-import {
-  COLORES,
-  ESTADO_LLAMADA_AGENDA,
-  GROUPS_CLIENT,
-  IColors,
-} from "@/constants";
+import { COLORES, GROUPS_CLIENT, IColors, ORIGENES_CLIENTS } from "@/constants";
 import { useRouter } from "next/navigation";
 import IconEdit from "@/components/icons/IconEdit";
 import IconEye from "@/components/icons/IconEye";
@@ -71,6 +66,7 @@ type Props = {
 };
 
 const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
+  console.log(clientsResp);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
   const [clientSelected, setClientSelected] = useState<IRowClientTable>();
@@ -106,34 +102,46 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
 
   const rows: IRowClientTable[] = adapteRows(clientsResp.data);
 
-  const columns = [
+  const generateColumns = [
     {
       key: "estado",
       label: "ESTADO",
+      className: "",
     },
     {
-      key: "estadoAgenda",
-      label: "AGENDA",
+      key: "usuario",
+      label: "ASESOR",
+      className: "",
+    },
+    {
+      key: "origen",
+      label: "ORIGEN",
+      className: "text-center",
     },
     {
       key: "telefono",
       label: "CELULAR",
+      className: "",
     },
     {
       key: "nombre",
       label: "NOMBRE",
+      className: "",
     },
     {
       key: "Categoria",
       label: "CATEGORIA",
+      className: "",
     },
     {
       key: "edad",
       label: "EDAD",
+      className: "",
     },
     {
       key: "grupo",
       label: "GRUPO",
+      className: "",
     },
 
     { key: "actions", label: "ACTIONS" },
@@ -200,11 +208,57 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
         );
 
       case "telefono":
+        const copyToClipboard = async () => {
+          try {
+            await navigator.clipboard.writeText(item.telefono);
+          } catch (err) {
+            console.error("Error al copiar: ", err);
+          }
+        };
         return (
-          <div className="flex flex-col">
+          <div className="flex items-center gap-x-1" onClick={copyToClipboard}>
+            <i className="text-cyan-400 icon-clipboard pt-1 text-medium cursor-pointer" />
             <span className="text-small">
-              {formatPhoneNumber(item.telefono)}
+              {item?.estadoAgenda ? (
+                <Tooltip
+                  size="sm"
+                  color={statusColorAgenda[item.estadoAgenda]}
+                  isDisabled={item.estadoAgenda === "2"}
+                  content={
+                    <div className="flex flex-col gap-x-1">
+                      <b>Fecha agendada: </b>
+                      {item.fechaAgendada}
+                    </div>
+                  }
+                  placement="right"
+                  showArrow
+                >
+                  <Badge
+                    color={statusColorAgenda[item.estadoAgenda]}
+                    content=""
+                    placement="top-right"
+                  >
+                    <span className="pt-1 pr-3">
+                      {formatPhoneNumber(item.telefono)}
+                    </span>
+                  </Badge>
+                </Tooltip>
+              ) : (
+                <span className="pt-1 pr-3">
+                  {formatPhoneNumber(item.telefono)}
+                </span>
+              )}
             </span>
+          </div>
+        );
+      case "origen":
+        return (
+          <div className="flex justify-center items-center">
+            <i
+              className={`text-2xl text-green-500 ${
+                ORIGENES_CLIENTS.find(({ key }) => key === item.origen)?.icon
+              }`}
+            />
           </div>
         );
 
@@ -237,44 +291,17 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
             {formatearNombre(nameComplete, 25)}
           </Chip>
         );
+
       case "Categoria":
         return (
-          <Chip
-            size="sm"
-            color={categoryColor[item.categoria]}
-            variant="shadow"
-          >
+          <Chip size="sm" color={categoryColor[item.categoria]} variant="flat">
             {getLabelCategoryByKey(item.categoria)}
           </Chip>
         );
-      case "estadoAgenda":
-        const value = ESTADO_LLAMADA_AGENDA.find(
-          (status) => status.key === cellValue
-        );
-
+      case "usuario":
         return (
           <div className="flex flex-col">
-            {cellValue ? (
-              <Tooltip
-                isDisabled={item.estadoAgenda === "2"}
-                content={item.fechaAgendada}
-                placement="right"
-                showArrow
-                classNames={{
-                  base: ["before:bg-neutral-400 dark:before:bg-white"],
-                  content: [
-                    "py-2 px-4 shadow-xl",
-                    "text-black bg-gradient-to-br from-white to-neutral-400",
-                  ],
-                }}
-              >
-                <Chip color={statusColorAgenda[cellValue]} variant="light">
-                  {value?.label}
-                </Chip>
-              </Tooltip>
-            ) : (
-              "-"
-            )}
+            <span className="text-small">{item.usuario}</span>
           </div>
         );
 
@@ -293,7 +320,6 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
             </span>
           </div>
         );
-
       case "grupo":
         const grupo = GROUPS_CLIENT.find((group) => group.key === cellValue);
         return (
@@ -326,7 +352,6 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
             >
               <IconPhone />
             </Button>
-
             <Button
               isIconOnly
               color="success"
@@ -374,6 +399,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
 
   // ======== TABLA Y PAGINACION =========
   const [data, setData] = useState(rows); // Usamos la lista inicial
+  const [columns, setColumns] = useState(generateColumns);
   const [page, setPage] = useState(clientsResp.page);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -396,7 +422,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
     const status = filter?.status || "";
     const id_usuario = filter?.user || "";
     const init = filter?.init || false;
-    
+
     try {
       const base = `/api/usuario/${id_usuario}/cliente/lista?page=${
         init ? "1" : page
@@ -416,11 +442,12 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
   };
 
   useEffect(() => {
-    if (page === 1) {
-      setData(adapteRows(clientsResp.data));
-      return;
-    }
-    fetchPageData();
+    const filter = {
+      text: filterPhone,
+      status: filterStatus,
+      user: filterUser,
+    };
+    fetchPageData(filter);
   }, [page]);
 
   // ========= FILTROS =========
@@ -449,6 +476,16 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
   const onClear = React.useCallback(() => {
     setPage(1);
   }, []);
+
+  useEffect(() => {
+    debugger
+    if (myUserId === filterUser) {
+      const newColumns = columns.filter((column) => column.key !== "usuario");
+      setColumns(newColumns);
+    }else {
+      setColumns(generateColumns);
+    }
+  }, [filterUser]);
 
   const topContent = useMemo(() => {
     return (
@@ -599,7 +636,14 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
         </div>
       </div>
     );
-  }, [filterPhone, filterStatus, filterUser, onSearchChange, data.length, errorPhone]);
+  }, [
+    filterPhone,
+    filterStatus,
+    filterUser,
+    onSearchChange,
+    data.length,
+    errorPhone,
+  ]);
 
   const bottomContent = React.useMemo(() => {
     if (pagination.totalPages === 1 || !data.length) return null;
@@ -629,7 +673,9 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
       >
         <TableHeader columns={columns}>
           {(column) => (
-            <TableColumn key={column.key}>{column.label}</TableColumn>
+            <TableColumn className={column.className} key={column.key}>
+              {column.label}
+            </TableColumn>
           )}
         </TableHeader>
 

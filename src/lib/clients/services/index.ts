@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { IBClients, IBClientsResp } from "../definitions";
-import { getUserId } from "@/lib/helpers";
+import { formatearNombre, getUserId } from "@/lib/helpers";
 import { IPagination } from "@/lib/definitions";
 
 export async function fetchClientById(id_cliente: string) {
@@ -9,7 +9,7 @@ export async function fetchClientById(id_cliente: string) {
     if (!id_usuario) throw new Error("Usuario desconocido");
 
     const cliente = await prisma.cliente.findUnique({
-      where: { id_cliente, id_usuario },
+      where: { id_cliente },
       select: {
         id_cliente: true,
         telefono: true,
@@ -61,6 +61,13 @@ export async function fetchClients(pagination: IPagination) {
       take: limit,
       orderBy:{fecha_creacion: 'desc'},
       select: {
+          usuario: {
+            select:{
+              id_usuario: true,
+              nombre: true,
+              apellido: true,
+            }
+          },
         id_cliente: true,
         telefono: true,
         nombre_apo: true,
@@ -101,6 +108,7 @@ export async function fetchClients(pagination: IPagination) {
           ? getPendingCall
           : cliente.cliente_llamada.find((call) => call.estado_agenda) || null,
         nro_llamadas: cliente.cliente_llamada.length,
+        usuario: formatearNombre(`${cliente.usuario.nombre} ${cliente.usuario.apellido}`, 20),
       };
     }); // Aquí se puede mapear los datos
 
@@ -215,7 +223,7 @@ export async function fetchDetailsClient(id_cliente: string) {
 
   try {
     const clientes = await prisma.cliente.findUnique({
-      where: { id_usuario, id_cliente },
+      where: { id_cliente },
       select: {
         id_cliente: true,
         telefono: true,

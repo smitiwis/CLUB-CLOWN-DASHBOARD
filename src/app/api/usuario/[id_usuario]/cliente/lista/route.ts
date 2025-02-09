@@ -1,4 +1,4 @@
-import { getUserId } from "@/lib/helpers";
+import { formatearNombre, getUserId } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 
@@ -42,10 +42,12 @@ export async function GET(request: NextRequest, { params }: params) {
     const skip = (page - 1) * limit;
     const take = limit;
 
-    const total = await prisma.cliente.count({ where: {
-      ...where,
-      id_usuario: id_usuario !== "all" ? id_usuario : undefined,
-    } });
+    const total = await prisma.cliente.count({
+      where: {
+        ...where,
+        id_usuario: id_usuario !== "all" ? id_usuario : undefined,
+      },
+    });
     const clientes = await prisma.cliente.findMany({
       where: {
         ...where,
@@ -55,6 +57,13 @@ export async function GET(request: NextRequest, { params }: params) {
       take,
       orderBy: { fecha_creacion: "desc" },
       select: {
+        usuario: {
+          select: {
+            id_usuario: true,
+            nombre: true,
+            apellido: true,
+          },
+        },
         id_cliente: true,
         telefono: true,
         nombre_apo: true,
@@ -96,6 +105,10 @@ export async function GET(request: NextRequest, { params }: params) {
           ? getPendingCall
           : cliente.cliente_llamada.find((call) => call.estado_agenda) || null,
         nro_llamadas: cliente.cliente_llamada.length,
+        usuario: formatearNombre(
+          `${cliente.usuario.nombre} ${cliente.usuario.apellido}`,
+          20
+        ),
       };
     }); // Aquí se puede mapear los datos
 
