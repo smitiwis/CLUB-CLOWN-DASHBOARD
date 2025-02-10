@@ -35,6 +35,10 @@ import {
   useDisclosure,
   ModalBody,
   Alert,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@nextui-org/react";
 import {
   IBClients,
@@ -66,11 +70,11 @@ type Props = {
 };
 
 const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
-  console.log(clientsResp);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
   const [clientSelected, setClientSelected] = useState<IRowClientTable>();
   const [loadingDelete, setLoadingDelete] = useState(false);
+  const [showCopy, setShowCopy] = useState(false);
 
   const adapteRows = (clients: IBClients[]) => {
     return clients.map((lead, i) => {
@@ -96,6 +100,9 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
                 time: "short",
               })
             : null,
+        fecha_creacion: format(lead.fecha_creacion, {
+          date: "medium",
+        }),
       };
     });
   };
@@ -126,6 +133,11 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
     {
       key: "nombre",
       label: "NOMBRE",
+      className: "",
+    },
+    {
+      key: "fecha_creacion",
+      label: "FECHA",
       className: "",
     },
     {
@@ -210,45 +222,55 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
       case "telefono":
         const copyToClipboard = async () => {
           try {
+            setShowCopy(true);
             await navigator.clipboard.writeText(item.telefono);
           } catch (err) {
             console.error("Error al copiar: ", err);
+          } finally {
+            setTimeout(() => {
+              setShowCopy(false);
+            }, 1000);
           }
         };
         return (
-          <div className="flex items-center gap-x-1" onClick={copyToClipboard}>
-            <i className="text-cyan-400 icon-clipboard pt-1 text-medium cursor-pointer" />
-            <span className="text-small">
-              {item?.estadoAgenda ? (
-                <Tooltip
-                  size="sm"
-                  color={statusColorAgenda[item.estadoAgenda]}
-                  isDisabled={item.estadoAgenda === "2"}
-                  content={
-                    <div className="flex flex-col gap-x-1">
-                      <b>Fecha agendada: </b>
-                      {item.fechaAgendada}
-                    </div>
-                  }
-                  placement="right"
-                  showArrow
-                >
-                  <Badge
+          <div
+            className="flex flex-col gap-x-1 relative cursor-pointer"
+            onClick={copyToClipboard}
+          >
+            <div className="flex items-center gap-x-1">
+              <i className="text-cyan-400 icon-clipboard pt-1 text-medium cursor-pointer" />
+              <span className="text-small">
+                {item?.estadoAgenda ? (
+                  <Tooltip
+                    size="sm"
                     color={statusColorAgenda[item.estadoAgenda]}
-                    content=""
-                    placement="top-right"
+                    isDisabled={item.estadoAgenda === "2"}
+                    content={
+                      <div className="flex flex-col gap-x-1">
+                        <b>Fecha agendada: </b>
+                        {item.fechaAgendada}
+                      </div>
+                    }
+                    placement="right"
+                    showArrow
                   >
-                    <span className="pt-1 pr-3">
-                      {formatPhoneNumber(item.telefono)}
-                    </span>
-                  </Badge>
-                </Tooltip>
-              ) : (
-                <span className="pt-1 pr-3">
-                  {formatPhoneNumber(item.telefono)}
-                </span>
-              )}
-            </span>
+                    <Badge
+                      color={statusColorAgenda[item.estadoAgenda]}
+                      content=""
+                      placement="top-right"
+                    >
+                      <span className="pt-1 pr-3">
+                        {formatPhoneNumber(item.telefono)}
+                      </span>
+                    </Badge>
+                  </Tooltip>
+                ) : (
+                  <span className="pt-1 pr-3">
+                    {formatPhoneNumber(item.telefono)}
+                  </span>
+                )}
+              </span>
+            </div>
           </div>
         );
       case "origen":
@@ -298,6 +320,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
             {getLabelCategoryByKey(item.categoria)}
           </Chip>
         );
+
       case "usuario":
         return (
           <div className="flex flex-col">
@@ -320,6 +343,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
             </span>
           </div>
         );
+
       case "grupo":
         const grupo = GROUPS_CLIENT.find((group) => group.key === cellValue);
         return (
@@ -340,7 +364,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
 
       case "actions":
         return (
-          <div className="relative flex items-center gap-x-2">
+          <div className="relative flex items-center">
             <Button
               isIconOnly
               color="primary"
@@ -352,44 +376,52 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
             >
               <IconPhone />
             </Button>
-            <Button
-              isIconOnly
-              color="success"
-              variant="light"
-              size="sm"
-              onPress={() =>
-                router.push(`/dashboard/lead/detalle/${item.id_cliente}`)
-              }
-            >
-              <IconEye />
-            </Button>
 
-            <Button
-              isIconOnly
-              color="success"
-              variant="light"
-              size="sm"
-              onPress={() =>
-                router.push(`/dashboard/lead/editar/${item.id_cliente}`)
-              }
-            >
-              <span className="transform rotate-[35deg]">
-                <IconEdit />
-              </span>
-            </Button>
-
-            <Button
-              isIconOnly
-              color="danger"
-              variant="light"
-              size="sm"
-              onPress={() => {
-                setClientSelected(item);
-                onOpen();
-              }}
-            >
-              <IconTrash />
-            </Button>
+            <Dropdown className="bg-background border-1 border-default-200">
+              <DropdownTrigger>
+                <Button isIconOnly size="sm" variant="light">
+                  <i className="icon-ellipsis-v text-default-300 text-xl" />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownItem
+                  key="Detalles"
+                  onPress={() =>
+                    router.push(`/dashboard/lead/detalle/${item.id_cliente}`)
+                  }
+                >
+                  <div className="flex gap-x-2 items-center">
+                    <IconEye />
+                    <span>Detalles</span>
+                  </div>
+                </DropdownItem>
+                <DropdownItem
+                  key="Editar"
+                  onPress={() =>
+                    router.push(`/dashboard/lead/editar/${item.id_cliente}`)
+                  }
+                >
+                  <div className="flex gap-x-2 items-center">
+                    <span className="transform rotate-[35deg]">
+                      <IconEdit />
+                    </span>
+                    <span>Editar</span>
+                  </div>
+                </DropdownItem>
+                <DropdownItem
+                  key="Eliminar"
+                  onPress={() => {
+                    setClientSelected(item);
+                    onOpen();
+                  }}
+                >
+                  <div className="flex gap-x-2 items-center">
+                    <IconTrash />
+                    <span>Eliminar</span>
+                  </div>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </div>
         );
       default:
@@ -478,11 +510,11 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
   }, []);
 
   useEffect(() => {
-    debugger
+    debugger;
     if (myUserId === filterUser) {
       const newColumns = columns.filter((column) => column.key !== "usuario");
       setColumns(newColumns);
-    }else {
+    } else {
       setColumns(generateColumns);
     }
   }, [filterUser]);
@@ -611,6 +643,12 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
           <span className="text-default-400 text-small">
             Total {pagination.total} clientes
           </span>
+          {showCopy && (
+            <span className="text-tiny text-success flex gap-x-1 items-center">
+              <i className="icon-check" />
+              <span>Copiado!</span>
+            </span>
+          )}
           <label className="flex gap-x-2 items-center text-default-400 text-small">
             <span>Filas por pagina:</span>
             <div className="w-[70px]">
@@ -643,6 +681,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
     onSearchChange,
     data.length,
     errorPhone,
+    showCopy
   ]);
 
   const bottomContent = React.useMemo(() => {

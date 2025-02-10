@@ -81,6 +81,7 @@ export async function fetchClients(pagination: IPagination) {
         nro_documento: true,
         direccion: true,
         nro_direccion: true,
+        fecha_creacion: true,
         origen: true,
         cliente_llamada: {
           select: {

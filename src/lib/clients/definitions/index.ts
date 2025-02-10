@@ -84,6 +84,7 @@ export interface IBClients {
   telefono: string;
   nombre_apo: string;
   nombre: string;
+  fecha_creacion: Date;
   apellido: string;
   edad: string;
   grupo: IGrupo_Client;
