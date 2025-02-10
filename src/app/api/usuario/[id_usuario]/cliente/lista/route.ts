@@ -105,10 +105,13 @@ export async function GET(request: NextRequest, { params }: params) {
           ? getPendingCall
           : cliente.cliente_llamada.find((call) => call.estado_agenda) || null,
         nro_llamadas: cliente.cliente_llamada.length,
-        usuario: formatearNombre(
-          `${cliente.usuario.nombre} ${cliente.usuario.apellido}`,
-          20
-        ),
+        usuario: {
+          id_usuario: cliente.usuario.id_usuario,
+          nombre: formatearNombre(
+            `${cliente.usuario.nombre} ${cliente.usuario.apellido}`,
+            20
+          ),
+        },
       };
     }); // Aquí se puede mapear los datos
 

@@ -76,6 +76,12 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [showCopy, setShowCopy] = useState(false);
 
+  // ========= FILTROS =========
+  const [errorPhone, setErrorPhone] = useState(false);
+  const [filterPhone, setFilterPhone] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterUser, setFilterUser] = useState(myUserId);
+
   const adapteRows = (clients: IBClients[]) => {
     return clients.map((lead, i) => {
       const isAgendaAfter =
@@ -103,10 +109,11 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
         fecha_creacion: format(lead.fecha_creacion, {
           date: "medium",
         }),
+        usuario: lead.usuario.nombre,
+        userId: lead.usuario.id_usuario,
       };
     });
   };
-
   const rows: IRowClientTable[] = adapteRows(clientsResp.data);
 
   const generateColumns = [
@@ -273,6 +280,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
             </div>
           </div>
         );
+
       case "origen":
         return (
           <div className="flex justify-center items-center">
@@ -363,6 +371,8 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
         );
 
       case "actions":
+        console.log("MY ID: ", myUserId);
+        console.log("ID: ", item.userId);
         return (
           <div className="relative flex items-center">
             <Button
@@ -395,31 +405,35 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
                     <span>Detalles</span>
                   </div>
                 </DropdownItem>
-                <DropdownItem
-                  key="Editar"
-                  onPress={() =>
-                    router.push(`/dashboard/lead/editar/${item.id_cliente}`)
-                  }
-                >
-                  <div className="flex gap-x-2 items-center">
-                    <span className="transform rotate-[35deg]">
-                      <IconEdit />
-                    </span>
-                    <span>Editar</span>
-                  </div>
-                </DropdownItem>
-                <DropdownItem
-                  key="Eliminar"
-                  onPress={() => {
-                    setClientSelected(item);
-                    onOpen();
-                  }}
-                >
-                  <div className="flex gap-x-2 items-center">
-                    <IconTrash />
-                    <span>Eliminar</span>
-                  </div>
-                </DropdownItem>
+                {myUserId === item.userId ? (
+                  <DropdownItem
+                    key="Editar"
+                    onPress={() =>
+                      router.push(`/dashboard/lead/editar/${item.id_cliente}`)
+                    }
+                  >
+                    <div className="flex gap-x-2 items-center">
+                      <span className="transform rotate-[35deg]">
+                        <IconEdit />
+                      </span>
+                      <span>Editar</span>
+                    </div>
+                  </DropdownItem>
+                ) : null}
+                {myUserId === item.userId ? (
+                  <DropdownItem
+                    key="Eliminar"
+                    onPress={() => {
+                      setClientSelected(item);
+                      onOpen();
+                    }}
+                  >
+                    <div className="flex gap-x-2 items-center">
+                      <IconTrash />
+                      <span>Eliminar</span>
+                    </div>
+                  </DropdownItem>
+                ) : null}
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -430,8 +444,8 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
   }, []);
 
   // ======== TABLA Y PAGINACION =========
-  const [data, setData] = useState(rows); // Usamos la lista inicial
   const [columns, setColumns] = useState(generateColumns);
+  const [data, setData] = useState(rows); // Usamos la lista inicial
   const [page, setPage] = useState(clientsResp.page);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -482,11 +496,6 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
     fetchPageData(filter);
   }, [page]);
 
-  // ========= FILTROS =========
-  const [errorPhone, setErrorPhone] = useState(false);
-  const [filterPhone, setFilterPhone] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
-  const [filterUser, setFilterUser] = useState(myUserId);
   const [pagination, setPagination] = useState({
     page: clientsResp.page,
     limit: clientsResp.limit,
@@ -681,7 +690,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
     onSearchChange,
     data.length,
     errorPhone,
-    showCopy
+    showCopy,
   ]);
 
   const bottomContent = React.useMemo(() => {

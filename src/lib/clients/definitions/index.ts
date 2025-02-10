@@ -44,6 +44,7 @@ export interface IRowClientTable {
   nro_documento: string;
   nombre_apo: string;
   usuario: string;
+  userId: string;
 
   nombre: string;
   apellido: string;
@@ -79,7 +80,10 @@ export interface IBClientOptions {
   origen: string;
 }
 export interface IBClients {
-  usuario: string;
+  usuario: {
+    id_usuario: string;
+    nombre: string;
+  };
   id_cliente: string;
   telefono: string;
   nombre_apo: string;
