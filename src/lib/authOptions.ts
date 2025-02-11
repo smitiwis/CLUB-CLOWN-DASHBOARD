@@ -6,6 +6,11 @@ import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
 
 export const authOptions: AuthOptions = {
+  session: {
+    strategy: "jwt",
+    maxAge: 120 * (60 * 1000), // La sesión expirará después de 3 hora
+  },
+
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -47,7 +52,15 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user }: any) {
-      if (user) token.id = user.id;
+      if (user) {
+        token.id = user.id;
+        token.accessTokenExpires = Date.now() + (120 * (60 * 1000));
+      }
+
+      if (Date.now() > token.accessTokenExpires) {
+        return null; // El token ha expirado
+      }
+
       return token;
     },
     async session({ session, token }: any): Promise<DefaultSession | Session> {

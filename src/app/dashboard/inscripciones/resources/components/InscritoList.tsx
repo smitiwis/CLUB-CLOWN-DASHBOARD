@@ -58,7 +58,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
     },
     {
       key: "nombre",
-      label: "NOMBRE Y APELL",
+      label: "NOMBRE Y APELLIDO",
     },
     {
       key: "telefono",
@@ -104,22 +104,25 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
     const cellValue = item[columnKey as keyof IBInscripcion];
     const totalPagos = item.pagos.reduce((acc, pago) => acc + pago.monto, 0);
 
+    const ChipName = () => (
+      <Chip avatar={<Avatar />} variant="flat" size="sm">
+        {formatearNombre(item.nombre, 20)}
+      </Chip>
+    );
+
     switch (columnKey) {
       case "nombre":
-        if (item.asesorRegistro.id === item.asesorInscripcion.id) {
-          return (
-            <Chip avatar={<Avatar />} variant="flat" size="sm">
-              {formatearNombre(item.nombre, 25)}
-            </Chip>
-          );
-        }
+        const { asesorRegistro, asesorInscripcion } = item;
+
+        if (asesorRegistro.id === asesorInscripcion.id) return <ChipName />;
+
         return (
           <Tooltip
             color="danger"
             content={
               <div className="text-tiny flex flex-col gap-y-1">
-                <span>Cliente de: {item.asesorRegistro.nombre}</span>
-                <span>Inscrito por: {item.asesorInscripcion.nombre}</span>
+                <span>Cliente de: {asesorRegistro.nombre}</span>
+                <span>Inscrito por: {asesorInscripcion.nombre}</span>
               </div>
             }
             showArrow
@@ -130,9 +133,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
               placement="top-left"
               content={<IconEye size={18} color="white" />}
             >
-              <Chip avatar={<Avatar />} variant="flat" size="sm">
-                {formatearNombre(item.nombre, 25)}
-              </Chip>
+              <ChipName />
             </Badge>
           </Tooltip>
         );
@@ -181,6 +182,8 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
         );
 
       case "estadoPago":
+        console.log("item", item);
+        console.log("item estadoPago", item.estadoPago);
         return (
           <Chip
             variant="faded"
