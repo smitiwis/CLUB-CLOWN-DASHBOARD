@@ -74,4 +74,5 @@ export interface IBInscripcionResponse {
 export interface IUploadResult {
   secure_url: string;
   public_id: string;
+  url: string;
 }

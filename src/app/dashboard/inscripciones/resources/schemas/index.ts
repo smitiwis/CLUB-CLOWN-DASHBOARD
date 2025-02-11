@@ -55,7 +55,7 @@ export interface IF_InscripcionReq {
   pago: {
     monto: string;
     metodo_pago: string;
-    baucher: string;
+    baucher: FormData;
     nro_transaccion: string;
     estado: string;
   } | null;

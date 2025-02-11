@@ -8,11 +8,15 @@ import {
   IF_InscripcionReq,
   IStateInscription,
 } from "@/app/dashboard/inscripciones/resources/schemas";
+import cloudinary from "@/lib/cloudinary";
+import { IUploadResult } from "@/app/dashboard/inscripciones/resources/definitions";
 
 export async function crearInscripcion(
   prevState: IStateInscription,
   formData: IF_InscripcionReq
 ) {
+  let uploadResult: IUploadResult | null = null;
+
   try {
     // Validate form using Zod
 
@@ -64,21 +68,64 @@ export async function crearInscripcion(
       if (formData.pago) {
         // Crear el pago 1er pago
         const { monto, metodo_pago, baucher, nro_transaccion } = formData.pago;
+        const file = baucher.get("file") as Blob;
 
-        await prisma.taller_cliente_pagos.create({
-          data: {
-            id_taller_cliente: inscripcion.id_taller_cliente,
-            monto: parseFloat(monto),
-            metodo_pago: metodo_pago,
-            img_boucher: baucher,
-            nro_transaccion: nro_transaccion,
-            fecha_pago: new Date(),
-          },
+        if (!file) {
+          throw {
+            message: "No se proporcionó ningún archivo",
+            status: 400,
+            field: "baucher",
+          };
+        }
+
+        // Convertir el Blob a un Buffer
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        // Subir la imagen a Cloudinary
+        uploadResult = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            {
+              folder: "bauchers",
+              transformation: [
+                { format: "jpg" }, // Esta transformación convierte la imagen a JPG
+                { quality: 90 }, // Para establecer la calidad de la imagen (0-100)
+              ],
+            },
+            (error, result) => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve(result as IUploadResult);
+              }
+            }
+          );
+          uploadStream.end(buffer);
         });
+
+        if (uploadResult) {
+          const urlImage = uploadResult.url;
+          const uploadIndex = urlImage.indexOf("upload") + "upload".length;
+          const imagePath = urlImage.slice(uploadIndex);
+
+          await prisma.taller_cliente_pagos.create({
+            data: {
+              id_taller_cliente: inscripcion.id_taller_cliente,
+              monto: parseFloat(monto),
+              metodo_pago: metodo_pago,
+              img_boucher: imagePath,
+              nro_transaccion: nro_transaccion,
+              fecha_pago: new Date(),
+            },
+          });
+        }
       }
     }
   } catch (error) {
-    console.error("Error:", error);
+    if (uploadResult) {
+      await cloudinary.uploader.destroy(uploadResult.public_id);
+    }
+
     if (error instanceof Error) {
       return { message: error.message };
     } else if (typeof error === "object") {

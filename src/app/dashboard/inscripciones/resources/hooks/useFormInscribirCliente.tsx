@@ -14,12 +14,11 @@ import { IBPromoOptions } from "@/lib/promociones/definitions";
 import { crearInscripcion } from "@/lib/inscripciones/actions";
 import { REGEX } from "@/constants/regex";
 import imageCompression from "browser-image-compression";
-import axios from "axios";
-import { IUploadResult } from "../definitions";
+// import axios from "axios";
+// import { IUploadResult } from "../definitions";
 
 const useFormInscribirCliente = () => {
   const [loadingForm, startTransaction] = useTransition();
-  const [loading, setLoading] = useState(loadingForm);
   const [fileBaucher, setFileBaucher] = useState<File | undefined>();
   const [previewUrl, setPreviewUrl] = useState("");
 
@@ -50,74 +49,39 @@ const useFormInscribirCliente = () => {
   });
 
   const onSubmit = async (formData: IF_Inscripcion) => {
-    // SI TODOS LOS CAMPOS ESTAN BIEN ENTONCES SUBIMOS LA IMAGE
-    let uploadResult: IUploadResult | null = null;
-    
-    try {
-      if (fileBaucher) {
-        setLoading(true);
-        const formDataFile = new FormData();
+    if (fileBaucher) {
+      const formDataFile = new FormData();
 
-        const options = {
-          maxSizeMB: 1, // Tamaño máximo en MB
-          maxWidthOrHeight: 800, // Redimensionar la imagen
-          useWebWorker: true,
+      const options = {
+        maxSizeMB: 1, // Tamaño máximo en MB
+        maxWidthOrHeight: 800, // Redimensionar la imagen
+        useWebWorker: true,
+      };
+
+      const compressedFile = await imageCompression(fileBaucher, options);
+      formDataFile.append("file", compressedFile);
+
+      const { monto, metodo_pago, baucher, nro_transaccion } = formData;
+      if (selectedIdClient && selectedTaller && selectedPromocion) {
+        const body = {
+          id_cliente: selectedIdClient.id_cliente,
+          id_taller: selectedTaller.id_taller,
+          id_taller_promocion: selectedPromocion.id_taller_promocion,
+          precio_venta: formData.precio_venta,
+          observacion: formData.observacion,
+          pago:
+            monto && metodo_pago && baucher && nro_transaccion
+              ? {
+                  estado: formData.estado_inscripcion,
+                  monto: monto,
+                  metodo_pago: metodo_pago,
+                  baucher: formDataFile,
+                  nro_transaccion: nro_transaccion,
+                }
+              : null,
         };
-
-        const compressedFile = await imageCompression(fileBaucher, options);
-        formDataFile.append("file", compressedFile);
-
-        const response = await axios.post("/api/images/upload", formDataFile, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        if (response.status === 200) {
-          uploadResult = response.data.imageData;
-          const { monto, metodo_pago, baucher, nro_transaccion } = formData;
-          if (selectedIdClient && selectedTaller && selectedPromocion) {
-            // Extraemos la parte que sigue después de "/upload/"
-            const urlImage = response.data.imageData.url;
-            const uploadIndex = urlImage.indexOf("upload") + "upload".length;
-            const imagePath = urlImage.slice(uploadIndex);
-
-            const body = {
-              id_cliente: selectedIdClient.id_cliente,
-              id_taller: selectedTaller.id_taller,
-              id_taller_promocion: selectedPromocion.id_taller_promocion,
-              precio_venta: formData.precio_venta,
-              observacion: formData.observacion,
-              pago:
-                monto && metodo_pago && baucher && nro_transaccion
-                  ? {
-                      estado: formData.estado_inscripcion,
-                      monto: monto,
-                      metodo_pago: metodo_pago,
-                      baucher: imagePath,
-                      nro_transaccion: nro_transaccion,
-                    }
-                  : null,
-            };
-            startTransaction(() => formAction(body));
-          }
-        }
+        startTransaction(() => formAction(body));
       }
-    } catch (error) {
-      console.error("error", error);
-      if (uploadResult && uploadResult.public_id) {
-        await axios.post(
-          "/api/images/destroy",
-          { public_id: uploadResult.public_id },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -214,7 +178,7 @@ const useFormInscribirCliente = () => {
     clearErrors,
     setValue,
     watch,
-    loading,
+    loadingForm,
     stateForm,
     selectedIdClient,
     setSelectedIdClient,

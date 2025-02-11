@@ -37,7 +37,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
     handleSubmit,
     errors,
     onSubmit,
-    loading,
+    loadingForm,
     stateForm,
     setValue,
     watch,
@@ -380,7 +380,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
         </div>
 
         <Button
-          isLoading={loading}
+          isLoading={loadingForm}
           className="w-full"
           color="primary"
           type="submit"
