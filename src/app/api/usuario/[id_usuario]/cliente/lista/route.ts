@@ -78,6 +78,7 @@ export async function GET(request: NextRequest, { params }: params) {
         nro_direccion: true,
         categoria: true,
         origen: true,
+        fecha_creacion: true,
         cliente_llamada: {
           select: {
             id_cliente_llamada: true,
