@@ -108,15 +108,17 @@ export async function crearInscripcion(
           const uploadIndex = urlImage.indexOf("upload") + "upload".length;
           const imagePath = urlImage.slice(uploadIndex);
 
-          await prisma.taller_cliente_pagos.create({
-            data: {
-              id_taller_cliente: inscripcion.id_taller_cliente,
-              monto: parseFloat(monto),
-              metodo_pago: metodo_pago,
-              img_boucher: imagePath,
-              nro_transaccion: nro_transaccion,
-              fecha_pago: new Date(),
-            },
+          await prisma.$transaction(async (prisma) => {
+            await prisma.taller_cliente_pagos.create({
+              data: {
+                id_taller_cliente: inscripcion.id_taller_cliente,
+                monto: parseFloat(monto),
+                metodo_pago: metodo_pago,
+                img_boucher: imagePath,
+                nro_transaccion: nro_transaccion,
+                fecha_pago: new Date(),
+              },
+            });
           });
         }
       }

@@ -43,7 +43,7 @@ export async function fetchLlamadas(pagination: IPagination) {
         key: i + 1,
         tipo: llamada.tipo as TIPO_CALL,
         resultado: llamada.resultado as RESULTADO_CALL,
-        fecha_creacion: format(llamada.fecha_creacion, "D de MMM h:mm a"),
+        fecha_creacion: format(llamada.fecha_creacion, "dddd D MMM, h:mm A", "es"),
       };
     });
 

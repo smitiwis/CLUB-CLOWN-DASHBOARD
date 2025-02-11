@@ -22,6 +22,14 @@ export interface IF_pago {
   nro_transaccion: string;
 }
 
+export interface IF_pagoReq {
+  id_taller_cliente: string;
+  monto: string;
+  metodo_pago: string;
+  baucher: FormData;
+  nro_transaccion: string;
+}
+
 
 export type IStatePago = {
   message?: string;

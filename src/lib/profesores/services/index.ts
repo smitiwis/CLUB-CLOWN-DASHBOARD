@@ -21,7 +21,10 @@ export async function fetchProfesores(pagination: IPagination) {
       return {
         ...prof,
         key: i + 1,
-        fecha_creacion: format(prof.fecha_creacion, "D de MMM h:mm a"),
+        fecha_creacion: format(prof.fecha_creacion, {
+          date: "medium",
+          time: "short",
+        }),
       };
     });
 

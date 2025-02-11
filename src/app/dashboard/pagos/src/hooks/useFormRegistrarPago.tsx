@@ -1,16 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useForm } from "react-hook-form";
-import { IF_pago, IStatePago, schemaPago } from "../schemas";
+import { IF_pago, IF_pagoReq, IStatePago, schemaPago } from "../schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useActionState, useEffect, useState, useTransition } from "react";
 import { registrarPago } from "@/lib/pagos/actions.ts";
 import { IBInscritosOptions } from "../definitions";
+import imageCompression from "browser-image-compression";
+
 
 const useFormRegistrarPago = (inscritosOptions: IBInscritosOptions[]) => {
   const [clientSelected, setClientSelected] = useState<IBInscritosOptions>();
   const [loading, startTransaction] = useTransition();
+  const [fileBaucher, setFileBaucher] = useState<File | undefined>();
+  const [previewUrl, setPreviewUrl] = useState("");
 
-  const [state, formAction] = useActionState<IStatePago, IF_pago>(
+  const [state, formAction] = useActionState<IStatePago, IF_pagoReq>(
     registrarPago,
     null
   );
@@ -30,14 +34,32 @@ const useFormRegistrarPago = (inscritosOptions: IBInscritosOptions[]) => {
     resolver: yupResolver<IF_pago>(schemaPago),
   });
 
-  const onSubmit = (formData: IF_pago) => {
-    startTransaction(() => formAction(formData));
+  const onSubmit = async(formData: IF_pago) => {
+    if (fileBaucher) {
+      const formDataFile = new FormData();
+
+      const options = {
+        maxSizeMB: 1, // Tamaño máximo en MB
+        maxWidthOrHeight: 800, // Redimensionar la imagen
+        useWebWorker: true,
+      };
+
+      const compressedFile = await imageCompression(fileBaucher, options);
+      formDataFile.append("file", compressedFile);
+
+      const body = {
+        ...formData,
+        baucher: formDataFile,
+      };
+      startTransaction(() => formAction(body));
+    }
   };
 
   const validateMonto = (monto: number, saldoPend: number) => {
     if (monto && saldoPend) {
       if (monto > saldoPend) {
-        const message = "El monto ingresado debe ser menor o igual al saldo pendiente";
+        const message =
+          "El monto ingresado debe ser menor o igual al saldo pendiente";
         setError("monto", { message });
       } else {
         clearErrors("monto");
@@ -57,7 +79,7 @@ const useFormRegistrarPago = (inscritosOptions: IBInscritosOptions[]) => {
     }
   }, [watch("id_taller_cliente")]);
 
-  useEffect(() => { 
+  useEffect(() => {
     const monto = watch("monto");
 
     if (monto && clientSelected) {
@@ -79,6 +101,9 @@ const useFormRegistrarPago = (inscritosOptions: IBInscritosOptions[]) => {
     loading,
     state,
     clientSelected,
+    setPreviewUrl,
+    previewUrl,
+    setFileBaucher,
   };
 };
 

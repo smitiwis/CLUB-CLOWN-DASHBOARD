@@ -106,7 +106,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
 
     const ChipName = () => (
       <Chip avatar={<Avatar />} variant="flat" size="sm">
-        {formatearNombre(item.nombre, 20)}
+        {formatearNombre(item.nombre, 17)}
       </Chip>
     );
 
@@ -177,7 +177,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
 
         return (
           <div className="flex justify-end items-center gap-x-2 mr-3">
-            S/{restante.toFixed(2)}
+            {restante ? "S/" + restante.toFixed(2) : "-"}
           </div>
         );
 
