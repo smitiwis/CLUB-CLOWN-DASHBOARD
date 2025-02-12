@@ -137,3 +137,9 @@ export type IStateUpdateClient = {
   client?: IBClients;
   status?: number;
 } | null;
+
+export interface IFMetodosPayOptions {
+  label: string;
+  key: string;
+  path: string;
+}

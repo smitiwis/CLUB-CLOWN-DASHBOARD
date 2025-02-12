@@ -183,12 +183,35 @@ export const ESTATO_INSCRIPCION: {
   { key: "pago_compl", label: "Completo", color: "success" },
 ];
 
-
 export const METODOS_PAGO = [
-  { key: "efect", label: "Efectivo" },
-  { key: "yape", label: "Yape" },
-  { key: "plin", label: "Plin" },
-  { key: "transf", label: "Transferencia" },
-  { key: "tarjeta", label: "Tarjeta" },
-  { key: "otro", label: "Otro" },
-]
+  {
+    key: "efect",
+    label: "Efectivo",
+    path: `${process.env.NEXT_PUBLIC_IMAGE_PATH}/v1739321409/pago-efectivo_yqyjh1.png`,
+  },
+  {
+    key: "yape",
+    label: "Yape",
+    path: `${process.env.NEXT_PUBLIC_IMAGE_PATH}/v1739321409/yape-logo_lrjwd7.webp`,
+  },
+  {
+    key: "plin",
+    label: "Plin",
+    path: `${process.env.NEXT_PUBLIC_IMAGE_PATH}/v1739321409/plin_logo_l2wlvo.png`,
+  },
+  {
+    key: "transf",
+    label: "Transferencia",
+    path: `${process.env.NEXT_PUBLIC_IMAGE_PATH}/v1739321409/transfer-logo_hyadte.png`,
+  },
+  {
+    key: "tarjeta",
+    label: "Tarjeta",
+    path: `${process.env.NEXT_PUBLIC_IMAGE_PATH}/v1739321409/v1739321410/tarjeta-logo_xwdbke.png`,
+  },
+  {
+    key: "otro",
+    label: "Otro",
+    path: `${process.env.NEXT_PUBLIC_IMAGE_PATH}/v1739321409/other-logo_oy3urj.png`,
+  },
+];

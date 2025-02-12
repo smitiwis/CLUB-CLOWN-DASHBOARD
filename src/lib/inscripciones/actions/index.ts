@@ -86,7 +86,7 @@ export async function crearInscripcion(
         uploadResult = await new Promise((resolve, reject) => {
           const uploadStream = cloudinary.uploader.upload_stream(
             {
-              folder: "bauchers",
+              folder: process.env.CLOUDINARY_BUCKET,
               transformation: [
                 { format: "jpg" }, // Esta transformación convierte la imagen a JPG
                 { quality: 90 }, // Para establecer la calidad de la imagen (0-100)

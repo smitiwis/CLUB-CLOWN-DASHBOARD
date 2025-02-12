@@ -1,6 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { IBClientOptions } from "@/lib/clients/definitions";
+import {
+  IBClientOptions,
+  IFMetodosPayOptions,
+} from "@/lib/clients/definitions";
 import { IBPromoOptions } from "@/lib/promociones/definitions";
 import { IBTalleresOptions } from "@/lib/talleres/definicions";
 import {
@@ -15,10 +19,11 @@ import {
   Image,
   Input,
   Select,
+  SelectedItems,
   SelectItem,
   Textarea,
 } from "@nextui-org/react";
-import React, { ChangeEvent, FC } from "react";
+import React, { ChangeEvent, FC, useEffect } from "react";
 import useFormInscribirCliente from "../hooks/useFormInscribirCliente";
 import { ESTATO_INSCRIPCION, METODOS_PAGO } from "@/constants";
 import { getColorByStatus, getLabelByStatus } from "@/lib/helpers";
@@ -41,6 +46,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
     stateForm,
     setValue,
     watch,
+    clearErrors,
 
     setFileBaucher,
     setSelectedIdClient,
@@ -54,7 +60,9 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = event.target.files?.[0];
     if (file) {
+      console.log("file", file);
       setFileBaucher(file);
+      clearErrors("baucher");
 
       // Generar una URL de vista previa
       const reader = new FileReader();
@@ -64,6 +72,20 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
       reader.readAsDataURL(file);
     }
   };
+
+  useEffect(() => {
+    const id_taller = watch("id_taller");
+    if (id_taller) {
+      const tallerSelected = talleresOptions.find(
+        (taller) => taller.id_taller === id_taller
+      );
+
+      if (tallerSelected) {
+        setSelectedTaller(tallerSelected);
+        setValue("id_taller", tallerSelected.id_taller);
+      }
+    }
+  }, [watch("id_taller")]);
 
   return (
     <>
@@ -101,6 +123,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
             </SelectItem>
           )}
         </Select>
+
         <div className="flex gap-4 w-full">
           <div className="flex flex-col flex-1 gap-4">
             <Autocomplete
@@ -133,6 +156,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
                   textValue={call.nombre}
                   startContent={
                     <Avatar
+                      isBordered
                       alt={call.telefono}
                       className="flex-shrink-0"
                       size="sm"
@@ -149,35 +173,62 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               )}
             </Autocomplete>
 
-            <Autocomplete
+            <Select
               {...register("id_taller")}
-              onSelectionChange={(id_taller) => {
-                const tallerSelected = talleresOptions.find(
-                  (taller) => taller.id_taller === id_taller
-                );
-                if (tallerSelected) {
-                  setSelectedTaller(tallerSelected);
-                  setValue("id_taller", tallerSelected.id_taller);
-                }
-              }}
-              defaultSelectedKey={
+              isRequired
+              size="lg"
+              label="Taller:"
+              placeholder="Selecciona un taller"
+              items={talleresOptions}
+              defaultSelectedKeys={
                 talleresOptions.length === 1
                   ? talleresOptions[0].id_taller
                   : undefined
               }
-              label="Taller:"
-              isRequired
-              defaultItems={talleresOptions}
-              placeholder="Selecciona un taller"
-              isInvalid={!!errors.id_taller}
-              errorMessage={errors.id_taller?.message}
-              size="lg"
+              renderValue={(talleres: SelectedItems<IBTalleresOptions>) => {
+                return talleres.map((taller) => (
+                  <div key={taller.key} className="flex flex-col h-[68px]">
+                    <div className="ml-12 flex items-center gap-x-1">
+                      <span className="text-small ml-2">
+                        {taller.data?.nombre.toLocaleUpperCase()}
+                      </span>
+                      |
+                      <span className="text-small">
+                        {taller.data?.profesor.nombre}{" "}
+                        {taller.data?.profesor.apellidos}
+                      </span>
+                    </div>
+                    <div className="ml-[-5px] flex items-center gap-x-1">
+                      <Chip variant="light" className=" text-cyan-500">
+                        <span className="text-small">
+                          S/{taller.data?.precio.toFixed(2)}
+                        </span>
+                      </Chip>
+                      <div>
+                        {taller.data?.dias.map((dia) => (
+                          <Chip
+                            size="sm"
+                            key={dia}
+                            variant="bordered"
+                            color="secondary"
+                            className="mr-2 text-cyan-500 border-cyan-500 "
+                          >
+                            {dia}
+                          </Chip>
+                        ))}
+                      </div>
+                      <i className="icon-hand-o-right" />
+                      <span className="text-tiny text-cyan-500">
+                        {taller.data?.hora}
+                      </span>
+                    </div>
+                  </div>
+                ));
+              }}
             >
               {(taller) => (
-                <AutocompleteItem
-                  key={taller.id_taller}
-                  textValue={taller.nombre.toLocaleUpperCase()}
-                  startContent={
+                <SelectItem key={taller.id_taller} textValue={taller.id_taller}>
+                  <div className="pl-1 flex items-center gap-x-2">
                     <Badge content={taller.cant_clases} color="success">
                       <Button
                         className="rounded-full bg-cyan-500 text-black"
@@ -187,45 +238,45 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
                         <i className="icon-calendar-o text-lg" />
                       </Button>
                     </Badge>
-                  }
-                >
-                  <div className="pl-1 flex flex-col">
-                    <div className="flex gap-x-1">
-                      <span className="text-small ml-2">
-                        {taller.nombre.toLocaleUpperCase()}
-                      </span>
-                      -
-                      <span className="text-small">
-                        {taller.profesor.nombre} {taller.profesor.apellidos}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-x-2">
-                      <Chip variant="light" className="pl-0 text-cyan-500">
-                        S/{taller.precio.toFixed(2)}
-                      </Chip>
-                      {taller.dias.map((dia) => (
-                        <Chip
-                          size="sm"
-                          key={dia}
-                          variant="bordered"
-                          color="secondary"
-                          className="text-tiny text-cyan-500 border-cyan-500"
-                        >
-                          {dia}
+                    <div className="flex flex-col">
+                      <div className="flex gap-x-1">
+                        <span className="text-small ml-2">
+                          {taller.nombre.toLocaleUpperCase()}
+                        </span>
+                        -
+                        <span className="text-small">
+                          {taller.profesor.nombre} {taller.profesor.apellidos}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-x-2">
+                        <Chip variant="light" className="pl-0 text-cyan-500">
+                          S/{taller.precio.toFixed(2)}
                         </Chip>
-                      ))}
-                      <i className="icon-hand-o-right" />
-                      <span className="text-tiny text-cyan-500">
-                        {taller.hora}
-                      </span>
+                        {taller.dias.map((dia) => (
+                          <Chip
+                            size="sm"
+                            key={dia}
+                            variant="bordered"
+                            color="secondary"
+                            className="text-tiny text-cyan-500 border-cyan-500"
+                          >
+                            {dia}
+                          </Chip>
+                        ))}
+                        <i className="icon-hand-o-right" />
+                        <span className="text-tiny text-cyan-500">
+                          {taller.hora}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </AutocompleteItem>
+                </SelectItem>
               )}
-            </Autocomplete>
+            </Select>
 
             <Autocomplete
               {...register("id_taller_promocion")}
+              isRequired
               onSelectionChange={(id_promocion) => {
                 const promoSelected = promocionesOptions.find(
                   (promo) => promo.id_taller_promocion === id_promocion
@@ -288,11 +339,19 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               errorMessage={errors.precio_venta?.message}
             />
           </div>
+          <pre>
+            {/* {JSON.stringify(errors, null, 2)} */}
+          </pre>
           <div className="flex flex-col flex-1 gap-4">
             <Input
               {...register("monto")}
               startContent="S/"
-              isDisabled={!watch("precio_venta")}
+              isDisabled={
+                !watch("precio_venta") ||
+                !watch("id_taller") ||
+                !watch("id_cliente") ||
+                !watch("id_taller_promocion")
+              }
               label="Monto a pagar"
               min={0}
               max={watch("precio_venta")}
@@ -319,11 +378,38 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               size="lg"
               isInvalid={!!errors.metodo_pago}
               errorMessage={errors.metodo_pago?.message}
+              renderValue={(pays: SelectedItems<IFMetodosPayOptions>) => {
+                return pays.map((pay) => (
+                  <div key={pay.key} className="flex users-center gap-2">
+                    <div className="flex gap-x-1 items-center">
+                      <Image
+                        isZoomed
+                        alt={pay.data?.label}
+                        src={pay.data?.path}
+                        width={25}
+                        height={25}
+                        className="rounded-full"
+                      />
+                      <span className="text-md">{pay.data?.label}</span>
+                    </div>
+                  </div>
+                ));
+              }}
             >
-              {(document) => (
-                <SelectItem key={document.key} textValue={document.label}>
+              {(pay) => (
+                <SelectItem key={pay.key} textValue={pay.label}>
                   <div className="flex flex-col">
-                    <span className="text-small">{document.label}</span>
+                    <div className="flex gap-x-2 items-center">
+                      <Image
+                        isZoomed
+                        alt={pay?.label}
+                        src={pay?.path}
+                        width={25}
+                        height={25}
+                        className="rounded-full"
+                      />
+                      <span className="text-md">{pay?.label}</span>
+                    </div>
                   </div>
                 </SelectItem>
               )}

@@ -59,15 +59,15 @@ export async function fetchClients(pagination: IPagination) {
       where: { id_usuario },
       skip: (page - 1) * limit,
       take: limit,
-      orderBy:{fecha_creacion: 'desc'},
+      orderBy: { fecha_creacion: "desc" },
       select: {
-          usuario: {
-            select:{
-              id_usuario: true,
-              nombre: true,
-              apellido: true,
-            }
+        usuario: {
+          select: {
+            id_usuario: true,
+            nombre: true,
+            apellido: true,
           },
+        },
         id_cliente: true,
         telefono: true,
         nombre_apo: true,
@@ -111,9 +111,11 @@ export async function fetchClients(pagination: IPagination) {
         nro_llamadas: cliente.cliente_llamada.length,
         usuario: {
           id_usuario: cliente.usuario.id_usuario,
-          nombre: formatearNombre(`${cliente.usuario.nombre} ${cliente.usuario.apellido}`, 20),
+          nombre: formatearNombre(
+            `${cliente.usuario.nombre} ${cliente.usuario.apellido}`,
+            20
+          ),
         },
-        
       };
     }); // Aquí se puede mapear los datos
 
@@ -138,6 +140,9 @@ export async function fetchClientsOptions() {
     if (!id_usuario) return new Error("Usuario desconocido");
 
     const clientes = await prisma.cliente.findMany({
+      where: {
+        OR: [{ nombre: { not: "" } }, { apellido: { not: "" } }],
+      },
       select: {
         id_cliente: true,
         telefono: true,
