@@ -207,7 +207,7 @@ export const METODOS_PAGO = [
   {
     key: "tarjeta",
     label: "Tarjeta",
-    path: `${process.env.NEXT_PUBLIC_IMAGE_PATH}/v1739321409/v1739321410/tarjeta-logo_xwdbke.png`,
+    path: `${process.env.NEXT_PUBLIC_IMAGE_PATH}/v1739321410/tarjeta-logo_xwdbke.png`,
   },
   {
     key: "otro",

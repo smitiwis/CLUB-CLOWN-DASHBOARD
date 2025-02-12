@@ -153,7 +153,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               {(call) => (
                 <AutocompleteItem
                   key={call.id_cliente}
-                  textValue={call.nombre}
+                  textValue={`${call.nombre} ${call.apellido}`}
                   startContent={
                     <Avatar
                       isBordered
@@ -164,7 +164,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
                   }
                 >
                   <div className="flex flex-col">
-                    <span className="text-small">{call.nombre}</span>
+                    <span className="text-small">{`${call.nombre} ${call.apellido}`}</span>
                     <span className="text-tiny text-cyan-500">
                       {call.telefono}
                     </span>
@@ -187,18 +187,20 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               }
               renderValue={(talleres: SelectedItems<IBTalleresOptions>) => {
                 return talleres.map((taller) => (
-                  <div key={taller.key} className="flex flex-col h-[68px]">
-                    <div className="ml-12 flex items-center gap-x-1">
-                      <span className="text-small ml-2">
+                  <div
+                    key={taller.key}
+                    className="flex flex-col h-[58px] gap-y-1"
+                  >
+                    <div className="ml-11 flex items-center gap-x-1">
+                      <span className="text-tiny text-gray-400 ml-2">
                         {taller.data?.nombre.toLocaleUpperCase()}
                       </span>
-                      |
-                      <span className="text-small">
+                      <span className="text-tiny text-gray-400">
                         {taller.data?.profesor.nombre}{" "}
                         {taller.data?.profesor.apellidos}
                       </span>
                     </div>
-                    <div className="ml-[-5px] flex items-center gap-x-1">
+                    <div className="ml-[-10px] flex items-center gap-x-1">
                       <Chip variant="light" className=" text-cyan-500">
                         <span className="text-small">
                           S/{taller.data?.precio.toFixed(2)}
@@ -218,8 +220,12 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
                         ))}
                       </div>
                       <i className="icon-hand-o-right" />
-                      <span className="text-tiny text-cyan-500">
+                      <span className="mx-2 text-tiny text-cyan-500">
                         {taller.data?.hora}
+                      </span>
+                      <i className="icon-hand-o-right" />
+                      <span className="ml-2 text-tiny text-success">
+                        {taller.data?.cant_clases} Sesiones
                       </span>
                     </div>
                   </div>
@@ -339,9 +345,7 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               errorMessage={errors.precio_venta?.message}
             />
           </div>
-          <pre>
-            {/* {JSON.stringify(errors, null, 2)} */}
-          </pre>
+          <pre>{/* {JSON.stringify(errors, null, 2)} */}</pre>
           <div className="flex flex-col flex-1 gap-4">
             <Input
               {...register("monto")}
