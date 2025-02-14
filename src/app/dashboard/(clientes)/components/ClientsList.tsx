@@ -390,7 +390,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
             <Dropdown className="bg-background border-1 border-default-200">
               <DropdownTrigger>
                 <Button isIconOnly size="sm" variant="light">
-                  <i className="icon-ellipsis-v text-default-300 text-xl" />
+                  <i className="icon-ellipsis-v text-gray-300 text-xl" />
                 </Button>
               </DropdownTrigger>
               <DropdownMenu>
