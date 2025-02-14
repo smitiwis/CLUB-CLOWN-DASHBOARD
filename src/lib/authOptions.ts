@@ -56,15 +56,16 @@ export const authOptions: AuthOptions = {
         token.id = user.id;
         token.accessTokenExpires = Date.now() + (120 * (60 * 1000));
       }
-
-      if (Date.now() > token.accessTokenExpires) {
-        return null; // El token ha expirado
-      }
+      if (Date.now() > token?.accessTokenExpires) return;
 
       return token;
     },
     async session({ session, token }: any): Promise<DefaultSession | Session> {
       if (token) session.user.id = token.id;
+
+      if (!session?.user?.id) {
+        return { ...session, user: null }
+      }
       return session;
     },
   },

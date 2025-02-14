@@ -1,10 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useEffect } from "react";
+import { FC, useEffect } from "react";
 import { signOut } from "next-auth/react";
+import { getSession } from "next-auth/react";
 
-const InactivityHandler: React.FC = () => {
-  useEffect(() => {
+const InactivityHandler: FC = () => {
+
+  const inactivityHandler = () => {
     let timeout: NodeJS.Timeout;
 
     const resetTimeout = () => {
@@ -12,7 +15,7 @@ const InactivityHandler: React.FC = () => {
       timeout = setTimeout(() => {
         alert("Tu sesión ha expirado por inactividad.");
         signOut();
-      }, 120 * (60 * 1000)); // 30 minutos en milisegundos
+      }, 120 * (60 * 1000));  // 2 HORAS
     };
 
     window.addEventListener("mousemove", resetTimeout);
@@ -25,6 +28,18 @@ const InactivityHandler: React.FC = () => {
       window.removeEventListener("mousemove", resetTimeout);
       window.removeEventListener("keydown", resetTimeout);
     };
+  };
+
+  const verificarSesion = async () => {
+    const session = await getSession();
+    if (!session) {
+      return await signOut();
+    }
+    return inactivityHandler();
+  };
+
+  useEffect(() => {
+    verificarSesion();
   }, []);
 
   return null;
