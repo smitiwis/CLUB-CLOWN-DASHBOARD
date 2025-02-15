@@ -9,6 +9,8 @@ import {
 } from "@nextui-org/react";
 import React from "react";
 
+export const dynamic = "force-dynamic"; // ⚡ Fuerza renderización en el servidor
+
 const Page = async () => {
   const talleresData = await fetchTalleresOptions();
 

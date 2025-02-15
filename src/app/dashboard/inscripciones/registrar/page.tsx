@@ -4,6 +4,8 @@ import { fetchClientsOptions } from "@/lib/clients/services";
 import { fetchTalleresOptions } from "@/lib/talleres/services";
 import { fetchPromocionesOptions } from "@/lib/promociones/services";
 
+export const dynamic = "force-dynamic"; // ⚡ Fuerza renderización en el servidor
+
 const Page = async () => {
   const clientes = await fetchClientsOptions();
   if (clientes instanceof Error) {
