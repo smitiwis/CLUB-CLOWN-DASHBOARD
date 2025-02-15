@@ -9,12 +9,11 @@ import {
   TIPO_LLAMADAS,
 } from "@/constants";
 import { getServerSession, Session } from "next-auth";
-import { redirect } from "next/navigation";
 import { authOptions } from "../authOptions";
 
 export const getUserId = async () => {
   const session: Session | null = await getServerSession(authOptions);
-  if (!session?.user) redirect("/login");
+  if (!session?.user) return null;
   return session.user.id || null;
 };
 

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import "../icons/styles.css"
+import "../icons/styles.css";
 
 import { FC } from "react";
+import SessionProviderWrapper from "./dashboard/SessionProviderWrapper";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,7 +18,9 @@ const RootLayout: FC<RootLayoutProps> = ({ children }) => {
   return (
     <html lang="en" className="dark">
       <body className={`dark text-foreground bg-background antialiased`}>
-        {children}
+        <SessionProviderWrapper>
+          {children}
+          </SessionProviderWrapper>
       </body>
     </html>
   );

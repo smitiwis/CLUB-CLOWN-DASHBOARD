@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
-    maxAge: 120 * (60 * 1000), // La sesión expirará después de 3 hora
+    maxAge: 1/60 * 60 * 60, // 4 hours
   },
 
   providers: [
@@ -52,20 +52,18 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user }: any) {
+      console.log("token", token);
+      console.log("user", user);
+      
       if (user) {
         token.id = user.id;
-        token.accessTokenExpires = Date.now() + (120 * (60 * 1000));
       }
-      if (Date.now() > token?.accessTokenExpires) return;
 
       return token;
     },
     async session({ session, token }: any): Promise<DefaultSession | Session> {
       if (token) session.user.id = token.id;
 
-      if (!session?.user?.id) {
-        return { ...session, user: null }
-      }
       return session;
     },
   },

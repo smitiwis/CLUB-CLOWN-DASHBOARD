@@ -371,8 +371,6 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
         );
 
       case "actions":
-        console.log("MY ID: ", myUserId);
-        console.log("ID: ", item.userId);
         return (
           <div className="relative flex items-center">
             <Button
@@ -519,7 +517,6 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
   }, []);
 
   useEffect(() => {
-    debugger;
     if (myUserId === filterUser) {
       const newColumns = columns.filter((column) => column.key !== "usuario");
       setColumns(newColumns);
