@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { IBPago } from "../definicions";
-import { getUserId } from "@/lib/helpers";
 import { IPagination } from "@/lib/definitions";
 import { fetchProfileById } from "@/lib/usuarios/services";
 
@@ -31,10 +30,7 @@ export async function fetchPagos(
   const { page, limit } = pagination;
 
   try {
-    const id_usuario = await getUserId();
-    if (!id_usuario) return new Error("Usuario desconocido");
-
-    const { rol } = await fetchProfileById(id_usuario);
+    const { rol } = await fetchProfileById();
     if (!rol) return new Error("Error al obtener rol");
 
     const where = getWhereClause(phoneNumber);

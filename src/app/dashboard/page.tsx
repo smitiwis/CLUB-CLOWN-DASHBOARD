@@ -1,15 +1,16 @@
 import React from "react";
 
-import { getServerSession } from "next-auth/next";
-import { redirect } from "next/navigation";
-import { authOptions } from "@/lib/authOptions";
 import { Card, CardBody, CardHeader, Chip, Divider } from "@nextui-org/react";
 import { fetchStateCalls } from "@/lib/llamadas/services";
 
 const Dashboard = async () => {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
-  const { llamadasHoy, totalLlamadas } = await fetchStateCalls(session.user.id);
+  const algo  = await fetchStateCalls();
+
+  if (algo instanceof Error || !algo) {
+    return <div>Error al obtener datos</div>;
+  }
+
+  const { llamadasHoy, totalLlamadas } = algo;
 
   return (
     <div className="flex-1" >

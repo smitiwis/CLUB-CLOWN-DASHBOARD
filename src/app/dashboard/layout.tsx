@@ -1,21 +1,16 @@
 import { FC } from "react";
 import HeaderMain from "@/components/header/HeaderMain";
 import AsideMain from "@/components/navbar/AsideMain";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
 import { fetchProfileById } from "@/lib/usuarios/services";
-import SignOut from "./SignOut";
-import SessionHandler from "./SessionHandler";
+// import SignOut from "./SignOut";
+import SessionHandler from "../../components/session/SessionHandler";
 
 interface Props {
   children: React.ReactNode;
 }
 
 const RootLayout: FC<Props> = async ({ children }) => {
-  const session = await getServerSession(authOptions);
-  if (!session?.user) return <SignOut />;
-  const id_usuario = session.user.id;
-  const profile = await fetchProfileById(id_usuario);
+  const profile = await fetchProfileById();
 
   const userProfile = {
     name: profile.nombre,

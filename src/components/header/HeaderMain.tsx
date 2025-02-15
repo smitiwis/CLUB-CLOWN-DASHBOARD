@@ -1,16 +1,11 @@
 import React from "react";
 
-import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import HeaderProfile from "./HeaderProfile";
-import { authOptions } from "@/lib/authOptions";
 import { fetchProfileById } from "@/lib/usuarios/services";
 
 const HeaderMain = async () => {
-  const session = await getServerSession(authOptions);
-  if (!session?.user) redirect("/login");
-
-  const profile = await fetchProfileById(session.user.id);
+  const profile = await fetchProfileById();
   if (!profile) redirect("/login");
 
   const userProfile = {

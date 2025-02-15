@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { IUsuarioByIdRes, IUsuarioRes } from "../definicions";
+import { getUserId } from "@/lib/helpers";
 
 export async function fetchUsuarios() {
   try {
@@ -100,8 +101,14 @@ export async function fetchUserById(id_usuario: string) {
   }
 }
 
-export async function fetchProfileById(id_usuario: string) {
+export async function fetchProfileById() {
   try {
+    const id_usuario = await getUserId();
+
+    if (!id_usuario) {
+      throw new Error("Usuario desconocido.");
+    }
+    
     const user = await prisma.usuario.findUnique({
       where: { id_usuario },
       select: {

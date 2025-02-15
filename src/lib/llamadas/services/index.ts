@@ -66,7 +66,10 @@ export async function fetchLlamadas(pagination: IPagination) {
   }
 }
 
-export async function fetchStateCalls(id_usuario: string) {
+export async function fetchStateCalls() {
+  const id_usuario = await getUserId();
+  if (!id_usuario) return null;
+
   const hoy = new Date();
   const inicioDia = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
   const finDia = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + 1);

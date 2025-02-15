@@ -1,9 +1,6 @@
 import { Button } from "@nextui-org/react";
 import Image from "next/image";
 import React, { FC } from "react";
-import { getServerSession } from "next-auth/next";
-import { redirect } from "next/navigation";
-import { authOptions } from "@/lib/authOptions";
 import Link from "next/link";
 
 type Props = {
@@ -11,8 +8,6 @@ type Props = {
 };
 
 const AuthLayout: FC<Props> = async ({ children }) => {
-  const session = await getServerSession(authOptions);
-  if (session) redirect("/dashboard");
 
   return (
     <div className="mx-auto flex flex-col h-screen">

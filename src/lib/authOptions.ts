@@ -6,9 +6,15 @@ import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
 
 export const authOptions: AuthOptions = {
+  secret: process.env.AUTH_SECRET,
+
   session: {
     strategy: "jwt",
-    maxAge: 1/60 * 60 * 60, // 4 hours
+    maxAge: 4 * 60 * 60, // 4 hours
+  },
+
+  jwt: {
+    secret: process.env.AUTH_SECRET, // Opcional, pero recomendado
   },
 
   providers: [
@@ -52,9 +58,6 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user }: any) {
-      console.log("token", token);
-      console.log("user", user);
-      
       if (user) {
         token.id = user.id;
       }
