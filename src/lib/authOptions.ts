@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
-    maxAge: 1/60 * 60 * 60, // 4 hours
+    maxAge: 5 * 60 * 60, // 4 hours
   },
 
   providers: [
