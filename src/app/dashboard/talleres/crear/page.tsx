@@ -1,6 +1,8 @@
 import { fetchProfesores } from "@/lib/profesores/services";
 import FormCreateTaller from "../(resources)/components/FormCreateTaller";
 
+export const dynamic = "force-dynamic"; // ⚡ Fuerza renderización en el servidor
+
 const Page = async () => {
   const paginacion = { page: 1, limit: 20 };
   const profesores = await fetchProfesores(paginacion);
@@ -8,7 +10,7 @@ const Page = async () => {
   if (profesores instanceof Error) {
     return <div>Error: {profesores.message}</div>;
   }
-  
+
   if (!profesores) {
     return <div>Loading...</div>;
   }
@@ -18,7 +20,7 @@ const Page = async () => {
     label: profesor.nombre + " " + profesor.apellidos,
   }));
 
-  return <FormCreateTaller profesoresOptions = {profesoresOptions}/>
+  return <FormCreateTaller profesoresOptions={profesoresOptions} />;
 };
 
 export default Page;

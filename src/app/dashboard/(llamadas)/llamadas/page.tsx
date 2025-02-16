@@ -2,6 +2,8 @@ import { fetchLlamadas } from "@/lib/llamadas/services";
 import React from "react";
 import CallsList from "../components/CallsList";
 
+export const dynamic = "force-dynamic"; // ⚡ Fuerza renderización en el servidor
+
 const Page = async () => {
   const pagination = { page: 1, limit: 10 };
   const callsData = await fetchLlamadas(pagination);
