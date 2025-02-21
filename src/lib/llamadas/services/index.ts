@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { format } from "@formkit/tempo";
 import { IBClientCallRes, RESULTADO_CALL, TIPO_CALL } from "../definitions";
 import { IPagination } from "@/lib/definitions";
+import { fetchProfileById } from "@/lib/usuarios/services";
 
 export async function fetchLlamadas(pagination: IPagination) {
   const { page, limit } = pagination;
@@ -11,13 +12,17 @@ export async function fetchLlamadas(pagination: IPagination) {
     const id_usuario = await getUserId();
     if (!id_usuario) return new Error("Usuario desconocido");
 
+    const profile = await fetchProfileById();
+    const rolName = profile.rol.nombre;
     // Calcular la paginación
     const skip = (page - 1) * limit;
     const take = limit;
 
+    // si profile.roleName es admin no filtrar por id_usuario
+
     const total = await prisma.cliente_llamada.count({ where: { id_usuario } });
     const llamadas = await prisma.cliente_llamada.findMany({
-      where: { id_usuario },
+      where: { id_usuario: rolName !== "admin" ? id_usuario : undefined },
       skip,
       take,
       orderBy: { fecha_creacion: "desc" },
@@ -44,7 +49,11 @@ export async function fetchLlamadas(pagination: IPagination) {
         key: i + 1,
         tipo: llamada.tipo as TIPO_CALL,
         resultado: llamada.resultado as RESULTADO_CALL,
-        fecha_creacion: format(llamada.fecha_creacion, "dddd D MMM, h:mm A", "es"),
+        fecha_creacion: format(
+          llamada.fecha_creacion,
+          "dddd D MMM, h:mm A",
+          "es"
+        ),
       };
     });
 

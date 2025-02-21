@@ -46,11 +46,14 @@ import {
   getLabelByStatus,
 } from "@/lib/helpers";
 import { format } from "@formkit/tempo";
+import { IProfile } from "@/lib/definitions";
 
 type Props = {
   inscripcionesResp: IBInscripcionResponse;
+  userProfile: IProfile;
 };
-const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
+const InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
+  const rol = userProfile.rolName;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [bouchers, setBouchers] = useState<Pago[]>([]);
   const router = useRouter();
@@ -100,10 +103,10 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
       key: "promocion",
       label: "PROMOCIÓN",
     },
-    {
-      key: "observacion",
-      label: "OBSERVACIONES",
-    },
+    // {
+    //   key: "observacion",
+    //   label: "OBSERVACIONES",
+    // },
 
     { key: "actions", label: "ACTIONS" },
   ];
@@ -161,9 +164,9 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
 
       case "telefono":
         return (
-          <div className="flex items-center gap-x-2">
+          <Chip className="flex items-center" variant="light" size="sm">
             {formatPhoneNumber(item.telefono)}
-          </div>
+          </Chip>
         );
 
       case "estado":
@@ -191,7 +194,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
           <div className="w-full flex justify-end items-center">
             <Button
               color="success"
-              className="rounded-none   px-0  hover:text-white hover:!bg-transparent"
+              className="rounded-none px-0 hover:text-white hover:!bg-transparent"
               variant="light"
               startContent={<IconEye size={20} color={"white"} />}
               onPress={() => {
@@ -202,7 +205,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
               <span>S/{totalPagos.toFixed(2)}</span>
             </Button>
           </div>
-        );
+        );  
 
       case "restante":
         const restante = item.precioVenta - totalPagos;
@@ -266,19 +269,21 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
               <IconEye />
             </Button>
 
-            <Button
-              isIconOnly
-              color="default"
-              variant="light"
-              size="sm"
-              onPress={() =>
-                router.push(`/dashboard/inscripciones/editar/${item.id}`)
-              }
-            >
-              <span className="transform rotate-[30deg]">
-                <IconEdit />
-              </span>
-            </Button>
+            {rol === "admin" && (
+              <Button
+                isIconOnly
+                color="default"
+                variant="light"
+                size="sm"
+                onPress={() =>
+                  router.push(`/dashboard/inscripciones/editar/${item.id}`)
+                }
+              >
+                <span className="transform rotate-[30deg]">
+                  <IconEdit />
+                </span>
+              </Button>
+            )}
           </div>
         );
       default:

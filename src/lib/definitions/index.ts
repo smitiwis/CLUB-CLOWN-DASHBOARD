@@ -17,11 +17,12 @@ export interface IRolesOptions {
   estado: boolean;
 }
 
-
 export interface IUserProfile {
-  user: {
-    name: string;
-    rolName: string;
-    callsPending: number;
-  };
+  user: IProfile;
+}
+
+export interface IProfile {
+  name: string;
+  rolName: string;
+  callsPending: number;
 }
