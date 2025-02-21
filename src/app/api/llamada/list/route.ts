@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
     if (!llamadas) {
       throw new Error("No se encontraron leads.");
     }
-
+ 
     const callsList: IBClientCallRes[] = llamadas.map((llamada, i) => {
       return {
         ...llamada,
