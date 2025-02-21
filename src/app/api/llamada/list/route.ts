@@ -27,11 +27,11 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
     const take = limit;
 
-    const total = await prisma.cliente_llamada.count({ 
-      where: { id_usuario: rolName !== "admin" ? id_usuario : undefined }, 
+    const total = await prisma.cliente_llamada.count({
+      where: { id_usuario: rolName !== "admin" ? id_usuario : undefined },
     });
     const llamadas = await prisma.cliente_llamada.findMany({
-      where: { id_usuario },
+      where: { id_usuario: rolName !== "admin" ? id_usuario : undefined },
       skip,
       take,
       orderBy: { fecha_creacion: "desc" },
@@ -49,20 +49,20 @@ export async function GET(request: NextRequest) {
             telefono: true,
           },
         },
-        usuario:{
+        usuario: {
           select: {
             id_usuario: true,
             nombre: true,
             apellido: true,
-          }
-        }
+          },
+        },
       },
     });
 
     if (!llamadas) {
       throw new Error("No se encontraron leads.");
     }
- 
+
     const callsList: IBClientCallRes[] = llamadas.map((llamada, i) => {
       return {
         ...llamada,

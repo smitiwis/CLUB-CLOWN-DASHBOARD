@@ -20,7 +20,9 @@ export async function fetchLlamadas(pagination: IPagination) {
 
     // si profile.roleName es admin no filtrar por id_usuario
 
-    const total = await prisma.cliente_llamada.count({ where: { id_usuario } });
+    const total = await prisma.cliente_llamada.count({
+      where: { id_usuario: rolName !== "admin" ? id_usuario : undefined },
+    });
     const llamadas = await prisma.cliente_llamada.findMany({
       where: { id_usuario: rolName !== "admin" ? id_usuario : undefined },
       skip,
@@ -40,13 +42,13 @@ export async function fetchLlamadas(pagination: IPagination) {
             telefono: true,
           },
         },
-        usuario:{
+        usuario: {
           select: {
             id_usuario: true,
             nombre: true,
             apellido: true,
-          }
-        }
+          },
+        },
       },
     });
 
