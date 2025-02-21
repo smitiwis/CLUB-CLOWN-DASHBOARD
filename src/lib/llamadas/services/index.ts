@@ -40,6 +40,13 @@ export async function fetchLlamadas(pagination: IPagination) {
             telefono: true,
           },
         },
+        usuario:{
+          select: {
+            id_usuario: true,
+            nombre: true,
+            apellido: true,
+          }
+        }
       },
     });
 
@@ -54,6 +61,7 @@ export async function fetchLlamadas(pagination: IPagination) {
           "dddd D MMM, h:mm A",
           "es"
         ),
+        assesor: llamada.usuario.nombre + " " + llamada.usuario.apellido,
       };
     });
 

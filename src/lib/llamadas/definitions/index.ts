@@ -52,6 +52,7 @@ export interface IBClientCallRes {
   observacion: string;
   tipo: TIPO_CALL;
   resultado: RESULTADO_CALL;
+  assesor: string;
 }
 
 // ERRORES

@@ -4,6 +4,7 @@
 import IconEdit from "@/components/icons/IconEdit";
 import IconEye from "@/components/icons/IconEye";
 import { COLORES, RESULTADO_LLAMADAS, TIPO_LLAMADAS } from "@/constants";
+import { formatearNombre } from "@/lib/helpers";
 import { IBCallsResp, IBClientCallRes } from "@/lib/llamadas/definitions";
 import {
   Button,
@@ -44,6 +45,10 @@ const CallsList: FC<Props> = ({ callsData }) => {
       label: "LEAD",
     },
     {
+      key: "assesor",
+      label: "QUIEN LLAMO",
+    },
+    {
       key: "estado",
       label: "COLOR",
     },
@@ -76,6 +81,15 @@ const CallsList: FC<Props> = ({ callsData }) => {
           <div className="flex flex-col">
             <span className="text-small">{item.cliente.nombre}</span>
             <span className="text-small">{item.cliente.telefono}</span>
+          </div>
+        );
+
+      case "assesor":
+        return (
+          <div className="flex flex-col">
+            <span className="text-small">
+              {formatearNombre(item.assesor, 20)}
+            </span>
           </div>
         );
       case "estado":
