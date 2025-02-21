@@ -3,7 +3,7 @@ import React, { FC, SVGProps } from "react";
 export const IconEyeSlashFilled: FC<SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
-      aria-hidden="true"
+      // aria-hidden="true"
       fill="none"
       focusable="false"
       height="1em"

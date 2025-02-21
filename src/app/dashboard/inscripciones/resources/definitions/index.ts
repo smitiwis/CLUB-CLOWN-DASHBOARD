@@ -70,9 +70,33 @@ export interface IBInscripcionResponse {
   pagination: IPaginationResp;
 }
 
-
 export interface IUploadResult {
   secure_url: string;
   public_id: string;
   url: string;
+}
+
+// EDITAR
+export interface IEditInscripcion {
+  id_taller_cliente: string;
+  id_cliente: string;
+  id_taller: string;
+  id_taller_promocion: string;
+  id_usuario: string;
+  estado_pago: string;
+  precio_venta: number;
+  observacion: string;
+  estado: string;
+}
+
+
+export interface IFormEditInscripcion {
+  id_inscripcion: string;
+  id_cliente: string;
+  id_usuario: string;
+  id_taller: string;
+  id_taller_promocion: string;
+  estado: string;
+  precio_venta: string;
+  observacion?: string;
 }

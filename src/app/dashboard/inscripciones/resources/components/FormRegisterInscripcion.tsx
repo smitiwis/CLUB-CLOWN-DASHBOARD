@@ -87,6 +87,17 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
     }
   }, [watch("id_taller")]);
 
+  useEffect(() => {
+    const id_taller_promocion = watch("id_taller_promocion");
+    if (id_taller_promocion) {
+      const promoSelected = promocionesOptions.find(
+        (promo) => promo.id_taller_promocion === id_taller_promocion
+      );
+
+      if (promoSelected) setSelectedPromocion(promoSelected);
+    }
+  }, [watch("id_taller_promocion")]);
+
   return (
     <>
       {!!stateForm && (
@@ -280,58 +291,57 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               )}
             </Select>
 
-            <Autocomplete
+            <Select
               {...register("id_taller_promocion")}
               isRequired
-              onSelectionChange={(id_promocion) => {
-                const promoSelected = promocionesOptions.find(
-                  (promo) => promo.id_taller_promocion === id_promocion
-                );
-                if (promoSelected) {
-                  setSelectedPromocion(promoSelected);
-                  setValue(
-                    "id_taller_promocion",
-                    promoSelected.id_taller_promocion
-                  );
-                }
-              }}
-              defaultSelectedKey={
-                promocionesOptions.length === 1
-                  ? promocionesOptions[0].id_taller_promocion
-                  : undefined
-              }
+              size="lg"
               label="Promoción:"
-              defaultItems={promocionesOptions}
               placeholder="Selecciona una promoción"
+              items={promocionesOptions}
+              defaultSelectedKeys={[watch("id_taller_promocion") || ""]}
               isInvalid={!!errors.id_taller_promocion}
               errorMessage={errors.id_taller_promocion?.message}
-              size="lg"
-            >
-              {(promo) => (
-                <AutocompleteItem
-                  key={promo.id_taller_promocion}
-                  textValue={promo.nombre}
-                  endContent={
-                    <Chip variant="light" color="warning">
-                      Dcto: S/{promo.descuento.toFixed(2)}
-                    </Chip>
-                  }
-                >
-                  <div className="pl-1 flex flex-col">
-                    <div className="flex gap-x-2">
-                      <span className="text-small">
-                        {promo.nombre.toLocaleUpperCase()}
-                      </span>
+              renderValue={(promociones: SelectedItems<IBPromoOptions>) => {
+                return promociones.map((promo) => (
+                  <div key={promo.key} className="flex items-center gap-x-3">
+                    <div className=" flex items-center gap-x-1">
+                      <span>{promo.data?.nombre.toLocaleUpperCase()}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-tiny text-cyan-500">
-                        {promo.detalles}
+                    <i className="icon-hand-o-right" />
+                    <div className="flex items-end gap-x-1 text-tiny">
+                      <span className="text-gray-400">Dcto:</span>
+                      <span className="text-warning">
+                        S/{promo.data?.descuento.toFixed(2)}
                       </span>
                     </div>
                   </div>
-                </AutocompleteItem>
+                ));
+              }}
+            >
+              {(promo) => (
+                <SelectItem
+                  key={promo.id_taller_promocion}
+                  textValue={promo.id_taller_promocion}
+                >
+                  <div
+                    key={promo.id_taller_promocion}
+                    className="flex items-center gap-x-3"
+                  >
+                    <div className=" flex items-center gap-x-1">
+                      <span>{promo.nombre.toLocaleUpperCase()}</span>
+                    </div>
+                    <i className="icon-hand-o-right" />
+                    <div className="flex items-end gap-x-1 text-tiny">
+                      <span className="text-gray-400">Dcto:</span>
+                      <span className="text-warning">
+                        S/{promo.descuento.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                </SelectItem>
               )}
-            </Autocomplete>
+            </Select>
+
             <Input
               {...register("precio_venta")}
               startContent="S/"
@@ -345,7 +355,17 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               errorMessage={errors.precio_venta?.message}
             />
           </div>
-          <pre>{/* {JSON.stringify(errors, null, 2)} */}</pre>
+          {previewUrl && (
+            <div className="flex flex-col gap-4 h-[300px]">
+              <Image
+                isZoomed
+                alt="boucher"
+                src={previewUrl}
+                className="max-w-full object-cover"
+                height={304}
+              />
+            </div>
+          )}
           <div className="flex flex-col flex-1 gap-4">
             <Input
               {...register("monto")}
@@ -443,18 +463,6 @@ const FormRegisterInscripcion: FC<Props> = (props) => {
               errorMessage={errors.nro_transaccion?.message}
             />
           </div>
-
-          {previewUrl && (
-            <div className="flex  flex-col  gap-4">
-              <Image
-                isZoomed
-                alt="boucher"
-                src={previewUrl}
-                className="max-w-full object-cover"
-                width={200}
-              />
-            </div>
-          )}
         </div>
         <div className="w-full mb-4">
           <Textarea

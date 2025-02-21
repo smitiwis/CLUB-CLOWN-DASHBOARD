@@ -74,9 +74,10 @@ model cliente {
   fecha_creacion      DateTime @default(now())
   fecha_actualizacion DateTime @updatedAt
 
-  usuario         usuario           @relation(fields: [id_usuario], references: [id_usuario])
-  cliente_llamada cliente_llamada[]
-  taller_cliente  taller_cliente[]
+  usuario          usuario            @relation(fields: [id_usuario], references: [id_usuario])
+  cliente_llamada  cliente_llamada[]
+  taller_cliente   taller_cliente[]
+  taller_historial taller_historial[]
 
   @@index([telefono])
 }
@@ -122,6 +123,10 @@ model taller {
   profesor       profesor         @relation(fields: [id_profesor], references: [id_profesor])
   taller_cliente taller_cliente[]
 
+  // Relación con historial de cambios de taller
+  historial_origen  taller_historial[] @relation(name: "taller_origen_rel")
+  historial_destino taller_historial[] @relation(name: "taller_destino_rel")
+
   @@index([id_profesor]) // Índice para facilitar las consultas
 }
 
@@ -147,7 +152,7 @@ model taller_cliente {
   id_cliente          String
   id_taller           String
   id_taller_promocion String
-  id_usuario          String
+  id_usuario          String // Id del asesor que inscribió al cliente
   estado_pago         String @default("pago_pend") // sin_pago | pago_pend | pago_compl
   precio_venta        Float
   observacion         String @default("") @db.Text
@@ -221,3 +226,26 @@ model taller_asistencia {
   // Índices
   @@index([id_taller_cliente])
 }
+
+// ================== REGISTRAR CAMBIOS DE TALLER - HORAS Y FECHAS ACUMULADAS ==================
+model taller_historial {
+  id_historial        String @id @default(uuid())
+  id_cliente          String
+  id_taller_origen    String
+  id_taller_destino   String
+  asistencias_previas Int
+
+  fecha_cambio DateTime @default(now())
+
+  cliente        cliente @relation(fields: [id_cliente], references: [id_cliente])
+  taller_origen  taller  @relation(fields: [id_taller_origen], references: [id_taller], name: "taller_origen_rel")
+  taller_destino taller  @relation(fields: [id_taller_destino], references: [id_taller], name: "taller_destino_rel")
+
+  @@index([id_cliente])
+}
+
+// id_cliente: Identifica al usuario.
+// id_taller_origen: Taller anterior.
+// id_taller_destino: Nuevo taller.
+// asistencias_previas: Número de asistencias antes del cambio.
+// fecha_cambio: Momento en que se hizo el traslado.

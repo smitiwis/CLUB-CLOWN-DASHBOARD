@@ -147,6 +147,7 @@ const CallsList: FC<Props> = ({ callsData }) => {
   }, []);
 
   // ======== TABLA Y PAGINACION =========
+  const [isFirtsRender, setIsFirtsRender] = useState(true);
   const [data, setData] = useState(rows); // Usamos la lista inicial
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -243,10 +244,8 @@ const CallsList: FC<Props> = ({ callsData }) => {
   }, [pages, pagination]);
 
   useEffect(() => {
-    if (page === 1) {
-      return setData(callsData.data);
-    }
-    fetchPageData();
+    if (!isFirtsRender) fetchPageData();
+    else setIsFirtsRender(false);
   }, [page]);
 
   return (

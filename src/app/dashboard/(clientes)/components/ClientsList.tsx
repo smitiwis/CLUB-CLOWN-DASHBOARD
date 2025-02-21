@@ -446,6 +446,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
   const [data, setData] = useState(rows); // Usamos la lista inicial
   const [page, setPage] = useState(clientsResp.page);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFirtsRender, setIsFirstRender] = useState(true);
 
   const limit = clientsResp.limit;
 
@@ -491,7 +492,9 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
       status: filterStatus,
       user: filterUser,
     };
-    fetchPageData(filter);
+
+    if (!isFirtsRender) fetchPageData(filter);
+    else setIsFirstRender(false);
   }, [page]);
 
   const [pagination, setPagination] = useState({
@@ -508,7 +511,7 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
       if (!textSinEspacios) setErrorPhone(false);
 
       fetchPageData({ ...filter, init: true });
-    }, 1000),
+    }, 1200),
     []
   );
 

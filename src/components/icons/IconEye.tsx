@@ -2,8 +2,9 @@ import React, { FC } from "react";
 type Props = {
   size?: number;
   color?: string;
+  className?: string;
 }
-const IconEye:FC<Props> = ({size, color}) => {
+const IconEye:FC<Props> = ({size, color, className}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -11,6 +12,7 @@ const IconEye:FC<Props> = ({size, color}) => {
       height={size || 24}
       fill="none"
       viewBox="0 0 24 24"
+      className={className}
     >
       <style>
         {`

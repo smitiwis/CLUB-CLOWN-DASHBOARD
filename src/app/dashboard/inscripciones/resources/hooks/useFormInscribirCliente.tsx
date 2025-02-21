@@ -65,8 +65,8 @@ const useFormInscribirCliente = () => {
       if (selectedIdClient && selectedTaller && selectedPromocion) {
         const body = {
           id_cliente: selectedIdClient.id_cliente,
-          id_taller: selectedTaller.id_taller,
-          id_taller_promocion: selectedPromocion.id_taller_promocion,
+          id_taller: formData.id_taller,
+          id_taller_promocion: formData.id_taller_promocion,
           precio_venta: formData.precio_venta,
           observacion: formData.observacion,
           pago:
@@ -153,10 +153,11 @@ const useFormInscribirCliente = () => {
       if (montoPago === 0) {
         setValue("estado_inscripcion", "sin_pago");
       }
+      
       if (montoPago > 0 && montoPago < precioVenta) {
         setValue("estado_inscripcion", "pago_pend");
       }
-      console.log(montoPago, precioVenta);
+
       if (montoPago === precioVenta) {
         setValue("estado_inscripcion", "pago_compl");
       }

@@ -4,7 +4,7 @@ import * as yup from "yup";
 export const schemaInscripcion = yup.object().shape({
   id_cliente: yup.string().required("El cliente es obligatorio."),
   id_taller: yup.string().required("El taller es obligatorio."),
-  id_taller_promocion: yup.string(),
+  id_taller_promocion: yup.string().required("La promoción es obligatoria."),
   precio_venta: yup.string().required("El precio de venta es obligatorio."),
   monto: yup.string().nullable(), // Permite que sea opcional
 
@@ -36,7 +36,7 @@ export const schemaInscripcion = yup.object().shape({
 export interface IF_Inscripcion {
   id_cliente: string;
   id_taller: string;
-  id_taller_promocion?: string;
+  id_taller_promocion: string;
   precio_venta: string;
   monto?: string | null;
   metodo_pago?: string;

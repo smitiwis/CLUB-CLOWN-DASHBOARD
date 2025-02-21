@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
       where: { id_usuario },
       skip,
       take,
+      orderBy: { fecha_creacion: "desc" },
       select: {
         id_cliente_llamada: true,
         estado: true,

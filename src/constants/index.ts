@@ -69,6 +69,14 @@ export const STATUS_MAIN = [
   { key: "0", label: "Inactivo" },
 ];
 
+export const STATUS_INSCRITOS = [
+  { key: "0", label: "Retirado" },
+  { key: "1", label: "Activo" },
+  { key: "2", label: "Trasladado" },
+  { key: "3", label: "Finalizado" },
+  { key: "4", label: "Expulsado" },
+];
+
 export const STATUS_CLIENT = [{ key: 1, label: "Negro" }];
 
 export const GROUPS_CLIENT = [
@@ -178,8 +186,8 @@ export const ESTATO_INSCRIPCION: {
     | "danger"
     | undefined;
 }[] = [
-  { key: "sin_pago", label: "Proceso", color: "warning" },
-  { key: "pago_pend", label: "Pendiente", color: "primary" },
+  { key: "sin_pago", label: "Proceso", color: "danger" },
+  { key: "pago_pend", label: "Pendiente", color: "warning" },
   { key: "pago_compl", label: "Completo", color: "success" },
 ];
 

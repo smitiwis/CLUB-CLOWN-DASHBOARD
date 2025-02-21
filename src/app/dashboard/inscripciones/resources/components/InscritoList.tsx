@@ -1,13 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import React, { FC, Key, useCallback, useMemo, useState } from "react";
+import React, {
+  FC,
+  Key,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { IBInscripcion, IBInscripcionResponse, Pago } from "../definitions";
 import { useRouter } from "next/navigation";
 import {
-  Avatar,
-  Badge,
   Button,
   Chip,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -39,7 +45,6 @@ import {
   getColorByStatus,
   getLabelByStatus,
 } from "@/lib/helpers";
-import Image from "next/image";
 import { format } from "@formkit/tempo";
 
 type Props = {
@@ -71,18 +76,21 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
     {
       key: "precioVenta",
       label: "PRECIO VENTA",
+      className: "text-end",
     },
     {
       key: "pagos",
       label: "PAGO TOTAL",
+      className: "text-end",
     },
     {
       key: "restante",
       label: "RESTANTE",
+      className: "text-end",
     },
     {
       key: "estadoPago",
-      label: "PAGOS",
+      label: "ESTADO PAGO",
     },
     {
       key: "taller",
@@ -104,37 +112,50 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
     const cellValue = item[columnKey as keyof IBInscripcion];
     const totalPagos = item.pagos.reduce((acc, pago) => acc + pago.monto, 0);
 
-    const ChipName = () => (
-      <Chip avatar={<Avatar />} variant="flat" size="sm">
-        {formatearNombre(item.nombre, 17)}
-      </Chip>
-    );
-
     switch (columnKey) {
       case "nombre":
         const { asesorRegistro, asesorInscripcion } = item;
 
-        if (asesorRegistro.id === asesorInscripcion.id) return <ChipName />;
-
         return (
           <Tooltip
-            color="danger"
+            showArrow
+            color={
+              asesorRegistro.id === asesorInscripcion.id
+                ? "foreground"
+                : "danger"
+            }
             content={
               <div className="text-tiny flex flex-col gap-y-1">
-                <span>Cliente de: {asesorRegistro.nombre}</span>
-                <span>Inscrito por: {asesorInscripcion.nombre}</span>
+                <span>
+                  <b>
+                    {asesorRegistro.id !== asesorInscripcion.id
+                      ? "Cliente de: "
+                      : "Assesor: "}
+                  </b>
+                  {asesorRegistro.nombre}
+                </span>
+                {asesorRegistro.id !== asesorInscripcion.id && (
+                  <span>Inscrito por: {asesorInscripcion.nombre}</span>
+                )}
               </div>
             }
-            showArrow
           >
-            <Badge
-              color="danger"
+            <Chip
+              avatar={
+                <IconEye
+                  size={35}
+                  className={
+                    asesorRegistro.id === asesorInscripcion.id
+                      ? "text-success"
+                      : "text-danger"
+                  }
+                />
+              }
+              variant="flat"
               size="sm"
-              placement="top-left"
-              content={<IconEye size={18} color="white" />}
             >
-              <ChipName />
-            </Badge>
+              {formatearNombre(item.nombre, 17)}
+            </Chip>
           </Tooltip>
         );
 
@@ -160,15 +181,26 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
 
       case "precioVenta":
         return (
-          <div className="flex justify-end items-center gap-x-2 mr-3">
+          <div className="w-full flex justify-end items-center  gap-x-2 mr-3">
             S/{item.precioVenta.toFixed(2)}
           </div>
         );
 
       case "pagos":
         return (
-          <div className="flex justify-end items-center gap-x-2 mr-3">
-            S/{totalPagos.toFixed(2)}
+          <div className="w-full flex justify-end items-center">
+            <Button
+              color="success"
+              className="rounded-none   px-0  hover:text-white hover:!bg-transparent"
+              variant="light"
+              startContent={<IconEye size={20} color={"white"} />}
+              onPress={() => {
+                setBouchers(item.pagos);
+                onOpen();
+              }}
+            >
+              <span>S/{totalPagos.toFixed(2)}</span>
+            </Button>
           </div>
         );
 
@@ -176,25 +208,17 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
         const restante = item.precioVenta - totalPagos;
 
         return (
-          <div className="flex justify-end items-center gap-x-2 mr-3">
+          <div className="w-full flex justify-end items-center gap-x-2 mr-3">
             {restante ? "S/" + restante.toFixed(2) : "-"}
           </div>
         );
 
       case "estadoPago":
-        console.log("item", item);
-        console.log("item estadoPago", item.estadoPago);
         return (
           <Chip
-            variant="faded"
             size="sm"
+            variant="light"
             color={getColorByStatus(item.estadoPago)}
-            onClick={() => {
-              setBouchers(item.pagos);
-              onOpen();
-            }}
-            className="cursor-pointer"
-            startContent={<IconEye size={18} color={"white"} />}
           >
             {getLabelByStatus(item.estadoPago)}
           </Chip>
@@ -213,6 +237,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
             <Chip variant="light">{item.promocion?.nombre}</Chip>
           </Tooltip>
         );
+
       case "taller":
         return (
           <Tooltip
@@ -228,23 +253,27 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
 
       case "actions":
         return (
-          <div className="relative flex items-center gap-x-2">
+          <div className="relative flex items-center">
             <Button
               isIconOnly
               color="success"
               variant="light"
               size="sm"
-              onPress={() => router.push(`/dashboard/pago/detalle/${item.id}`)}
+              onPress={() =>
+                router.push(`/dashboard/inscripciones/detalle/${item.id}`)
+              }
             >
               <IconEye />
             </Button>
 
             <Button
               isIconOnly
-              color="success"
+              color="default"
               variant="light"
               size="sm"
-              onPress={() => router.push(`/dashboard/pago/editar/${item.id}`)}
+              onPress={() =>
+                router.push(`/dashboard/inscripciones/editar/${item.id}`)
+              }
             >
               <span className="transform rotate-[30deg]">
                 <IconEdit />
@@ -281,6 +310,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
   const [data, setData] = useState(rows); // Usamos la lista inicial
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFirtsRender, setIsFirstRender] = useState(true);
 
   const [pagination, setPagination] = useState(inscripcionesResp.pagination);
   const limit = pagination.limit;
@@ -301,7 +331,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
       if (pagination.total > pagination.limit) {
         fetchPageData(text, true);
       }
-    }, 1000),
+    }, 1200),
     []
   );
 
@@ -310,6 +340,11 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
   const onClear = React.useCallback(() => {
     setPage(1);
   }, []);
+
+  useEffect(() => {
+    if (!isFirtsRender) fetchPageData(filterPhone);
+    else setIsFirstRender(false);
+  }, [page]);
 
   const topContent = useMemo(() => {
     return (
@@ -391,6 +426,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
   return (
     <>
       <Table
+        isStriped
         topContent={topContent}
         aria-label="Tabla de pagos"
         bottomContent={bottomContent}
@@ -398,7 +434,9 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
       >
         <TableHeader columns={columns}>
           {(column) => (
-            <TableColumn key={column.key}>{column.label}</TableColumn>
+            <TableColumn className={column.className} key={column.key}>
+              {column.label}
+            </TableColumn>
           )}
         </TableHeader>
 
@@ -419,7 +457,7 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
       </Table>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="2xl">
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <ModalHeader className="text-center flex flex-col gap-1">
                 COMPROBANTES DE PAGO
@@ -432,26 +470,17 @@ const InscritoList: FC<Props> = ({ inscripcionesResp }) => {
                         {format(boucher.fecha, "D MMM YYYY, h:mm A", "es")}
                       </span>
                       <Image
+                        isZoomed
                         className="h-full rounded-md"
                         src={boucher.imgBoucher}
                         alt={"boucher" + i}
-                        width={150}
-                        height={200}
+                        height={310}
                       />
                     </div>
                   ))}
                 </div>
               </ModalBody>
-              <ModalFooter>
-                <div className="flex justify-center gap-x-2 w-full">
-                  <Button color="primary" variant="light" onPress={onClose}>
-                    Cerrar
-                  </Button>
-                  <Button color="primary" onPress={onClose}>
-                    Aceptar
-                  </Button>
-                </div>
-              </ModalFooter>
+              <ModalFooter></ModalFooter>
             </>
           )}
         </ModalContent>

@@ -136,7 +136,7 @@ export async function fetchInscripciones(
         metodo: pago.metodo_pago,
         fecha: pago.fecha_pago,
         nroTransaccion: pago.nro_transaccion,
-        imgBoucher: `${process.env.NEXT_PUBLIC_IMAGE_PATH}${pago.img_boucher}`,
+        imgBoucher: `${process.env.CLOUDINARY_IMAGE}${pago.img_boucher}`,
       })),
 
       // Asesor que registró al cliente
@@ -166,6 +166,36 @@ export async function fetchInscripciones(
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Error al obtener inscritos.");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function fetchInscripcionById(id_inscripcion: string) {
+  try {
+    const id_usuario = await getUserId();
+    if (!id_usuario) return new Error("Usuario desconocido");
+
+    const getInscrito = await prisma.taller_cliente.findUnique({
+      where: {
+        id_taller_cliente: id_inscripcion,
+      },
+      select: {
+        id_taller_cliente: true,
+        id_cliente: true,
+        id_taller: true,
+        id_taller_promocion: true,
+        id_usuario: true,
+        estado_pago: true,
+        precio_venta: true,
+        observacion: true,
+        estado: true,
+      },
+    });
+    return getInscrito;
+  } catch (error) {
+    console.error("Error al obtener inscripcion por Id", error);
+    return new Error("Error al obtener inscripcion por Id");
   } finally {
     await prisma.$disconnect();
   }

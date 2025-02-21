@@ -20,6 +20,7 @@ export async function fetchLlamadas(pagination: IPagination) {
       where: { id_usuario },
       skip,
       take,
+      orderBy: { fecha_creacion: "desc" },
       select: {
         id_cliente_llamada: true,
         estado: true,
