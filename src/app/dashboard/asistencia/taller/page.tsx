@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
-const Page = () => {
+export const dynamic = 'force-dynamic';
+const Page = async() => {
   redirect("/dashboard/asistencia");
 };
 

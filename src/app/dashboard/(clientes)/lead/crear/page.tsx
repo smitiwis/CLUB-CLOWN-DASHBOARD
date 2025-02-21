@@ -1,7 +1,9 @@
 import React from "react";
 import FormcreateClient from "../../components/FormCreateLead";
 
-const Page = () => {
+export const dynamic = 'force-dynamic';
+
+const Page = async() => {
 
   return (
     <>

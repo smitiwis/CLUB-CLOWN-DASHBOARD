@@ -3,6 +3,8 @@ import ClientsList from "../components/ClientsList";
 import { fetchUsuariosOptions } from "@/lib/usuarios/services";
 import { getUserId } from "@/lib/helpers";
 
+export const dynamic = 'force-dynamic';
+
 const Page = async () => {
   const myUserId = await getUserId();
   if (!myUserId) {

@@ -1,6 +1,8 @@
 import { fetchRoles } from "@/lib/roles/services";
 import FormCreateUser from "../components/FormCreateUser";
 
+export const dynamic = 'force-dynamic';
+
 const Page = async () => {
   const getRoles = await fetchRoles();
 

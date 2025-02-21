@@ -1,6 +1,8 @@
 import React from 'react'
 
-const Page = () => {
+export const dynamic = 'force-dynamic';
+
+const Page = async() => {
   return (
     <div>Page</div>
   )

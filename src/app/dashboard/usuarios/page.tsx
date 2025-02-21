@@ -5,6 +5,8 @@ import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import { permisosPage } from "@/lib/helpers/permisos";
 
+export const dynamic = 'force-dynamic';
+
 const Page = async () => {
   await permisosPage(["admin"]);
 

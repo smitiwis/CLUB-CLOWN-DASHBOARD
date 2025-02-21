@@ -3,6 +3,8 @@ import React from "react";
 import TalleresList from "./(resources)/components/TalleresList";
 import { permisosPage } from "@/lib/helpers/permisos";
 
+export const dynamic = 'force-dynamic';
+
 const Page = async () => {
   await permisosPage(["admin"]);
 
