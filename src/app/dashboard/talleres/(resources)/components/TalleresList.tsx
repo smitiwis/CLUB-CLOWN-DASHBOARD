@@ -110,7 +110,7 @@ const TalleresList: FC<Props> = ({ talleresData }) => {
               setTallerName(item.nombre);
             }}
           >
-            Inscritos
+            {item.inscritos} Inscritos
           </Button>
         );
 

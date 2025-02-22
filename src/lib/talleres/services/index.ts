@@ -36,6 +36,12 @@ export async function fetchTalleres(pagination: IPagination) {
             apellidos: true,
           },
         },
+        // obtener la cantidad de alumnos que tiene este taller
+        taller_cliente: {
+          select: {
+            id_taller_cliente: true,
+          },
+        },
       },
     });
 
@@ -43,7 +49,10 @@ export async function fetchTalleres(pagination: IPagination) {
       ...taller,
       key: i + 1,
       dias: taller.dias as IDias[],
+      inscritos: taller.taller_cliente.length,
     }));
+
+    console.log(talleres);
 
     const totalPages = Math.ceil(total / limit);
 

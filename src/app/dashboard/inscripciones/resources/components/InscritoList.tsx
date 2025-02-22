@@ -52,7 +52,7 @@ type Props = {
   inscripcionesResp: IBInscripcionResponse;
   userProfile: IProfile;
 };
-const InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
+const   InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
   const rol = userProfile.rolName;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [bouchers, setBouchers] = useState<Pago[]>([]);
@@ -144,17 +144,18 @@ const InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
             }
           >
             <Chip
+              color={asesorRegistro.id === asesorInscripcion.id ? "default" : "danger"}
               avatar={
                 <IconEye
-                  size={35}
-                  className={
+                  size={22}
+                  color={
                     asesorRegistro.id === asesorInscripcion.id
-                      ? "text-success"
-                      : "text-danger"
+                      ? "#17c964"
+                      : "#f54180"
                   }
                 />
               }
-              variant="flat"
+              variant="light"
               size="sm"
             >
               {formatearNombre(item.nombre, 17)}

@@ -30,6 +30,7 @@ export interface IBTallerResp {
     nombre: string;
     apellidos: string;
   };
+  inscritos: number;
 }
 
 export interface IBTallerDataResp {
