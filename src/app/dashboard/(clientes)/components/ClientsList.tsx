@@ -226,9 +226,15 @@ const ClientsList: FC<Props> = ({
               placement="right"
             >
               <div
-                className="w-[1.75rem] h-[1.75rem] rounded-full"
+                className={`w-[1.75rem] h-[1.75rem] rounded-full flex justify-center items-center ${
+                  item.isCallToday ? "border-2 border-red-500" : ""
+                }`}
                 style={{ background: color?.code || "white" }}
-              />
+              >
+                {item.isCallToday && (
+                  <i className="icon-check text-danger text-sm "></i>
+                )}
+              </div>
             </Tooltip>
           </Badge>
         );
@@ -761,7 +767,7 @@ const ClientsList: FC<Props> = ({
     return (
       <div className="flex w-full justify-between relative min-h-[2.5rem]">
         <span className="text-default-400 text-small">
-          Total: {pagination.total} clientes 
+          Total: {pagination.total} clientes
         </span>
         <Pagination
           className="absolute left-[50%] transform translate-x-[-50%] bottom-0"

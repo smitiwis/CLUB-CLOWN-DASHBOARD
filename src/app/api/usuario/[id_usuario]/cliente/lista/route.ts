@@ -1,5 +1,6 @@
 import { formatearNombre, getUserId } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
+import { format } from "@formkit/tempo";
 import { NextRequest } from "next/server";
 
 type params = {
@@ -81,6 +82,7 @@ export async function GET(request: NextRequest, { params }: params) {
         fecha_creacion: true,
         cliente_llamada: {
           select: {
+            fecha_creacion: true,
             id_cliente_llamada: true,
             estado_agenda: true,
             fecha_agendada: true,
@@ -100,12 +102,26 @@ export async function GET(request: NextRequest, { params }: params) {
         (call) => call.estado_agenda === "1" && call.fecha_agendada
       );
 
+      const calls = cliente.cliente_llamada;
+      const nro_llamadas = calls.length;
+      const lastCall = calls[nro_llamadas - 1];
+      const callDate = lastCall
+        ? new Date(lastCall.fecha_creacion)
+        : "2000-01-22T22:12:16.157Z";
+      const currentDate = new Date();
+
+      const formattedCallDate = format(callDate, "YYYY-MM-DD");
+      const formattedCurrentDate = format(currentDate, "YYYY-MM-DD");
+
+      const isCallToday = formattedCallDate === formattedCurrentDate;
+
       return {
         ...cliente,
         llamada: getPendingCall
           ? getPendingCall
           : cliente.cliente_llamada.find((call) => call.estado_agenda) || null,
-        nro_llamadas: cliente.cliente_llamada.length,
+        nro_llamadas,
+        isCallToday,
         usuario: {
           id_usuario: cliente.usuario.id_usuario,
           nombre: formatearNombre(

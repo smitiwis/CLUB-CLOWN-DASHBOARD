@@ -56,6 +56,7 @@ export interface IRowClientTable {
   categoria: ICategoria;
   estado: string;
   nro_llamadas: number;
+  isCallToday: boolean;
 
   estadoAgenda: string;
   fechaAgendada: string | null;
@@ -100,6 +101,7 @@ export interface IBClients {
   direccion: string;
   nro_direccion: string;
   origen: TOrigen;
+  isCallToday: boolean;
 
   llamada: {
     id_cliente_llamada: string;
