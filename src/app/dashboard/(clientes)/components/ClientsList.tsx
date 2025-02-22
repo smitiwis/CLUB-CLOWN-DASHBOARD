@@ -67,14 +67,21 @@ type Props = {
   clientsResp: IBClientsResp;
   usuarios: IBUsuarioOptions[];
   myUserId: string;
+  userRol: string;
 };
 
-const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
+const ClientsList: FC<Props> = ({
+  clientsResp,
+  usuarios,
+  myUserId,
+  userRol,
+}) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
   const [clientSelected, setClientSelected] = useState<IRowClientTable>();
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [showCopy, setShowCopy] = useState(false);
+  const [loadingFile, setLoadingFile] = useState(false);
 
   // ========= FILTROS =========
   const [errorPhone, setErrorPhone] = useState(false);
@@ -519,6 +526,47 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
     setPage(1);
   }, []);
 
+  const handleDownload = async () => {
+    setLoadingFile(true);
+    try {
+      const filter = {
+        text: filterPhone,
+        status: filterStatus,
+        user: filterUser,
+      };
+
+      const text = (filter?.text || "").replace(/\s+/g, "").trim();
+      const status = filter?.status || "";
+      const id_usuario = filter?.user || "";
+
+      const base = `/api/export-data/${id_usuario}?page=${page}&limit=${limit}`;
+
+      const path = `${base}${text ? `&phoneNumber=${text}` : ""}${
+        status ? `&status=${status}` : ""
+      }`;
+
+      const response = await axios.get(path, { responseType: "blob" }); // Importante para manejar la respuesta como un Blob
+
+      // Crear un objeto URL a partir del Blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "datos.xlsx"); // Nombre del archivo a descargar
+      document.body.appendChild(link);
+      link.click();
+
+      if (link.parentNode) {
+        // Limpiar y revocar el objeto URL
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error("Error al descargar el archivo:", error);
+    } finally {
+      setLoadingFile(false);
+    }
+  };
+
   useEffect(() => {
     if (myUserId === filterUser) {
       const newColumns = columns.filter((column) => column.key !== "usuario");
@@ -648,10 +696,24 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
             </Button>
           </div>
         </div>
-        <div className="flex justify-between items-end my-2">
-          <span className="text-default-400 text-small">
-            Total {pagination.total} clientes
-          </span>
+        <div className="flex justify-between items-end mt-2">
+          {userRol === "admin" ? (
+            <Button
+              isLoading={loadingFile}
+              color="primary"
+              size="lg"
+              variant="ghost"
+              startContent={<i className="icon-download" />}
+              onPress={handleDownload}
+            >
+              Descargar
+            </Button>
+          ) : (
+            <span className="text-default-400 text-small">
+              Total {pagination.total} clientes
+            </span>
+          )}
+
           {showCopy && (
             <span className="text-tiny text-success flex gap-x-1 items-center">
               <i className="icon-check" />
@@ -691,13 +753,18 @@ const ClientsList: FC<Props> = ({ clientsResp, usuarios, myUserId }) => {
     data.length,
     errorPhone,
     showCopy,
+    loadingFile,
   ]);
 
   const bottomContent = React.useMemo(() => {
     if (pagination.totalPages === 1 || !data.length) return null;
     return (
-      <div className="flex w-full justify-center">
+      <div className="flex w-full justify-between relative min-h-[2.5rem]">
+        <span className="text-default-400 text-small">
+          Total: {pagination.total} clientes 
+        </span>
         <Pagination
+          className="absolute left-[50%] transform translate-x-[-50%] bottom-0"
           isCompact
           showControls
           showShadow

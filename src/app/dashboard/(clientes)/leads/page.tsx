@@ -1,6 +1,6 @@
 import { fetchClients } from "@/lib/clients/services";
 import ClientsList from "../components/ClientsList";
-import { fetchUsuariosOptions } from "@/lib/usuarios/services";
+import { fetchProfileById, fetchUsuariosOptions } from "@/lib/usuarios/services";
 import { getUserId } from "@/lib/helpers";
 
 export const dynamic = 'force-dynamic';
@@ -10,6 +10,7 @@ const Page = async () => {
   if (!myUserId) {
     return <div>Error: Usuario desconocido</div>;
   }
+  const profile = await fetchProfileById();
   const usuarios = await fetchUsuariosOptions();
 
   const usuariosOptions = [
@@ -29,6 +30,7 @@ const Page = async () => {
       clientsResp={clientsList}
       usuarios={usuariosOptions}
       myUserId={myUserId}
+      userRol={profile.rol.nombre}
     />
   );
 };
