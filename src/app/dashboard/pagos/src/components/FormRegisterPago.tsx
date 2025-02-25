@@ -9,12 +9,14 @@ import {
   Image,
   Input,
   Select,
+  SelectedItems,
   SelectItem,
 } from "@nextui-org/react";
 import React, { ChangeEvent, FC } from "react";
 import { IBInscritosOptions } from "../definitions";
 import useFormRegistrarPago from "../hooks/useFormRegistrarPago";
 import { formatearNombre } from "@/lib/helpers";
+import { IFMetodosPayOptions } from "@/lib/clients/definitions";
 
 type Props = {
   inscritosOptions: IBInscritosOptions[];
@@ -70,6 +72,28 @@ const FormRegisterPago: FC<Props> = ({ inscritosOptions }) => {
               size="lg"
               isInvalid={!!errors.id_taller_cliente}
               errorMessage={errors.id_taller_cliente?.message}
+              renderValue={(inscritos: SelectedItems<IBInscritosOptions>) => {
+                return inscritos.map((inscrito) => {
+                  const nombreCompleto = `${inscrito.data?.nombre} ${inscrito.data?.apellido}`;
+                  return (
+                    <div
+                      key={inscrito.key}
+                      className="flex gap-x-2 items-center"
+                    >
+                      <span className="text-small">
+                        {formatearNombre(
+                          nombreCompleto.toLocaleUpperCase(),
+                          30
+                        )}
+                      </span>
+                      <i className="icon-hand-o-right text-success-500" />
+                      <span className="text-sm text-cyan-500">
+                        {inscrito.data?.taller}
+                      </span>
+                    </div>
+                  );
+                });
+              }}
             >
               {(inscrito) => {
                 const nombreCompleto = `${inscrito.nombre} ${inscrito.apellido}`;
@@ -81,6 +105,9 @@ const FormRegisterPago: FC<Props> = ({ inscritosOptions }) => {
                     <div className="flex flex-col">
                       <span className="text-small">
                         {formatearNombre(nombreCompleto, 30)}
+                      </span>
+                      <span className="text-cyan-500">
+                        Taller: {inscrito.taller}
                       </span>
                     </div>
                   </SelectItem>
@@ -104,12 +131,33 @@ const FormRegisterPago: FC<Props> = ({ inscritosOptions }) => {
               endContent={
                 <Chip
                   size="sm"
-                  variant="bordered"
-                  // color={getColorByStatus(clientSelected.e)}
+                  variant="shadow"
+                  color={
+                    watch("monto")
+                      ? parseFloat(watch("monto")) > 0 &&
+                        parseFloat(watch("monto")) <
+                          (clientSelected?.saldoPendiente || 0)
+                        ? "warning"
+                        : parseFloat(watch("monto")) ===
+                          (clientSelected?.saldoPendiente || 0)
+                        ? "success"
+                        : "danger"
+                      : "default"
+                  }
                 >
-                  {parseFloat(watch("monto")) > 0 &&
-                    parseFloat(watch("monto")) <
-                      (clientSelected?.saldoPendiente || 0)}
+                  {watch("monto")
+                    ? parseFloat(watch("monto")) > 0 &&
+                      parseFloat(watch("monto")) <
+                        (clientSelected?.saldoPendiente || 0)
+                      ? `Resta: S/${(
+                          (clientSelected?.saldoPendiente || 0) -
+                          parseFloat(watch("monto"))
+                        ).toFixed(2)}`
+                      : parseFloat(watch("monto")) ===
+                        (clientSelected?.saldoPendiente || 0)
+                      ? "Completo"
+                      : "Excedido"
+                    : ""}
                 </Chip>
               }
               size="lg"
@@ -119,17 +167,46 @@ const FormRegisterPago: FC<Props> = ({ inscritosOptions }) => {
 
             <Select
               {...register("metodo_pago")}
-              isDisabled={!watch("id_taller_cliente")}
+              isDisabled={
+                !watch("monto") || parseInt(watch("monto") || "0") < 25
+              }
               label="Método de pago"
               items={METODOS_PAGO}
               size="lg"
               isInvalid={!!errors.metodo_pago}
               errorMessage={errors.metodo_pago?.message}
+              renderValue={(pays: SelectedItems<IFMetodosPayOptions>) => {
+                return pays.map((pay) => (
+                  <div key={pay.key} className="flex users-center gap-2">
+                    <div className="flex gap-x-1 items-center">
+                      <Image
+                        isZoomed
+                        alt={pay.data?.label}
+                        src={pay.data?.path}
+                        width={25}
+                        height={25}
+                        className="rounded-full"
+                      />
+                      <span className="text-md">{pay.data?.label}</span>
+                    </div>
+                  </div>
+                ));
+              }}
             >
-              {(document) => (
-                <SelectItem key={document.key} textValue={document.label}>
+              {(pay) => (
+                <SelectItem key={pay.key} textValue={pay.label}>
                   <div className="flex flex-col">
-                    <span className="text-small">{document.label}</span>
+                    <div className="flex gap-x-2 items-center">
+                      <Image
+                        isZoomed
+                        alt={pay?.label}
+                        src={pay?.path}
+                        width={25}
+                        height={25}
+                        className="rounded-full"
+                      />
+                      <span className="text-md">{pay?.label}</span>
+                    </div>
                   </div>
                 </SelectItem>
               )}
@@ -158,7 +235,7 @@ const FormRegisterPago: FC<Props> = ({ inscritosOptions }) => {
             />
           </div>
           <div className="flex flex-[0.25] flex-col  gap-4">
-          {previewUrl && (
+            {previewUrl && (
               <Image
                 isZoomed
                 alt="boucher"
@@ -167,7 +244,7 @@ const FormRegisterPago: FC<Props> = ({ inscritosOptions }) => {
                 width={200}
               />
             )}
-            </div>
+          </div>
         </div>
 
         <Button

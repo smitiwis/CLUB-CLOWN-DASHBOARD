@@ -187,7 +187,7 @@ export async function fetchInscritosOptions() {
         estado_pago: {
           not: "pago_compl",
         },
-        estado: "1",
+        estado: "1", // 0: retirado, 1: activo | 2: finalizado
       },
       select: {
         id_taller_cliente: true,
@@ -225,8 +225,8 @@ export async function fetchInscritosOptions() {
 
       return {
         id_cliente: cliente.id_taller_cliente,
-        nombre: cliente.cliente.nombre,
-        apellido: cliente.cliente.apellido,
+        nombre: cliente.cliente.nombre.toLocaleUpperCase(),
+        apellido: cliente.cliente.apellido.toLocaleUpperCase(),
         telefono: cliente.cliente.telefono,
         taller: cliente.taller.nombre,
         totalPagado,
