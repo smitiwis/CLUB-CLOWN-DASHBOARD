@@ -197,6 +197,8 @@ const ClientsList: FC<Props> = ({
     "1": "warning",
     "2": "danger",
     "3": "success",
+    "4": "primary",
+    "5": "secondary",
   };
 
   const renderCell = useCallback((item: IRowClientTable, columnKey: Key) => {
