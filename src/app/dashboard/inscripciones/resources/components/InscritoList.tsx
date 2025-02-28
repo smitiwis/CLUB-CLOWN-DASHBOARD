@@ -23,6 +23,7 @@ import {
   ModalHeader,
   Pagination,
   Select,
+  SelectedItems,
   SelectItem,
   Spinner,
   Table,
@@ -49,12 +50,17 @@ import {
 } from "@/lib/helpers";
 import { format } from "@formkit/tempo";
 import { IProfile } from "@/lib/definitions";
+import { IBUsuarioOptions } from "@/lib/usuarios/definicions";
 
 type Props = {
   inscripcionesResp: IBInscripcionResponse;
   userProfile: IProfile;
+  usuarios: IBUsuarioOptions[];
 };
-const   InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
+const InscritoList: FC<Props> = (props) => {
+  const { inscripcionesResp, userProfile, usuarios } = props;
+
+  const [filterUser, setFilterUser] = useState("");
   const rol = userProfile.rolName;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [bouchers, setBouchers] = useState<Pago[]>([]);
@@ -154,7 +160,11 @@ const   InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
             }
           >
             <Chip
-              color={asesorRegistro.id === asesorInscripcion.id ? "default" : "danger"}
+              color={
+                asesorRegistro.id === asesorInscripcion.id
+                  ? "default"
+                  : "danger"
+              }
               avatar={
                 <IconEye
                   size={22}
@@ -204,18 +214,18 @@ const   InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
           <div className="w-full flex justify-end items-center">
             <Button
               color="success"
-              className="rounded-none px-0 hover:text-white hover:!bg-transparent"
+              className="flex items-center justify-around px-0 hover:text-white hover:!bg-transparent"
               variant="light"
-              startContent={<IconEye size={20} color={"white"} />}
+              startContent={<IconEye  color={"white"} />}
               onPress={() => {
                 setBouchers(item.pagos);
                 onOpen();
               }}
             >
-              <span>S/{totalPagos.toFixed(2)}</span>
+              S/{totalPagos.toFixed(2)}
             </Button>
           </div>
-        );  
+        );
 
       case "restante":
         const restante = item.precioVenta - totalPagos;
@@ -303,23 +313,6 @@ const   InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
     }
   }, []);
 
-  const fetchPageData = async (text?: string, init?: boolean) => {
-    setIsLoading(true);
-    try {
-      const base = `/api/inscrito/list?page=${
-        init ? "1" : page
-      }&limit=${limit}`;
-      const path = `${base}${text ? `&phoneNumber=${text}` : ""}`;
-
-      const response = await axios.get<IBInscripcionResponse>(path);
-      setData(response.data.data);
-      setPagination(response.data.pagination);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   // ======== TABLA Y PAGINACION =========
   const [data, setData] = useState(rows); // Usamos la lista inicial
@@ -338,13 +331,39 @@ const   InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
   const [errorPhone, setErrorPhone] = useState(false);
   const [filterPhone, setFilterPhone] = useState("");
 
+  const fetchPageData = async (filter?: {
+    text?: string;
+    init?: boolean;
+    user: string;
+  }) => {
+    const { text, init } = filter || {};
+    setIsLoading(true);
+    try {
+      const initPage = init ? 1 : page;
+      const filterByPhone = text ? `&phoneNumber=${text}` : "";
+      const filterByUser = filter?.user || "all";
+      const base = `/api/inscrito/list?page=${initPage}&limit=${limit}`;
+
+      const path = `${base}&id_usuario=${filterByUser}${filterByPhone}`;
+
+      const response = await axios.get<IBInscripcionResponse>(path);
+      setData(response.data.data);
+      setPagination(response.data.pagination);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const onSearchChange = useCallback(
-    debounce((text: string) => {
+    debounce((filter: { text: string; user: string }) => {
+      const { text } = filter;
       if (!REGEX.PHONE.test(text)) setErrorPhone(true);
       if (!text) setErrorPhone(false);
 
       if (pagination.total > pagination.limit) {
-        fetchPageData(text, true);
+        fetchPageData({ ...filter, init: true });
       }
     }, 1200),
     []
@@ -357,7 +376,11 @@ const   InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
   }, []);
 
   useEffect(() => {
-    if (!isFirtsRender) fetchPageData(filterPhone);
+    if (!isFirtsRender)
+      fetchPageData({
+        text: filterPhone,
+        user: filterUser,
+      });
     else setIsFirstRender(false);
   }, [page]);
 
@@ -365,21 +388,68 @@ const   InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
     return (
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between gap-3">
-          <Input
-            size="lg"
-            isClearable
-            className="w-full sm:max-w-[44%]"
-            placeholder="Buscar por celular..."
-            startContent={<i className="icon-search" />}
-            onClear={onClear}
-            isInvalid={errorPhone}
-            errorMessage={errorPhone ? "Ingrese un número válido" : ""}
-            onValueChange={(text) => {
-              setFilterPhone(text);
-              setErrorPhone(false);
-              onSearchChange(text);
-            }}
-          />
+          <div className="flex flex-[0.60] gap-x-2">
+            <Input
+              size="lg"
+              isClearable
+              className="w-full sm:max-w-[44%]"
+              placeholder="Buscar por celular..."
+              startContent={<i className="icon-search" />}
+              onClear={onClear}
+              isInvalid={errorPhone}
+              errorMessage={errorPhone ? "Ingrese un número válido" : ""}
+              onValueChange={(phone) => {
+                setFilterPhone(phone);
+                setErrorPhone(false);
+                onSearchChange({
+                  text: phone,
+                  user: filterUser,
+                });
+              }}
+            />
+            <Select
+              size="lg"
+              items={usuarios}
+              placeholder="Filtro por usuario"
+              defaultSelectedKeys={["all"]}
+              renderValue={(users: SelectedItems<IBUsuarioOptions>) => {
+                return users.map((user) => (
+                  <div key={user.key} className="flex users-center gap-2">
+                    <div className="flex flex-col">
+                      <span className="text-md">{user.data?.label}</span>
+                      <span className="text-tiny text-cyan-500">
+                        {user.data?.telefono}
+                      </span>
+                    </div>
+                  </div>
+                ));
+              }}
+              onChange={(user) => {
+                setFilterUser(user.target.value);
+                onSearchChange({
+                  text: filterPhone,
+                  user: user.target.value,
+                });
+              }}
+            >
+              {(user) => (
+                <SelectItem key={user.key} textValue={user.label}>
+                  <div className="flex gap-2 items-center">
+                    <div
+                      className="w-[1rem] h-[1rem] rounded-full"
+                      style={{ background: user.code }}
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-small">
+                        {formatearNombre(user.label, 20)}
+                      </span>
+                    </div>
+                  </div>
+                </SelectItem>
+              )}
+            </Select>
+          </div>
+
           <Button
             as={Link}
             href="/dashboard/inscripciones/registrar"
@@ -422,8 +492,6 @@ const   InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
   }, [filterPhone, errorPhone, data.length, onSearchChange]);
 
   const bottomContent = useMemo(() => {
-    if (pagination.totalPages === 1 || !data.length) return null;
-
     return (
       <div className="flex w-full justify-center">
         <Pagination

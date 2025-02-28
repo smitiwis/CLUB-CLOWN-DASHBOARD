@@ -1,4 +1,3 @@
-import { getUserId } from "@/lib/helpers";
 import { fetchInscripciones } from "@/lib/inscripciones/services";
 import { NextRequest } from "next/server";
 
@@ -10,16 +9,13 @@ export async function GET(request: NextRequest) {
     // PAGINATION
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
-
-    const id_usuario = await getUserId();
-    if (!id_usuario) {
-      return Response.json({ mensaje: "Usuario desconocido" }, { status: 401 });
-    }
+    const id_usuario = searchParams.get("id_usuario") || "all";
 
     // Calcular la paginación
     const paginate = { page, limit };
+    const filter = { phoneNumber, id_usuario };
 
-    const inscritosResp = await fetchInscripciones(paginate, phoneNumber);;
+    const inscritosResp = await fetchInscripciones(paginate, filter);;
 
     if (inscritosResp instanceof Error) {
       throw new Error("No se encontraron inscritos.");

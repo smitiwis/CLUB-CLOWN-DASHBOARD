@@ -4,15 +4,18 @@ import { prisma } from "@/lib/prisma";
 
 export async function fetchInscripciones(
   pagination: IPagination,
-  telefonoCliente?: string
+  filter: {
+    telefonoCliente?: string;
+    id_usuario?: string;
+  }
 ) {
   const { page, limit } = pagination;
-
+  const { telefonoCliente, id_usuario } = filter;
   try {
-    const id_usuario = await getUserId();
     if (!id_usuario) return new Error("Usuario desconocido");
 
     const where = {
+      id_usuario: id_usuario === "all" ? undefined : id_usuario,
       cliente: {
         telefono: { contains: telefonoCliente },
       },
@@ -22,7 +25,7 @@ export async function fetchInscripciones(
     const skip = (page - 1) * limit;
     const take = limit;
 
-    const total = await prisma.taller_cliente.count();
+    const total = await prisma.taller_cliente.count({ where });
 
     const data = await prisma.taller_cliente.findMany({
       where,
