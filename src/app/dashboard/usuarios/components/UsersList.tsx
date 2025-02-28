@@ -20,7 +20,7 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import IconEye from "@/components/icons/IconEye";
 import IconTrash from "@/components/icons/IconTrash";
 import IconEdit from "@/components/icons/IconEdit";

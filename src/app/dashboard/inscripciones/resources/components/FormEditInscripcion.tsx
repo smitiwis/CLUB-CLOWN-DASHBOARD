@@ -20,7 +20,7 @@ import {
   SelectedItems,
   SelectItem,
   Textarea,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { STATUS_INSCRITOS } from "@/constants";
 import { IBUsuarioOptions } from "@/lib/usuarios/definicions";
 import { formatearNombre } from "@/lib/helpers";

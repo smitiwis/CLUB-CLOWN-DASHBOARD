@@ -1,12 +1,8 @@
-import { Spinner } from '@nextui-org/react'
-import React from 'react'
+import LoadingComponent from "@/components/loader/Loading";
+import React from "react";
 
 const Loading = () => {
-  return (
-     <div className="flex justify-center items-center w-full h-full">
-      <Spinner size="lg"/>
-    </div>
-  )
-}
+  return <LoadingComponent />;
+};
 
-export default Loading
+export default Loading;

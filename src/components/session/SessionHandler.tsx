@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-// SessionHandler.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -11,7 +10,7 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 
 const SessionHandler = ({ children }: { children: React.ReactNode }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();

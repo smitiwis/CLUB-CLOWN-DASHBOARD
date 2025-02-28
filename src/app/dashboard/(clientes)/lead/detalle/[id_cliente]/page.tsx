@@ -8,7 +8,7 @@ import {
   getTipeLlamada,
 } from "@/lib/helpers";
 import { format } from "@formkit/tempo";
-import { Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Card, CardBody, CardHeader } from "@heroui/react";
 import { redirect } from "next/navigation";
 import React from "react";
 import Breadcrumb from "./Breadcrumb";

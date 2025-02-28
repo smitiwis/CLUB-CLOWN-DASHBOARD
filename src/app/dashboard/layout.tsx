@@ -4,6 +4,7 @@ import AsideMain from "@/components/navbar/AsideMain";
 import { fetchProfileById } from "@/lib/usuarios/services";
 // import SignOut from "./SignOut";
 import SessionHandler from "../../components/session/SessionHandler";
+import Providers from "./Provider";
 
 interface Props {
   children: React.ReactNode;
@@ -27,7 +28,9 @@ const RootLayout: FC<Props> = async ({ children }) => {
         <AsideMain user={userProfile} />
         <div className="grid grid-cols-1 grid-rows-[70px,1fr] h-full overflow-y-auto">
           <HeaderMain />
-          <main className="p-6 flex-1 bg-gray-950">{children}</main>
+          <main className="p-6 flex-1 bg-gray-950">
+            <Providers>{children}</Providers>
+          </main>
         </div>
       </div>
     </SessionHandler>

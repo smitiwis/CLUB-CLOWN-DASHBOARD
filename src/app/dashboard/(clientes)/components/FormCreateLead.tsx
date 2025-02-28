@@ -11,7 +11,7 @@ import {
   SelectItem,
   Spinner,
   Switch,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import useFormCreateClient from "../hooks/useFormCreateClient";
 import {

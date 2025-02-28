@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Input, Button, Card, Form, Alert } from "@nextui-org/react";
+import { Input, Button, Card, Form, Alert } from "@heroui/react";
 import EyeOffIcon from "@/components/icons/IconEyeOff";
 import IconEye from "@/components/icons/IconEye";
 import useFormLogin from "../hooks/useFormLogin";

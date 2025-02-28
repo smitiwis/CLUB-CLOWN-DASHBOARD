@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import axios from "axios";
 import { formatearNombre, getColorByStatus, getLabelByStatus } from "@/lib/helpers";
 import { format } from "@formkit/tempo";

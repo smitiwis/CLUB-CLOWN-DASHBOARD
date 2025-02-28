@@ -11,7 +11,7 @@ import {
   SelectItem,
   Spinner,
   Switch,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React, { FC, useEffect, useState } from "react";
 import {
   CATEGORIA_CLIENT,

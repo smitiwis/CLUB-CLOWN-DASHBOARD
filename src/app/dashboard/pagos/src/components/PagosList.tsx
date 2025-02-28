@@ -29,7 +29,7 @@ import {
   TableRow,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import axios from "axios";
 import debounce from "debounce";
 import Image from "next/image";

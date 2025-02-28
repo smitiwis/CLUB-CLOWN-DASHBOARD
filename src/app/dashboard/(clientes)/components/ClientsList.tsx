@@ -18,6 +18,7 @@ import {
   TableCell,
   Tooltip,
   Button,
+  addToast,
   Chip,
   ChipProps,
   Badge,
@@ -39,7 +40,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   IBClients,
   IBClientsResp,
@@ -259,57 +260,69 @@ const ClientsList: FC<Props> = ({
             }, 1000);
           }
         };
-        return (
-          <div
-            className="flex flex-col gap-x-1 relative cursor-pointer"
-            onClick={copyToClipboard}
-          >
-            <div className="flex items-center gap-x-1">
+
+        const ButtonToast = () => (
+          <Button
+            className="flex gap-x-2 relative cursor-pointer"
+            variant="light"
+            startContent={
               <i className="text-cyan-400 icon-clipboard pt-1 text-medium cursor-pointer" />
-              <span className="text-small">
-                {item?.estadoAgenda ? (
-                  <Tooltip
-                    size="sm"
-                    color={statusColorAgenda[item.estadoAgenda]}
-                    isDisabled={item.estadoAgenda === "2"}
-                    content={
-                      <div className="flex flex-col gap-x-1">
-                        <b>Fecha agendada: </b>
-                        {item.fechaAgendada}
-                      </div>
-                    }
-                    placement="right"
-                    showArrow
-                  >
-                    <Badge
-                      color={statusColorAgenda[item.estadoAgenda]}
-                      content=""
-                      placement="top-right"
-                    >
-                      <span className="pt-1 pr-3">
-                        {formatPhoneNumber(item.telefono)}
-                      </span>
-                    </Badge>
-                  </Tooltip>
-                ) : (
-                  <span className="pt-1 pr-3">
-                    {formatPhoneNumber(item.telefono)}
-                  </span>
-                )}
-              </span>
-            </div>
+            }
+            onPress={() => {
+              copyToClipboard();
+              addToast({
+                timeout: 1000,
+                variant: "bordered",
+                color: "success",
+                title: "Numero copiado",
+              });
+            }}
+          >
+            {formatPhoneNumber(item.telefono)}
+          </Button>
+        );
+
+        return (
+          <div className="text-small">
+            {item?.estadoAgenda ? (
+              <Tooltip
+                size="sm"
+                color={statusColorAgenda[item.estadoAgenda]}
+                isDisabled={item.estadoAgenda === "2"}
+                content={
+                  <div className="flex flex-col gap-x-1">
+                    <b>Fecha agendada: </b>
+                    {item.fechaAgendada}
+                  </div>
+                }
+                placement="right"
+                showArrow
+              >
+                <Badge
+                  color={statusColorAgenda[item.estadoAgenda]}
+                  content=""
+                  placement="top-right"
+                >
+                  <ButtonToast />
+                </Badge>
+              </Tooltip>
+            ) : (
+              <ButtonToast />
+            )}
           </div>
         );
 
       case "origen":
         return (
-          <div className="flex justify-center items-center">
-            <i
-              className={`text-2xl text-green-500 ${
-                ORIGENES_CLIENTS.find(({ key }) => key === item.origen)?.icon
-              }`}
-            />
-          </div>
+          <>
+            <div className="flex justify-center items-center">
+              <i
+                className={`text-2xl text-green-500 ${
+                  ORIGENES_CLIENTS.find(({ key }) => key === item.origen)?.icon
+                }`}
+              />
+            </div>
+          </>
         );
 
       case "nombre":

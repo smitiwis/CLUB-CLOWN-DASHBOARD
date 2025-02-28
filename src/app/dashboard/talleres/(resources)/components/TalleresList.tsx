@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

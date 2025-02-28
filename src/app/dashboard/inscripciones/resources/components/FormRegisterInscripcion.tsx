@@ -22,7 +22,7 @@ import {
   SelectedItems,
   SelectItem,
   Textarea,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React, { ChangeEvent, FC, useEffect } from "react";
 import useFormInscribirCliente from "../hooks/useFormInscribirCliente";
 import { ESTATO_INSCRIPCION, METODOS_PAGO } from "@/constants";

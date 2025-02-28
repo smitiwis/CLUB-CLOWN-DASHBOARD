@@ -33,7 +33,7 @@ import {
   TableRow,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import IconEye from "@/components/icons/IconEye";
 import IconEdit from "@/components/icons/IconEdit";
 import Link from "next/link";

@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { FC } from "react";
 import { usePathname } from "next/navigation";
 // import Image from "next/image";
-import { Divider } from "@nextui-org/react";
+import { Divider } from "@heroui/react";
 import Image from "next/image";
 import { IUserProfile } from "@/lib/definitions";
 

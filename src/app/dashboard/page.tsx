@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Card, CardBody, CardHeader, Chip, Divider } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Chip, Divider } from "@heroui/react";
 import { fetchStateCalls } from "@/lib/llamadas/services";
 
 export const dynamic = 'force-dynamic';

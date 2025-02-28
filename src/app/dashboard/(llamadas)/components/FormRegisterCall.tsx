@@ -27,7 +27,7 @@ import {
   SelectItem,
   Textarea,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { now, getLocalTimeZone, ZonedDateTime } from "@internationalized/date";
 import useFormRegisterCall from "../hooks/useFormRegisterCall";
 import {

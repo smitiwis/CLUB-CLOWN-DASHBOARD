@@ -10,7 +10,7 @@ import {
   Select,
   SelectItem,
   Switch,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import EyeOffIcon from "@/components/icons/IconEyeOff";
 import IconEye from "@/components/icons/IconEye";
 import { DOCUMENTS } from "@/constants";

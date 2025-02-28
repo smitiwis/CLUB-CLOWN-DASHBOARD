@@ -6,7 +6,7 @@ import {
   Chip,
   Divider,
   Link,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React from "react";
 
 export const dynamic = "force-dynamic"; // ⚡ Fuerza renderización en el servidor

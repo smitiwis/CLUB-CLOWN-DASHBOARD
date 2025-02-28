@@ -1,7 +1,7 @@
 import React from "react";
 import { fetchUsuarios } from "@/lib/usuarios/services";
 import UsersList from "./components/UsersList";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import Link from "next/link";
 import { permisosPage } from "@/lib/helpers/permisos";
 

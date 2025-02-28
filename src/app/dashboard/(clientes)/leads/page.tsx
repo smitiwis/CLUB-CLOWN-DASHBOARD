@@ -1,9 +1,12 @@
 import { fetchClients } from "@/lib/clients/services";
 import ClientsList from "../components/ClientsList";
-import { fetchProfileById, fetchUsuariosOptions } from "@/lib/usuarios/services";
+import {
+  fetchProfileById,
+  fetchUsuariosOptions,
+} from "@/lib/usuarios/services";
 import { getUserId } from "@/lib/helpers";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 const Page = async () => {
   const myUserId = await getUserId();
@@ -24,6 +27,13 @@ const Page = async () => {
   if (clientsList instanceof Error) {
     return <div>Error: {clientsList.message}</div>;
   }
+
+  // // crear una promesa que se resuleva en 30 segundos
+  // await new Promise((resolve) => {
+  //   setTimeout(() => {
+  //     resolve("¡Éxito!");
+  //   }, 300000);
+  // });
 
   return (
     <ClientsList

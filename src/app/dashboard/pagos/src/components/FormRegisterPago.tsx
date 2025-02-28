@@ -11,7 +11,7 @@ import {
   Select,
   SelectedItems,
   SelectItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React, { ChangeEvent, FC } from "react";
 import { IBInscritosOptions } from "../definitions";
 import useFormRegistrarPago from "../hooks/useFormRegistrarPago";
