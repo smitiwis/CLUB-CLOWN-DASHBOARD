@@ -758,7 +758,6 @@ const ClientsList: FC<Props> = ({
                 ));
               }}
               onChange={(item) => {
-                // CATEGORIA
                 setFilterCategory(item.target.value);
                 onSearchChange({
                   text: filterPhone,
@@ -816,6 +815,7 @@ const ClientsList: FC<Props> = ({
     filterPhone,
     filterStatus,
     filterUser,
+    filterCategory,
     onSearchChange,
     data.length,
     errorPhone,
