@@ -526,6 +526,7 @@ const ClientsList: FC<Props> = ({
     const filter = {
       text: filterPhone,
       status: filterStatus,
+      category: filterCategory,
       user: filterUser,
     };
 
@@ -778,13 +779,6 @@ const ClientsList: FC<Props> = ({
               )}
             </Select>
           </div>
-
-          {/* {showCopy && (
-            <span className="text-tiny text-success flex gap-x-1 items-center">
-              <i className="icon-check" />
-              <span>Copiado!</span>
-            </span>
-          )} */}
 
           <label className="flex flex-[0.25] gap-x-2 justify-end items-center text-default-400 text-small">
             <span>Filas por pagina:</span>
