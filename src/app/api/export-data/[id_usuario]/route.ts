@@ -31,20 +31,28 @@ export async function GET(request: NextRequest, { params }: params) {
       .replace(/\s+/g, "")
       .trim(); // Número de celular (opcional)
     const status = searchParams.get("status") || ""; // Estado (opcional)
-
+    const categoria = searchParams.get("categoria") || ""; // Categoría (opcional)
+    
     const where: {
       id_usuario: string;
       telefono?: { contains: string };
       estado?: string;
+      categoria?: string;
     } = { id_usuario };
 
     if (phoneNumber) {
       where.telefono = { contains: phoneNumber }; // Filtra por número parcial o completo
     }
 
+    if (categoria) {
+      where.categoria = categoria;
+    }
+
     if (status) {
       where.estado = status;
     }
+
+    console.log("where", where);
 
     const clientes = await prisma.cliente.findMany({
       where: {

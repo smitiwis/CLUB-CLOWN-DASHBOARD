@@ -88,6 +88,8 @@ export const CATEGORIA_CLIENT = [
   { key: "1", label: "Clown Regular" },
   { key: "2", label: "Clown Para Parejas" },
   { key: "3", label: "Clown Full Day" },
+  { key: "4", label: "Clown Corporativo" },
+  { key: "5", label: "Clown Voluntariado" },
 ];
 
 export const TIPO_LLAMADAS = [

@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import {
   Button,
   Chip,
+  ChipProps,
   Image,
   Input,
   Modal,
@@ -44,6 +45,7 @@ import {
   formatPhoneNumber,
   getColorByStatus,
   getLabelByStatus,
+  getLabelInscritoByKey,
 } from "@/lib/helpers";
 import { format } from "@formkit/tempo";
 import { IProfile } from "@/lib/definitions";
@@ -111,6 +113,14 @@ const   InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
     { key: "actions", label: "ACTIONS" },
   ];
 
+  const statusColorStatus: Record<string, ChipProps["color"]> = {
+    "0": "danger",
+    "1": "success",
+    "2": "secondary",
+    "3": "warning",
+    "4": "warning",
+  };
+
   const renderCell = useCallback((item: IBInscripcion, columnKey: Key) => {
     const cellValue = item[columnKey as keyof IBInscripcion];
     const totalPagos = item.pagos.reduce((acc, pago) => acc + pago.monto, 0);
@@ -171,15 +181,14 @@ const   InscritoList: FC<Props> = ({ inscripcionesResp, userProfile }) => {
         );
 
       case "estado":
-        const isActive = parseInt(item.estado);
         return (
           <Chip
             className="flex items-center"
             variant="flat"
             size="sm"
-            color={isActive ? "success" : "danger"}
+            color={statusColorStatus[item.estado]}
           >
-            {isActive ? "Activo" : "Inactivo"}
+            {getLabelInscritoByKey(item.estado)}
           </Chip>
         );
 

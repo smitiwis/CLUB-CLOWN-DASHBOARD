@@ -156,7 +156,7 @@ model taller_cliente {
   estado_pago         String @default("pago_pend") // sin_pago | pago_pend | pago_compl
   precio_venta        Float
   observacion         String @default("") @db.Text
-  estado              String @default("1") @db.VarChar(1) // 0: retirado, 1: activo | 2: finalizado
+  estado              String @default("1") @db.VarChar(1) // 0: retirado | 1: activo | 2: Trasladado | 3: Finalizado | 4: Expulsado
 
   fecha_inscripcion   DateTime @default(now())
   fecha_creacion      DateTime @default(now())

@@ -45,7 +45,13 @@ import {
   IBClientsResp,
   IRowClientTable,
 } from "@/lib/clients/definitions";
-import { COLORES, GROUPS_CLIENT, IColors, ORIGENES_CLIENTS } from "@/constants";
+import {
+  CATEGORIA_CLIENT,
+  COLORES,
+  GROUPS_CLIENT,
+  IColors,
+  ORIGENES_CLIENTS,
+} from "@/constants";
 import { useRouter } from "next/navigation";
 import IconEdit from "@/components/icons/IconEdit";
 import IconEye from "@/components/icons/IconEye";
@@ -87,6 +93,7 @@ const ClientsList: FC<Props> = ({
   const [errorPhone, setErrorPhone] = useState(false);
   const [filterPhone, setFilterPhone] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
+  const [filterCategory, setFilterCategory] = useState("");
   const [filterUser, setFilterUser] = useState(myUserId);
 
   const adapteRows = (clients: IBClients[]) => {
@@ -473,21 +480,22 @@ const ClientsList: FC<Props> = ({
     text?: string;
     status?: string;
     init?: boolean;
+    category?: string;
     user: string;
   }) => {
     setIsLoading(true);
     const text = (filter?.text || "").replace(/\s+/g, "").trim();
     const status = filter?.status || "";
+    const category = filter?.category || "";
     const id_usuario = filter?.user || "";
     const init = filter?.init || false;
 
     try {
-      const base = `/api/usuario/${id_usuario}/cliente/lista?page=${
-        init ? "1" : page
-      }&limit=${limit}`;
+      const baseStatic = `/api/usuario/${id_usuario}/cliente/lista`;
+      const base = `${baseStatic}?page=${init ? "1" : page}&limit=${limit}`;
       const path = `${base}${text ? `&phoneNumber=${text}` : ""}${
         status ? `&status=${status}` : ""
-      }`;
+      }${category ? `&categoria=${category}` : ""}`;
 
       const response = await axios.get(path);
       setData(adapteRows(response.data.data));
@@ -518,13 +526,21 @@ const ClientsList: FC<Props> = ({
   });
 
   const onSearchChange = useCallback(
-    debounce((filter: { text: string; status: string; user: string }) => {
-      const textSinEspacios = filter.text.replace(/\s+/g, "");
-      if (!REGEX.PHONE.test(textSinEspacios)) setErrorPhone(true);
-      if (!textSinEspacios) setErrorPhone(false);
+    debounce(
+      (filter: {
+        text: string;
+        status: string;
+        user: string;
+        category: string;
+      }) => {
+        const textSinEspacios = filter.text.replace(/\s+/g, "");
+        if (!REGEX.PHONE.test(textSinEspacios)) setErrorPhone(true);
+        if (!textSinEspacios) setErrorPhone(false);
 
-      fetchPageData({ ...filter, init: true });
-    }, 1200),
+        fetchPageData({ ...filter, init: true });
+      },
+      1200
+    ),
     []
   );
 
@@ -539,17 +555,21 @@ const ClientsList: FC<Props> = ({
         text: filterPhone,
         status: filterStatus,
         user: filterUser,
+        category: filterCategory,
       };
 
       const text = (filter?.text || "").replace(/\s+/g, "").trim();
       const status = filter?.status || "";
+      const category = filter?.category || "";
       const id_usuario = filter?.user || "";
 
-      const base = `/api/export-data/${id_usuario}?page=${page}&limit=${limit}`;
-
-      const path = `${base}${text ? `&phoneNumber=${text}` : ""}${
+      const baseStatic = `/api/export-data/${id_usuario}`;
+      const base = `${baseStatic}?page=${page}&limit=${limit}`;
+      const queryParam = `${text ? `&phoneNumber=${text}` : ""}${
         status ? `&status=${status}` : ""
-      }`;
+      }${category ? `&categoria=${category}` : ""}`;
+
+      const path = `${base}${queryParam}`;
 
       const response = await axios.get(path, { responseType: "blob" }); // Importante para manejar la respuesta como un Blob
 
@@ -557,7 +577,7 @@ const ClientsList: FC<Props> = ({
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "datos.xlsx"); // Nombre del archivo a descargar
+      link.setAttribute("download", `leads_${new Date().toISOString()}.xlsx`); // Nombre del archivo a descargar
       document.body.appendChild(link);
       link.click();
 
@@ -585,112 +605,31 @@ const ClientsList: FC<Props> = ({
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-y-1">
-        <div className="flex justify-between gap-3">
-          <Input
-            size="lg"
-            isClearable
-            className="w-full sm:max-w-[44%]"
-            placeholder="Buscar por celular..."
-            startContent={<i className="icon-search" />}
-            onClear={onClear}
-            isInvalid={errorPhone}
-            errorMessage={errorPhone ? "Ingrese un número válido" : ""}
-            value={filterPhone}
-            onValueChange={(value) => {
-              setFilterPhone(value.replace(/\s+/g, ""));
-              setErrorPhone(false);
-              onSearchChange({
-                text: value,
-                status: filterStatus,
-                user: filterUser,
-              });
-            }}
-          />
-          <div className="flex gap-3 flex-1">
-            <div className="flex flex-1 gap-x-2">
-              <Select
-                size="lg"
-                items={usuarios}
-                defaultSelectedKeys={[myUserId]}
-                placeholder="Filtro por usuario"
-                renderValue={(users: SelectedItems<IBUsuarioOptions>) => {
-                  return users.map((user) => (
-                    <div key={user.key} className="flex users-center gap-2">
-                      <div className="flex flex-col">
-                        <span className="text-md">{user.data?.label}</span>
-                        <span className="text-tiny text-cyan-500">
-                          {user.data?.telefono}
-                        </span>
-                      </div>
-                    </div>
-                  ));
-                }}
-                onChange={(user) => {
-                  setFilterUser(user.target.value);
-                  onSearchChange({
-                    text: filterPhone,
-                    status: filterStatus,
-                    user: user.target.value,
-                  });
-                }}
-              >
-                {(user) => (
-                  <SelectItem key={user.key} textValue={user.label}>
-                    <div className="flex gap-2 items-center">
-                      <div
-                        className="w-[1rem] h-[1rem] rounded-full"
-                        style={{ background: user.code }}
-                      />
-                      <div className="flex flex-col">
-                        <span className="text-small">
-                          {formatearNombre(user.label, 20)}
-                        </span>
-                      </div>
-                    </div>
-                  </SelectItem>
-                )}
-              </Select>
-              <Select
-                size="lg"
-                items={COLORES}
-                placeholder="Estado"
-                renderValue={(items: SelectedItems<IColors>) => {
-                  return items.map((item) => (
-                    <div key={item.key} className="flex items-center gap-2">
-                      <div
-                        className="w-[1rem] h-[1rem] rounded-full"
-                        style={{ background: item.data?.code }}
-                      />
-                      <div className="flex flex-col">
-                        <span>{item.data?.label}</span>
-                      </div>
-                    </div>
-                  ));
-                }}
-                onChange={(item) => {
-                  setFilterStatus(item.target.value);
-                  onSearchChange({
-                    text: filterPhone,
-                    status: item.target.value,
-                    user: filterUser,
-                  });
-                }}
-              >
-                {(color) => (
-                  <SelectItem key={color.key} textValue={color.label}>
-                    <div className="flex gap-2 items-center">
-                      <div
-                        className="w-[1rem] h-[1rem] rounded-full"
-                        style={{ background: color.code }}
-                      />
-                      <div className="flex flex-col">
-                        <span className="text-small">{color.label}</span>
-                      </div>
-                    </div>
-                  </SelectItem>
-                )}
-              </Select>
-            </div>
+        <div className="flex flex-1 justify-between gap-3">
+          <div className="flex flex-[0.75]">
+            <Input
+              size="lg"
+              fullWidth
+              isClearable
+              placeholder="Buscar por celular..."
+              startContent={<i className="icon-search" />}
+              onClear={onClear}
+              isInvalid={errorPhone}
+              errorMessage={errorPhone ? "Ingrese un número válido" : ""}
+              value={filterPhone}
+              onValueChange={(value) => {
+                setFilterPhone(value.replace(/\s+/g, ""));
+                setErrorPhone(false);
+                onSearchChange({
+                  text: value,
+                  status: filterStatus,
+                  user: filterUser,
+                  category: filterCategory,
+                });
+              }}
+            />
+          </div>
+          <div className="flex justify-end flex-[0.25]">
             <Button
               as={Link}
               href="/dashboard/lead/crear"
@@ -702,31 +641,138 @@ const ClientsList: FC<Props> = ({
             </Button>
           </div>
         </div>
-        <div className="flex justify-between items-end mt-2">
-          {userRol === "admin" ? (
-            <Button
-              isLoading={loadingFile}
-              color="primary"
+        <div className="flex justify-between items-end mt-2 gap-3">
+          <div className="flex flex-[0.75] gap-x-2">
+            <Select
               size="lg"
-              variant="ghost"
-              startContent={<i className="icon-download" />}
-              onPress={handleDownload}
+              items={usuarios}
+              defaultSelectedKeys={[myUserId]}
+              placeholder="Filtro por usuario"
+              renderValue={(users: SelectedItems<IBUsuarioOptions>) => {
+                return users.map((user) => (
+                  <div key={user.key} className="flex users-center gap-2">
+                    <div className="flex flex-col">
+                      <span className="text-md">{user.data?.label}</span>
+                      <span className="text-tiny text-cyan-500">
+                        {user.data?.telefono}
+                      </span>
+                    </div>
+                  </div>
+                ));
+              }}
+              onChange={(user) => {
+                setFilterUser(user.target.value);
+                onSearchChange({
+                  text: filterPhone,
+                  status: filterStatus,
+                  category: filterCategory,
+                  user: user.target.value,
+                });
+              }}
             >
-              Descargar
-            </Button>
-          ) : (
-            <span className="text-default-400 text-small">
-              Total {pagination.total} clientes
-            </span>
-          )}
+              {(user) => (
+                <SelectItem key={user.key} textValue={user.label}>
+                  <div className="flex gap-2 items-center">
+                    <div
+                      className="w-[1rem] h-[1rem] rounded-full"
+                      style={{ background: user.code }}
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-small">
+                        {formatearNombre(user.label, 20)}
+                      </span>
+                    </div>
+                  </div>
+                </SelectItem>
+              )}
+            </Select>
 
-          {showCopy && (
+            <Select
+              size="lg"
+              items={COLORES}
+              placeholder="Estado"
+              renderValue={(items: SelectedItems<IColors>) => {
+                return items.map((item) => (
+                  <div key={item.key} className="flex items-center gap-2">
+                    <div
+                      className="w-[1rem] h-[1rem] rounded-full"
+                      style={{ background: item.data?.code }}
+                    />
+                    <div className="flex flex-col">
+                      <span>{item.data?.label}</span>
+                    </div>
+                  </div>
+                ));
+              }}
+              onChange={(item) => {
+                setFilterStatus(item.target.value);
+                onSearchChange({
+                  text: filterPhone,
+                  status: item.target.value,
+                  user: filterUser,
+                  category: filterCategory,
+                });
+              }}
+            >
+              {(color) => (
+                <SelectItem key={color.key} textValue={color.label}>
+                  <div className="flex gap-2 items-center">
+                    <div
+                      className="w-[1rem] h-[1rem] rounded-full"
+                      style={{ background: color.code }}
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-small">{color.label}</span>
+                    </div>
+                  </div>
+                </SelectItem>
+              )}
+            </Select>
+
+            <Select
+              size="lg"
+              items={CATEGORIA_CLIENT}
+              placeholder="Categoría"
+              renderValue={(items) => {
+                return items.map((item) => (
+                  <div key={item.key} className="flex items-center gap-2">
+                    <div className="flex flex-col">
+                      <span>{item.data?.label}</span>
+                    </div>
+                  </div>
+                ));
+              }}
+              onChange={(item) => {
+                // CATEGORIA
+                setFilterCategory(item.target.value);
+                onSearchChange({
+                  text: filterPhone,
+                  status: filterStatus,
+                  user: filterUser,
+                  category: item.target.value,
+                });
+              }}
+            >
+              {(color) => (
+                <SelectItem key={color.key} textValue={color.label}>
+                  <div className="flex gap-2 items-center">
+                    <div className="flex flex-col">
+                      <span className="text-small">{color.label}</span>
+                    </div>
+                  </div>
+                </SelectItem>
+              )}
+            </Select>
+          </div>
+
+          {/* {showCopy && (
             <span className="text-tiny text-success flex gap-x-1 items-center">
               <i className="icon-check" />
               <span>Copiado!</span>
             </span>
-          )}
-          <label className="flex gap-x-2 items-center text-default-400 text-small">
+          )} */}
+
+          <label className="flex flex-[0.25] gap-x-2 justify-end items-center text-default-400 text-small">
             <span>Filas por pagina:</span>
             <div className="w-[70px]">
               <Select
@@ -763,9 +809,8 @@ const ClientsList: FC<Props> = ({
   ]);
 
   const bottomContent = React.useMemo(() => {
-    if (pagination.totalPages === 1 || !data.length) return null;
     return (
-      <div className="flex w-full justify-between relative min-h-[2.5rem]">
+      <div className="flex w-full justify-between items-center relative min-h-[2.5rem]">
         <span className="text-default-400 text-small">
           Total: {pagination.total} clientes
         </span>
@@ -779,6 +824,17 @@ const ClientsList: FC<Props> = ({
           total={pagination.totalPages}
           onChange={(newPage) => setPage(newPage)}
         />
+        {userRol === "admin" && pagination.total > 0 && (
+          <Button
+            isLoading={loadingFile}
+            color="primary"
+            variant="ghost"
+            startContent={<i className="icon-download" />}
+            onPress={handleDownload}
+          >
+            Descargar
+          </Button>
+        )}
       </div>
     );
   }, [pages, pagination]);
@@ -787,8 +843,8 @@ const ClientsList: FC<Props> = ({
     <div>
       <Table
         isHeaderSticky
-        topContent={topContent}
         aria-label="Tabla de clientes"
+        topContent={topContent}
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
       >

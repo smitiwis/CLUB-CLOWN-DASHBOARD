@@ -6,6 +6,7 @@ import {
   GROUPS_CLIENT,
   ORIGENES_CLIENTS,
   RESULTADO_LLAMADAS,
+  STATUS_INSCRITOS,
   TIPO_LLAMADAS,
 } from "@/constants";
 
@@ -55,6 +56,10 @@ export function getColorByStatus(status: string) {
 
 export function getLabelCategoryByKey(key: string) {
   return CATEGORIA_CLIENT.find(({ key: k }) => k === key)?.label || "";
+}
+
+export function getLabelInscritoByKey(key: string) {
+  return STATUS_INSCRITOS.find(({ key: k }) => k === key)?.label || "";
 }
 
 export function getLabelByStatus(status: string) {
