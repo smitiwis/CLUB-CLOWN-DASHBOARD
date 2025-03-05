@@ -85,6 +85,7 @@ export const GROUPS_CLIENT = [
   { key: "3", label: "Adulto" },
 ];
 export const CATEGORIA_CLIENT = [
+  { key: "6", label: "Facilitador de grupos" },
   { key: "1", label: "Clown Regular" },
   { key: "2", label: "Clown Para Parejas" },
   { key: "3", label: "Clown Full Day" },
