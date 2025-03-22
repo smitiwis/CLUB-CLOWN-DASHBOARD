@@ -6,6 +6,7 @@ import { format, diffDays } from "@formkit/tempo";
 import axios from "axios";
 import {
   Checkbox,
+  Chip,
   Spinner,
   Table,
   TableBody,
@@ -13,6 +14,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
+  Tooltip,
 } from "@heroui/react";
 
 type Props = {
@@ -135,9 +137,21 @@ const RegistrarAsistencia: FC<Props> = ({ fetchAlumnos }) => {
       switch (columnKey) {
         case "0":
           return (
-            <div className="text-xs">
-              {item.nombre} {item.apellido}
-            </div>
+            <Tooltip
+              placement="right-end"
+              color={item.deuda > 0 ? "warning" : "default"}
+              delay={500}
+              content={item.deuda > 0 && <b>S/{item.deuda.toFixed(2)}</b>}
+              isDisabled={item.deuda === 0}
+            >
+              <Chip
+                variant="light"
+                color={item.deuda > 0 ? "warning" : "success"}
+                size="sm"
+              >
+                {item.nombre} {item.apellido}
+              </Chip>
+            </Tooltip>
           );
 
         case "HOY":
@@ -209,7 +223,7 @@ const RegistrarAsistencia: FC<Props> = ({ fetchAlumnos }) => {
         >
           {(column) => (
             <TableColumn className="text-md" key={column.key}>
-             {column.label}
+              {column.label}
             </TableColumn>
           )}
         </TableHeader>

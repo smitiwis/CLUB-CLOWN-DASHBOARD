@@ -1,5 +1,6 @@
 import { fetchTalleresOptions } from "@/lib/talleres/services";
 import {
+  Badge,
   Card,
   CardBody,
   CardHeader,
@@ -29,51 +30,54 @@ const Page = async () => {
             key={taller.id_taller}
             href={`/dashboard/asistencia/taller/${taller.id_taller}`}
           >
-            <Card
-              className="border border-gray-800"
-              shadow="md"
-              isHoverable
-              isPressable
-            >
-              <CardHeader className="flex gap-3">
-                <div className="flex flex-col items-start gap-y-1">
-                  <p className="text-md">{taller.nombre.toLocaleUpperCase()}</p>
-                  <p className="text-small text-default-500">
-                    Prof. {taller.profesor.nombre} {taller.profesor.apellidos}
-                  </p>
-                </div>
-              </CardHeader>
-              <Divider />
-              <CardBody>
-                <div className="flex flex-col text-sm">
-                  <span className="flex gap-x-2">
-                    <b>Precio:</b> S/{taller.precio.toFixed(2)}
-                  </span>
-                  <span className="flex gap-x-2">
-                    <b>Nro:</b> {taller.cant_clases}{" "}
-                    {taller.cant_clases === 1 ? "clase" : "clases"}
-                  </span>
-                  <span className="flex gap-x-2">
-                    <b>Hora:</b> {taller.hora}
-                  </span>
-                  <span className="flex gap-x-2">
-                    <b>D{taller.dias.length === 1 ? "ía" : "ias"}:</b>
-                    <div className="flex gap-x-1 items-center">
-                      {taller.dias.map((dia) => (
-                        <Chip
-                          key={dia}
-                          color="primary"
-                          variant="flat"
-                          size="sm"
-                        >
-                          {dia}
-                        </Chip>
-                      ))}
-                    </div>
-                  </span>
-                </div>
-              </CardBody>
-            </Card>
+            <Badge color="primary" size="lg" content={taller.inscritos}>
+              <Card
+                className="border border-gray-800"
+                shadow="md"
+                isHoverable
+                isPressable
+              >
+                <CardHeader className="flex gap-3">
+                  <div className="flex flex-col items-start gap-y-1">
+                    <p className="text-md">
+                      {taller.nombre.toLocaleUpperCase()}
+                    </p>
+                    <p className="text-small text-default-500">
+                      Prof. {taller.profesor.nombre} {taller.profesor.apellidos}
+                    </p>
+                  </div>
+                </CardHeader>
+                <Divider />
+                <CardBody>
+                  <div className="flex flex-col text-sm">
+                    <span className="flex gap-x-2">
+                      <b>Precio:</b> S/{taller.precio.toFixed(2)}
+                    </span>
+                    <span className="flex gap-x-2">
+                      <b>Clases:</b> {taller.cant_clases}
+                    </span>
+                    <span className="flex gap-x-2">
+                      <b>D{taller.dias.length === 1 ? "ía" : "ias"}:</b>
+                      <div className="flex gap-x-1 items-center">
+                        {taller.dias.map((dia) => (
+                          <Chip
+                            key={dia}
+                            color="primary"
+                            variant="flat"
+                            size="sm"
+                          >
+                            {dia}
+                          </Chip>
+                        ))}
+                      </div>
+                    </span>
+                    <span className="flex gap-x-2">
+                      <b>Hora:</b> {taller.hora}
+                    </span>
+                  </div>
+                </CardBody>
+              </Card>
+            </Badge>
           </Link>
         ))}
       </div>

@@ -87,6 +87,7 @@ export async function fetchTalleresOptions() {
         hora: true,
         precio: true,
         cant_clases: true,
+        taller_cliente: true,
         profesor: {
           select: {
             id_profesor: true,
@@ -97,7 +98,20 @@ export async function fetchTalleresOptions() {
       },
     });
 
-    return talleres as IBTalleresOptions[];
+    const tallerOptions = talleres.map((taller) => {
+      return {
+        id_taller: taller.id_taller,
+        nombre: taller.nombre,
+        dias: taller.dias as IDias[],
+        hora: taller.hora,
+        precio: taller.precio,
+        cant_clases: taller.cant_clases,
+        profesor: taller.profesor,
+        inscritos: taller.taller_cliente.length,
+      };
+    });
+
+    return tallerOptions as IBTalleresOptions[];
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Error al obtener talleres options .");

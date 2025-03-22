@@ -9,11 +9,11 @@ type Params = {
 
 const Page = async ({ params }: Params) => {
   const { id_taller } = await params;
+
   if (!id_taller) {
     redirect("/dashboard/asistencia");
   }
   const alumnos = await fetchAlumnosByTallerId(id_taller);
-
   if (alumnos instanceof Error) {
     return <div>Error al cargar los alumnos</div>;
   }

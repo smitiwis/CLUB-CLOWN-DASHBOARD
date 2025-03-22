@@ -50,6 +50,7 @@ export interface IBTalleresOptions {
     id_profesor: string;
     apellidos: string;
   };
+  inscritos: number;
   id_taller: string;
   dias: IDias[];
   hora: string;
