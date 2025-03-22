@@ -208,7 +208,7 @@ const RegistrarAsistencia: FC<Props> = ({ fetchAlumnos }) => {
   );
 
   return (
-    <div className="p-4">
+    <div className="w-full">
       {/* <pre>{JSON.stringify(columns, null, 2)}</pre> */}
       <Table
         selectionMode="single"

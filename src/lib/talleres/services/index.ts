@@ -125,6 +125,16 @@ export async function fetchAlumnosByTallerId(id_taller: string) {
     const id_usuario = await getUserId();
     if (!id_usuario) return new Error("Usuario desconocido");
 
+    // OBTENER EL NOMBRE DEL TALLER QUE ESTA ASOCIADO AL ID
+    const taller = await prisma.taller.findUnique({
+      where: {
+        id_taller,
+      },
+      select: {
+        nombre: true,
+      },
+    });
+
     const getAlumnos = await prisma.taller_cliente.findMany({
       where: {
         id_taller, // Reemplaza con el ID real del taller
@@ -177,7 +187,10 @@ export async function fetchAlumnosByTallerId(id_taller: string) {
       };
     });
 
-    return alumnos;
+    return {
+      alumnos,
+      tallerName: taller?.nombre,
+    };
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Error al obtener alumnos por taller .");

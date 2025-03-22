@@ -462,7 +462,7 @@ const InscritoList: FC<Props> = (props) => {
         </div>
         <div className="flex justify-between items-end my-2">
           <span className="text-default-400 text-small">
-            Total {data.length} inscritos registrados
+            Total {pagination.total} inscritos registrados
           </span>
           <label className="flex gap-x-2 items-center text-default-400 text-small">
             <span>Filas por pagina:</span>

@@ -13,12 +13,19 @@ const Page = async ({ params }: Params) => {
   if (!id_taller) {
     redirect("/dashboard/asistencia");
   }
-  const alumnos = await fetchAlumnosByTallerId(id_taller);
-  if (alumnos instanceof Error) {
+  const tallerDetail = await fetchAlumnosByTallerId(id_taller);
+  if (tallerDetail instanceof Error) {
     return <div>Error al cargar los alumnos</div>;
   }
 
-  return <RegistrarAsistencia fetchAlumnos={alumnos} />;
+  return (
+    <div className="flex flex-col items-center mt-5 w-full gap-6">
+      <h1 className="text-xl">
+        {tallerDetail.tallerName?.toLocaleUpperCase()}
+      </h1>
+      <RegistrarAsistencia fetchAlumnos={tallerDetail.alumnos} />
+    </div>
+  );
 };
 
 export default Page;
