@@ -167,13 +167,14 @@ export async function fetchAlumnosByTallerId(id_taller: string) {
       },
     });
 
-    const alumnos = getAlumnos.map((alumno) => {
+    const alumnos = getAlumnos.map((alumno, i) => {
       const totalPagado = alumno.taller_cliente_pagos.reduce(
         (acc, pago) => acc + pago.monto,
         0
       );
 
       return {
+        index: i + 1,
         id_cliente: alumno.id_taller_cliente,
         nombre: alumno.cliente.nombre,
         apellido: alumno.cliente.apellido,

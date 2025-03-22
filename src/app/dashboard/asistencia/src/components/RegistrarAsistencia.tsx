@@ -107,7 +107,7 @@ const RegistrarAsistencia: FC<Props> = ({ fetchAlumnos }) => {
 
   const handleCheck = async (checked: boolean, clientId: string) => {
     try {
-      const response = await axios.post(
+      await axios.post(
         "/api/asistencia/registrar",
         { clientId },
         {
@@ -116,8 +116,6 @@ const RegistrarAsistencia: FC<Props> = ({ fetchAlumnos }) => {
           },
         }
       );
-
-      console.log("response", response);
     } catch (error) {
       console.error("Error: ", error);
     }
@@ -137,21 +135,24 @@ const RegistrarAsistencia: FC<Props> = ({ fetchAlumnos }) => {
       switch (columnKey) {
         case "0":
           return (
-            <Tooltip
-              placement="right-end"
-              color={item.deuda > 0 ? "warning" : "default"}
-              delay={500}
-              content={item.deuda > 0 && <b>S/{item.deuda.toFixed(2)}</b>}
-              isDisabled={item.deuda === 0}
-            >
-              <Chip
-                variant="light"
-                color={item.deuda > 0 ? "warning" : "success"}
-                size="sm"
+            <div className="flex items-center gap-x-1">
+              <span className="text-gray-300">{item.index}</span>
+              <Tooltip
+                placement="right-end"
+                color={item.deuda > 0 ? "warning" : "default"}
+                delay={500}
+                content={item.deuda > 0 && <b>S/{item.deuda.toFixed(2)}</b>}
+                isDisabled={item.deuda === 0}
               >
-                {item.nombre} {item.apellido}
-              </Chip>
-            </Tooltip>
+                <Chip
+                  variant="light"
+                  color={item.deuda > 0 ? "warning" : "success"}
+                  size="sm"
+                >
+                  {item.nombre} {item.apellido}
+                </Chip>
+              </Tooltip>
+            </div>
           );
 
         case "HOY":
@@ -209,7 +210,6 @@ const RegistrarAsistencia: FC<Props> = ({ fetchAlumnos }) => {
 
   return (
     <div className="w-full">
-      {/* <pre>{JSON.stringify(columns, null, 2)}</pre> */}
       <Table
         selectionMode="single"
         // topContent={topContent}
@@ -222,7 +222,7 @@ const RegistrarAsistencia: FC<Props> = ({ fetchAlumnos }) => {
           columns={[{ key: "0", label: "NOMBRES Y APELLIDOS" }, ...columns]}
         >
           {(column) => (
-            <TableColumn className="text-md" key={column.key}>
+            <TableColumn className="text-md text-gray-300" key={column.key}>
               {column.label}
             </TableColumn>
           )}

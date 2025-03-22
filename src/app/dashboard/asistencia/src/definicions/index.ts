@@ -1,4 +1,5 @@
 export interface IBAlumnosAsistencia {
+  index: number;
   id_cliente: string;
   nombre: string;
   apellido: string;
