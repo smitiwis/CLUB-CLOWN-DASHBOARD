@@ -40,6 +40,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  DateRangePicker,
 } from "@heroui/react";
 import {
   IBClients,
@@ -96,6 +97,10 @@ const ClientsList: FC<Props> = ({
   const [filterStatus, setFilterStatus] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
   const [filterUser, setFilterUser] = useState(myUserId);
+  const [filterDate, setfilterDate] = useState<null | {
+    start: string;
+    end: string;
+  }>(null);
 
   const adapteRows = (clients: IBClients[]) => {
     return clients.map((lead, i) => {
@@ -497,6 +502,10 @@ const ClientsList: FC<Props> = ({
     init?: boolean;
     category?: string;
     user: string;
+    date: {
+      start: string;
+      end: string;
+    } | null;
   }) => {
     setIsLoading(true);
     const text = (filter?.text || "").replace(/\s+/g, "").trim();
@@ -504,19 +513,24 @@ const ClientsList: FC<Props> = ({
     const category = filter?.category || "";
     const id_usuario = filter?.user || "";
     const init = filter?.init || false;
+    const date = filter?.date || "";
 
     try {
       const baseStatic = `/api/usuario/${id_usuario}/cliente/lista`;
       const base = `${baseStatic}?page=${init ? "1" : page}&limit=${limit}`;
-      const path = `${base}${text ? `&phoneNumber=${text}` : ""}${
-        status ? `&status=${status}` : ""
-      }${category ? `&categoria=${category}` : ""}`;
+      const textFilter = text ? `&phoneNumber=${text}` : "";
+      const statusFilter = status ? `&status=${status}` : "";
+      const categoryFilter = category ? `&categoria=${category}` : "";
+      const dateFilter = date ? `&date=${JSON.stringify(date)}` : "";
+
+      const queryParam = `${textFilter}${statusFilter}${categoryFilter}${dateFilter}`;
+      const path = `${base}${queryParam}`;
 
       const response = await axios.get(path);
       setData(adapteRows(response.data.data));
       setPagination(response.data.pagination);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error al filtrar leads", error);
     } finally {
       setIsLoading(false);
     }
@@ -528,6 +542,7 @@ const ClientsList: FC<Props> = ({
       status: filterStatus,
       category: filterCategory,
       user: filterUser,
+      date: filterDate,
     };
 
     if (!isFirtsRender) fetchPageData(filter);
@@ -548,6 +563,10 @@ const ClientsList: FC<Props> = ({
         status: string;
         user: string;
         category: string;
+        date: {
+          start: string;
+          end: string;
+        } | null;
       }) => {
         const textSinEspacios = filter.text.replace(/\s+/g, "");
         if (!REGEX.PHONE.test(textSinEspacios)) setErrorPhone(true);
@@ -572,19 +591,23 @@ const ClientsList: FC<Props> = ({
         status: filterStatus,
         user: filterUser,
         category: filterCategory,
+        date: filterDate,
       };
 
       const text = (filter?.text || "").replace(/\s+/g, "").trim();
       const status = filter?.status || "";
       const category = filter?.category || "";
       const id_usuario = filter?.user || "";
+      const date = filter?.date || "";
 
       const baseStatic = `/api/export-data/${id_usuario}`;
       const base = `${baseStatic}?page=${page}&limit=${limit}`;
-      const queryParam = `${text ? `&phoneNumber=${text}` : ""}${
-        status ? `&status=${status}` : ""
-      }${category ? `&categoria=${category}` : ""}`;
+      const textFilter = text ? `&phoneNumber=${text}` : "";
+      const statusFilter = status ? `&status=${status}` : "";
+      const categoryFilter = category ? `&categoria=${category}` : "";
+      const dateFilter = date ? `&date=${JSON.stringify(date)}` : "";
 
+      const queryParam = `${textFilter}${statusFilter}${categoryFilter}${dateFilter}`;
       const path = `${base}${queryParam}`;
 
       const response = await axios.get(path, { responseType: "blob" }); // Importante para manejar la respuesta como un Blob
@@ -622,7 +645,7 @@ const ClientsList: FC<Props> = ({
     return (
       <div className="flex flex-col gap-y-1">
         <div className="flex flex-1 justify-between gap-3">
-          <div className="flex flex-[0.75]">
+          <div className="flex flex-[0.75] gap-2">
             <Input
               size="lg"
               fullWidth
@@ -641,7 +664,34 @@ const ClientsList: FC<Props> = ({
                   status: filterStatus,
                   user: filterUser,
                   category: filterCategory,
+                  date: filterDate,
                 });
+              }}
+            />
+
+            <DateRangePicker
+              size="lg"
+              className="max-w-xs"
+              onChange={(e) => {
+                if (e) {
+                  const {start, end} = e;
+
+                  const monthStart = start.month < 10 ? `0${start.month}` : start.month;
+                  const dayStart = start.day < 10 ? `0${start.day}` : start.day;
+                  const monthEnd = end.month < 10 ? `0${end.month}` : end.month;
+                  const dayEnd = end.day < 10 ? `0${end.day}` : end.day;
+
+                  const startDate = `${start.year}-${monthStart}-${dayStart}`;
+                  const endDate = `${end.year}-${monthEnd}-${dayEnd}`;
+                  setfilterDate({ start: startDate, end: endDate });
+                  onSearchChange({
+                    text: filterPhone,
+                    status: filterStatus,
+                    category: filterCategory,
+                    user: filterUser,
+                    date: { start: startDate, end: endDate },
+                  });
+                }
               }}
             />
           </div>
@@ -683,6 +733,7 @@ const ClientsList: FC<Props> = ({
                   status: filterStatus,
                   category: filterCategory,
                   user: user.target.value,
+                  date: filterDate,
                 });
               }}
             >
@@ -727,6 +778,7 @@ const ClientsList: FC<Props> = ({
                   status: item.target.value,
                   user: filterUser,
                   category: filterCategory,
+                  date: filterDate,
                 });
               }}
             >
@@ -765,6 +817,7 @@ const ClientsList: FC<Props> = ({
                   status: filterStatus,
                   user: filterUser,
                   category: item.target.value,
+                  date: filterDate,
                 });
               }}
             >
@@ -810,6 +863,7 @@ const ClientsList: FC<Props> = ({
     filterStatus,
     filterUser,
     filterCategory,
+    filterDate,
     onSearchChange,
     data.length,
     errorPhone,
@@ -904,6 +958,7 @@ const ClientsList: FC<Props> = ({
                     text: filterPhone,
                     status: filterStatus,
                     user: filterUser,
+                    date: filterDate,
                     init: true,
                   });
                 } else onClose();

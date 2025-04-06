@@ -32,12 +32,17 @@ export async function GET(request: NextRequest, { params }: params) {
       .trim(); // Número de celular (opcional)
     const status = searchParams.get("status") || ""; // Estado (opcional)
     const categoria = searchParams.get("categoria") || ""; // Categoría (opcional)
-    
+    const date = searchParams.get("date") || "";
+
     const where: {
       id_usuario: string;
       telefono?: { contains: string };
       estado?: string;
       categoria?: string;
+      fecha_creacion?: {
+        gte: Date;
+        lte: Date;
+      };
     } = { id_usuario };
 
     if (phoneNumber) {
@@ -52,7 +57,27 @@ export async function GET(request: NextRequest, { params }: params) {
       where.estado = status;
     }
 
-    console.log("where", where);
+    if (date) {
+      try {
+        const parseDate = JSON.parse(date);
+        const dateStart = parseDate?.start;
+        const dateEnd = parseDate?.end;
+        
+        if (dateStart && dateEnd) {
+          const fechaInicio = new Date(`${dateStart}T00:00:00`);
+          const fechaFin = new Date(`${dateEnd}T23:59:59.999`);
+          
+          if (!isNaN(fechaInicio.getTime()) && !isNaN(fechaFin.getTime())) {
+            where.fecha_creacion = {
+              gte: fechaInicio,
+              lte: fechaFin,
+            };
+          }
+        }
+      } catch (error) {
+        console.error("Fecha inválida, no se aplicará filtro de fecha", error);
+      }
+    }
 
     const clientes = await prisma.cliente.findMany({
       where: {

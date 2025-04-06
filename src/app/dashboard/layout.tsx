@@ -22,7 +22,7 @@ const RootLayout: FC<Props> = async ({ children }) => {
   return (
     <SessionHandler>
       <div
-        className="grid grid-cols-[256px,1fr] grid-rows-1 h-screen"
+        className="grid grid-cols-[256px,1fr] grid-rows-1 min-h-screen"
         aria-hidden="false"
       >
         <AsideMain user={userProfile} />
