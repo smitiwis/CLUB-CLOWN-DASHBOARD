@@ -178,6 +178,7 @@ export async function fetchAlumnosByTallerId(id_taller: string) {
         id_cliente: alumno.id_taller_cliente,
         nombre: alumno.cliente.nombre,
         apellido: alumno.cliente.apellido,
+        telefono: alumno.cliente.telefono,
         asistencias: alumno.taller_asistencia.map((a) => ({
           id_asistencia: a.id_asistencia,
           fecha_asistencia: a.fecha_asistencia,

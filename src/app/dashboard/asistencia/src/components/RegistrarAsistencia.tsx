@@ -139,10 +139,9 @@ const RegistrarAsistencia: FC<Props> = ({ fetchAlumnos }) => {
               <span className="text-gray-300">{item.index}</span>
               <Tooltip
                 placement="right-end"
-                color={item.deuda > 0 ? "warning" : "default"}
+                color={item.deuda > 0 ? "warning" : "foreground"}
                 delay={500}
-                content={item.deuda > 0 && <b>S/{item.deuda.toFixed(2)}</b>}
-                isDisabled={item.deuda === 0}
+                content={<b>{item.telefono} {item.deuda > 0 && `--> S/${item.deuda.toFixed(2)}`}</b>}
               >
                 <Chip
                   variant="light"
