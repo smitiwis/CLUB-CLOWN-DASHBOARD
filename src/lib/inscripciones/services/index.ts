@@ -19,7 +19,7 @@ export async function fetchInscripciones(
       id_usuario: id_usuario === "all" ? undefined : id_usuario,
       cliente: {
         telefono: { contains: telefonoCliente },
-        categoria: categoria
+        categoria: categoria || undefined
       },
     };
 
