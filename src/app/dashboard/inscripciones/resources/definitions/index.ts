@@ -51,6 +51,7 @@ export interface IBInscripcion {
   precioVenta: number;
   observacion: string;
   estado: string;
+  categoria: string;
 
   taller: Taller;
   promocion: Promocion | null;

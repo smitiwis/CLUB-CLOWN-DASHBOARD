@@ -46,11 +46,13 @@ import {
   formatPhoneNumber,
   getColorByStatus,
   getLabelByStatus,
+  getLabelCategoryByKey,
   getLabelInscritoByKey,
 } from "@/lib/helpers";
 import { format } from "@formkit/tempo";
 import { IProfile } from "@/lib/definitions";
 import { IBUsuarioOptions } from "@/lib/usuarios/definicions";
+import { CATEGORIA_CLIENT } from "@/constants";
 
 type Props = {
   inscripcionesResp: IBInscripcionResponse;
@@ -107,9 +109,13 @@ const InscritoList: FC<Props> = (props) => {
       key: "taller",
       label: "TALLER",
     },
+    // {
+    //   key: "promocion",
+    //   label: "PROMOCIÓN",
+    // },
     {
-      key: "promocion",
-      label: "PROMOCIÓN",
+      key: "categoria",
+      label: "CATEGORIA",
     },
     // {
     //   key: "observacion",
@@ -125,6 +131,14 @@ const InscritoList: FC<Props> = (props) => {
     "2": "secondary",
     "3": "warning",
     "4": "warning",
+  };
+
+  const categoryColor: Record<string, ChipProps["color"]> = {
+    "1": "warning",
+    "2": "danger",
+    "3": "success",
+    "4": "primary",
+    "5": "secondary",
   };
 
   const renderCell = useCallback((item: IBInscripcion, columnKey: Key) => {
@@ -216,7 +230,7 @@ const InscritoList: FC<Props> = (props) => {
               color="success"
               className="flex items-center justify-around px-0 hover:text-white hover:!bg-transparent"
               variant="light"
-              startContent={<IconEye  color={"white"} />}
+              startContent={<IconEye color={"white"} />}
               onPress={() => {
                 setBouchers(item.pagos);
                 onOpen();
@@ -247,18 +261,24 @@ const InscritoList: FC<Props> = (props) => {
           </Chip>
         );
 
-      case "promocion":
-        // return item.promocion?.nombre || "-";
+      // case "promocion":
+      //   // return item.promocion?.nombre || "-";
+      //   return (
+      //     <Tooltip
+      //       content={`Dscto: S/${item.promocion?.descuento.toFixed(2)}`}
+      //       showArrow
+      //       color="warning"
+      //       placement="right-end"
+      //       size="sm"
+      //     >
+      //       <Chip variant="light">{item.promocion?.nombre}</Chip>
+      //     </Tooltip>
+      //   );
+      case "categoria":
         return (
-          <Tooltip
-            content={`Dscto: S/${item.promocion?.descuento.toFixed(2)}`}
-            showArrow
-            color="warning"
-            placement="right-end"
-            size="sm"
-          >
-            <Chip variant="light">{item.promocion?.nombre}</Chip>
-          </Tooltip>
+          <Chip size="sm" color={categoryColor[item.categoria]} variant="flat">
+            {getLabelCategoryByKey(item.categoria)}
+          </Chip>
         );
 
       case "taller":
@@ -313,7 +333,6 @@ const InscritoList: FC<Props> = (props) => {
     }
   }, []);
 
-
   // ======== TABLA Y PAGINACION =========
   const [data, setData] = useState(rows); // Usamos la lista inicial
   const [page, setPage] = useState(1);
@@ -330,21 +349,28 @@ const InscritoList: FC<Props> = (props) => {
   // ======== FILTROS =========
   const [errorPhone, setErrorPhone] = useState(false);
   const [filterPhone, setFilterPhone] = useState("");
+  const [filterCategory, setFilterCategory] = useState("");
 
   const fetchPageData = async (filter?: {
     text?: string;
     init?: boolean;
     user: string;
+    category?: string;
   }) => {
     const { text, init } = filter || {};
     setIsLoading(true);
     try {
       const initPage = init ? 1 : page;
-      const filterByPhone = text ? `&phoneNumber=${text}` : "";
-      const filterByUser = filter?.user || "all";
+      const category = filter?.category || "";
       const base = `/api/inscrito/list?page=${initPage}&limit=${limit}`;
 
-      const path = `${base}&id_usuario=${filterByUser}${filterByPhone}`;
+      const filterByUser = filter?.user || "all";
+      const filterByPhone = text ? `&phoneNumber=${text}` : "";
+      const categoryFilter = category ? `&categoria=${category}` : "";
+
+      const queryParam = `${filterByPhone}${categoryFilter}`;
+
+      const path = `${base}&id_usuario=${filterByUser}${queryParam}`;
 
       const response = await axios.get<IBInscripcionResponse>(path);
       setData(response.data.data);
@@ -357,7 +383,7 @@ const InscritoList: FC<Props> = (props) => {
   };
 
   const onSearchChange = useCallback(
-    debounce((filter: { text: string; user: string }) => {
+    debounce((filter: { text: string; user: string; category: string }) => {
       const { text } = filter;
       if (!REGEX.PHONE.test(text)) setErrorPhone(true);
       if (!text) setErrorPhone(false);
@@ -388,66 +414,102 @@ const InscritoList: FC<Props> = (props) => {
     return (
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between gap-3">
-          <div className="flex flex-[0.60] gap-x-2">
+          <div className="flex flex-col flex-[0.60] gap-2">
             <Input
               size="lg"
               isClearable
-              className="w-full sm:max-w-[44%]"
+              className="w-full"
               placeholder="Buscar por celular..."
               startContent={<i className="icon-search" />}
               onClear={onClear}
               isInvalid={errorPhone}
               errorMessage={errorPhone ? "Ingrese un número válido" : ""}
               onValueChange={(phone) => {
-                setFilterPhone(phone);
+                setFilterPhone(phone.replace(/\s+/g, ""));
                 setErrorPhone(false);
                 onSearchChange({
                   text: phone,
                   user: filterUser,
+                  category: filterCategory,
                 });
               }}
             />
-            <Select
-              size="lg"
-              items={usuarios}
-              placeholder="Filtro por usuario"
-              defaultSelectedKeys={["all"]}
-              renderValue={(users: SelectedItems<IBUsuarioOptions>) => {
-                return users.map((user) => (
-                  <div key={user.key} className="flex users-center gap-2">
-                    <div className="flex flex-col">
-                      <span className="text-md">{user.data?.label}</span>
-                      <span className="text-tiny text-cyan-500">
-                        {user.data?.telefono}
-                      </span>
+            <div className="flex gap-x-2">
+              <Select
+                size="lg"
+                items={usuarios}
+                placeholder="Filtro por usuario"
+                defaultSelectedKeys={["all"]}
+                renderValue={(users: SelectedItems<IBUsuarioOptions>) => {
+                  return users.map((user) => (
+                    <div key={user.key} className="flex users-center gap-2">
+                      <div className="flex flex-col">
+                        <span className="text-md">{user.data?.label}</span>
+                        <span className="text-tiny text-cyan-500">
+                          {user.data?.telefono}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ));
-              }}
-              onChange={(user) => {
-                setFilterUser(user.target.value);
-                onSearchChange({
-                  text: filterPhone,
-                  user: user.target.value,
-                });
-              }}
-            >
-              {(user) => (
-                <SelectItem key={user.key} textValue={user.label}>
-                  <div className="flex gap-2 items-center">
-                    <div
-                      className="w-[1rem] h-[1rem] rounded-full"
-                      style={{ background: user.code }}
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-small">
-                        {formatearNombre(user.label, 20)}
-                      </span>
+                  ));
+                }}
+                onChange={(user) => {
+                  setFilterUser(user.target.value);
+                  onSearchChange({
+                    text: filterPhone,
+                    user: user.target.value,
+                    category: filterCategory,
+                  });
+                }}
+              >
+                {(user) => (
+                  <SelectItem key={user.key} textValue={user.label}>
+                    <div className="flex gap-2 items-center">
+                      <div
+                        className="w-[1rem] h-[1rem] rounded-full"
+                        style={{ background: user.code }}
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-small">
+                          {formatearNombre(user.label, 20)}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </SelectItem>
-              )}
-            </Select>
+                  </SelectItem>
+                )}
+              </Select>
+              <Select
+                size="lg"
+                items={CATEGORIA_CLIENT}
+                placeholder="Categoría"
+                renderValue={(items) => {
+                  return items.map((item) => (
+                    <div key={item.key} className="flex items-center gap-2">
+                      <div className="flex flex-col">
+                        <span>{item.data?.label}</span>
+                      </div>
+                    </div>
+                  ));
+                }}
+                onChange={(item) => {
+                  setFilterCategory(item.target.value);
+                  onSearchChange({
+                    text: filterPhone,
+                    user: filterUser,
+                    category: item.target.value,
+                  });
+                }}
+              >
+                {(color) => (
+                  <SelectItem key={color.key} textValue={color.label}>
+                    <div className="flex gap-2 items-center">
+                      <div className="flex flex-col">
+                        <span className="text-small">{color.label}</span>
+                      </div>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
+            </div>
           </div>
 
           <Button
@@ -489,7 +551,7 @@ const InscritoList: FC<Props> = (props) => {
         </div>
       </div>
     );
-  }, [filterPhone, errorPhone, data.length, onSearchChange]);
+  }, [filterPhone, filterCategory, errorPhone, data.length, onSearchChange]);
 
   const bottomContent = useMemo(() => {
     return (
@@ -513,7 +575,7 @@ const InscritoList: FC<Props> = (props) => {
         topContent={topContent}
         aria-label="Tabla de pagos"
         bottomContent={bottomContent}
-        bottomContentPlacement="outside"
+        bottomContentPlacement="inside"
       >
         <TableHeader columns={columns}>
           {(column) => (
@@ -538,6 +600,7 @@ const InscritoList: FC<Props> = (props) => {
           )}
         </TableBody>
       </Table>
+
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="2xl">
         <ModalContent>
           {() => (

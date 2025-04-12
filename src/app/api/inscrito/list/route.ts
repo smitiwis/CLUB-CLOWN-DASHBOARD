@@ -5,6 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const phoneNumber = searchParams.get("phoneNumber") || ""; // Número de celular (opcional)
+    const categoria = searchParams.get("categoria") || ""; // Categoría (opcional)
 
     // PAGINATION
     const page = parseInt(searchParams.get("page") || "1");
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest) {
 
     // Calcular la paginación
     const paginate = { page, limit };
-    const filter = { phoneNumber, id_usuario };
+    const filter = { phoneNumber, id_usuario, categoria };
 
     const inscritosResp = await fetchInscripciones(paginate, filter);;
 

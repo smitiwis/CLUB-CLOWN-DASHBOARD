@@ -7,10 +7,11 @@ export async function fetchInscripciones(
   filter: {
     telefonoCliente?: string;
     id_usuario?: string;
+    categoria?: string
   }
 ) {
   const { page, limit } = pagination;
-  const { telefonoCliente, id_usuario } = filter;
+  const { telefonoCliente, id_usuario, categoria } = filter;
   try {
     if (!id_usuario) return new Error("Usuario desconocido");
 
@@ -18,6 +19,7 @@ export async function fetchInscripciones(
       id_usuario: id_usuario === "all" ? undefined : id_usuario,
       cliente: {
         telefono: { contains: telefonoCliente },
+        categoria: categoria
       },
     };
 
@@ -48,6 +50,7 @@ export async function fetchInscripciones(
             apellido: true,
             nombre_apo: true,
             telefono: true,
+            categoria: true,
 
             // Asesor que registró al cliente
             usuario: {
@@ -116,6 +119,7 @@ export async function fetchInscripciones(
       precioVenta: item.precio_venta,
       observacion: item.observacion,
       estado: item.estado,
+      categoria: item.cliente.categoria,
 
       taller: {
         nombre: item.taller.nombre,
